@@ -1,20 +1,27 @@
 cmake_minimum_required(VERSION 2.6)
 project(BCE)
 
-set(CMAKE_PREFIX_PATH /home-local/dantu1/Documents/local_libs)
-set(CMAKE_LIBRARY_PATH /home-local/dantu1/Documents/local_libs/lib)
+set(LOCAL_LIBS_FOLDER /home/daniel/Projects/local_libs)
+#set(LOCAL_LIBS_FOLDER /home-local/dantu1/Documents/local_libs)
+
+set(QBSCC_FOLDER /home/daniel/Projects/GIT/QBSCC)
+#set(QBSCC_FOLDER /home-local/dantu1/GIT/QBSCC)
+
+
+set(CMAKE_PREFIX_PATH ${LOCAL_LIBS_FOLDER})
+set(CMAKE_LIBRARY_PATH ${LOCAL_LIBS_FOLDER}/lib)
+
 
 find_package(DGtal REQUIRED)
 find_package(OpenCV REQUIRED)
 
 
-INCLUDE_DIRECTORIES(/home-local/dantu1/Documents/local_libs/include)
-LINK_DIRECTORIES(/home-local/dantu1/Documents/local_libs/lib)
+INCLUDE_DIRECTORIES(${LOCAL_LIBS_FOLDER}/include)
+LINK_DIRECTORIES(${LOCAL_LIBS_FOLDER}/lib)
 
 
-INCLUDE_DIRECTORIES(/home-local/dantu1/GIT/QBSSC)
-INCLUDE_DIRECTORIES(/home-local/dantu1/GIT/QBSSC)
-LINK_DIRECTORIES(/home-local/dantu1/GIT/QBSSC/lib/)
+INCLUDE_DIRECTORIES(${QBSCC_FOLDER} ${QBSCC_FOLDER}/Solvers)
+LINK_DIRECTORIES(${QBSCC_FOLDER}/lib/)
 
 
 INCLUDE_DIRECTORIES(${DGTAL_INCLUDE_DIRS})
@@ -53,5 +60,5 @@ install(FILES bce.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce)
 install(FILES Core/BCEInput.h Core/display.h Core/ODRFactory.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce/Core)
 
 install(DIRECTORY Regularization DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce)
-install(DIRECTORY /home-local/dantu1/GIT/QBSSC/Solvers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce)
-install(DIRECTORY /home-local/dantu1/GIT/QBSSC/ImageProc DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce)
+install(DIRECTORY ${QBSCC_FOLDER}/Solvers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce)
+install(DIRECTORY ${QBSCC_FOLDER}/ImageProc DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/bce)
