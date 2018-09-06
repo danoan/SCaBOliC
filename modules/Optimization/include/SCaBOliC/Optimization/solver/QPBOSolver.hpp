@@ -1,4 +1,4 @@
-#include "SCaBOliC//Optimization/solver/QPBOSolver.h"
+#include "SCaBOliC/Optimization/solver/QPBOSolver.h"
 
 using namespace SCaBOliC::Optimization;
 

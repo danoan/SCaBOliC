@@ -1,4 +1,4 @@
-#include "SCaBOliC//Core/ODRFactory.h"
+#include "SCaBOliC/Core/ODRFactory.h"
 
 namespace SCaBOliC {
     namespace Core
@@ -28,21 +28,20 @@ namespace SCaBOliC {
                 DigitalSet applicationRegion(applicationDomain);
 
 
-
-                EightNeighborhood(originalBoundary, original);
-
                 DIPaCUS::Morphology::Dilate(dilated,
                                             original,
                                             DIPaCUS::Morphology::RECT,
                                             1);
 
-                EightNeighborhood(dilatedBoundary, dilated);
 
                 DIPaCUS::Morphology::Erode(eroded,
                                            original,
                                            DIPaCUS::Morphology::RECT,
                                            1);
-                EightNeighborhood(erodedBoundary, eroded);
+
+                DIPaCUS::SetOperations::SetDifference(dilatedBoundary,dilated,original);
+                DIPaCUS::SetOperations::SetDifference(erodedBoundary,original,eroded);
+
 
                 switch (optMode) {
                     case OptimizationMode::OM_OriginalBoundary: {
@@ -66,11 +65,11 @@ namespace SCaBOliC {
 
                 switch (appMode) {
                     case ApplicationMode::AM_OriginalBoundary: {
-                        applicationRegion = originalBoundary;
+                        applicationRegion.insert(originalBoundary.begin(),originalBoundary.end());
                         break;
                     }
                     case ApplicationMode::AM_DilatedBoundary: {
-                        applicationRegion = dilatedBoundary;
+                        applicationRegion.insert(dilatedBoundary.begin(),dilatedBoundary.end());
                         break;
                     }
                     case ApplicationMode::AM_FullImage: {

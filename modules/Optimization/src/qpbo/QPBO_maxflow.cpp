@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include "SCaBOliC//Optimization/qpbo/QPBO.h"
+#include "SCaBOliC/Optimization/qpbo/QPBO.h"
 
 
 

@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 
-#include "SCaBOliC//Optimization/qpbo/qpbo_alpha_expand.h"
-#include "SCaBOliC//Optimization/qpbo/QPBO.h"
+#include "SCaBOliC/Optimization/qpbo/qpbo_alpha_expand.h"
+#include "SCaBOliC/Optimization/qpbo/QPBO.h"
 
 namespace SCaBOliC
 {

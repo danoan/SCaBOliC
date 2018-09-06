@@ -1,4 +1,4 @@
-#include "SCaBOliC//Optimization/qpbo/QPBO.h"
+#include "SCaBOliC/Optimization/qpbo/QPBO.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4661)

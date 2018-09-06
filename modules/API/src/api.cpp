@@ -1,98 +1,76 @@
-#include "SCaBOliC//include/API/api.h"
+#include "SCaBOliC/API/api.h"
 
-namespace SCaBOliC
+using namespace SCaBOliC::API;
+
+BoundaryCorrection::BoundaryCorrection(Solution& solution,
+                                       const BoundaryCorrectionInput& input,
+                                       bool debug=false)
 {
-    namespace API
+
+    ISQInputData::OptimizationDigitalRegions ODR = SCaBOliC::Core::ODRFactory::createODR(input.om,
+                                                                                         input.am,
+                                                                                         input.estimatingBallRadius,
+                                                                                         input.ds);
+
+
+    ISQInputData energyInput(ODR,
+                             input.estimatingBallRadius,
+                             input.foregroundDistribution,
+                             input.backgroundDistribution,
+                             input.dataTermWeight,
+                             input.sqTermWeight);
+
+    ISQEnergy energy(energyInput);
+    solution.init(energy.numVars());
+    solution.labelsVector.setZero();
+    energy.solve(solution);
+
+
+    updateSet(solution,energyInput,energy);
+    if(debug) printData(solution,energy);
+}
+
+void BoundaryCorrection::updateSet(Solution& solution,
+                                   const ISQInputData& energyInput,
+                                   const ISQEnergy& energy)
+{
+    const DigitalSet& optRegion = energyInput.optimizationRegions.optRegion;
+    Solution::LabelsVector labelsVector = solution.labelsVector;
+    invertLabels(labelsVector);
+
+    for (DigitalSet::ConstIterator it = optRegion.begin();
+         it != optRegion.end(); ++it)
     {
-        MySolution boundaryCorrection(SCaBOliC::Core::BCEInput input)
-        {
-            OptimizationRegions ODR = SCaBOliC::Core::ODRFactory::createODR(input.om,
-                                                            input.am,
-                                                            input.radius,
-                                                            input.startDS);
-
-
-
-            double energyValue;
-            int unlabelled;
-
-            MyModelData model(ODR,input.refImage,input.radius);
-            MyRegularizator R(model,false,true,false);//dataTerm=true,curvatureTerm=true,invertDT=true
-
-            DigitalSet solution(ODR.domain);
-
-
-            LabelsVector labelsVector(R.model.vm.numVars());
-            labelsVector.setZero();
-            for(auto it=ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
-            {
-                if(ODR.original(*it))
-                {
-                    labelsVector.coeffRef(model.vm.isInsideVariables().at(*it)) = 1;
-                }
-            }
-
-
-            R.solve(energyValue,labelsVector);
-            unlabelled = R.unlabeledVariables();
-
-            Utils::invertSolution(labelsVector);
-
-            R.updateSet(solution,labelsVector);
-
-
-            MySolution solutionData(model,solution,labelsVector,energyValue,unlabelled);
-            if(DEBUG) Debug::printData(solutionData,R);
-
-            return solutionData;
+        if (labelsVector.coeff(energy.vm().pim.at(*it)) == 1) {
+            solution.outputDS.insert(*it);
         }
-
-        void boundaryEvolution(SCaBOliC::Core::BCEInput input)
-        {
-
-        }
-
-        namespace Utils
-        {
-            void invertSolution(LabelsVector& labelsVector)
-            {
-                for (int i = 0; i < labelsVector.rows(); ++i)
-                {
-                    //Invert Solution
-                    labelsVector.coeffRef(i) = 1-labelsVector.coeff(i);
-                }
-            }
-        }
-
-        namespace Debug
-        {
-            void printData(MySolution& solutionData,
-                           MyRegularizator& R) {
-                std::cout << "Energy Value: " << solutionData.energyValue << std::endl;
-                std::cout << "Unlabelled: " << solutionData.unlabeled << std::endl;
-
-
-                const MySolution::Model& model = solutionData.model;
-                const LabelsVector &labelsVector = solutionData.labelsVector;
-                const SCaBOliC::Core::OptimizationDigitalRegions &ODR = model.odr();
-
-                R.decomposeEnergyValue(solutionData.labelsVector);
-                {
-                    int iivC = 0;
-                    int total = 0;
-                    for (int i = 0; i < labelsVector.rows(); ++i) if (labelsVector.coeff(i) == 1) ++total;
-
-                    for (DigitalSet::ConstIterator it = ODR.optRegion.begin(); it != ODR.optRegion.end(); ++it) {
-                        if (labelsVector.coeff(model.vm.isInsideVariables().at(*it)) == 1) ++iivC;
-                    }
-
-                    std::cout << "Labeled True Variables" << std::endl;
-                    std::cout << "X: " << iivC << std::endl;
-                    std::cout << "Total: " << total << std::endl;
-                }
-            }
-        }
-
     }
+}
 
+void BoundaryCorrection::invertLabels(Solution::LabelsVector& labelsVector)
+{
+    for (int i = 0; i < labelsVector.rows(); ++i)
+    {
+        //Invert Solution
+        labelsVector.coeffRef(i) = 1-labelsVector.coeff(i);
+    }
+}
+
+
+void BoundaryCorrection::printData(const Solution& solution,
+                                   const ISQEnergy& energy)
+{
+    std::cout << "Energy Value: " << solution.energyValue << std::endl;
+    std::cout << "Unlabelled: " << solution.unlabeled << std::endl;
+
+    const Solution::LabelsVector& labelsVector = solution.labelsVector;
+
+    std::cout << "Data Energy: " << energy.dataEnergy(labelsVector) << std::endl;
+    std::cout << "SQ Energy: " << energy.sqEnergy(labelsVector) << std::endl;
+
+    std::cout << "Data Energy Not Normalized: " << energy.dataEnergyNotNormalized(labelsVector) << std::endl;
+    std::cout << "SQ Energy Not Normalized: " << energy.sqEnergyNotNormalized(labelsVector) << std::endl;
+
+    std::cout << "Data Term Real Value: " << energy.dataRealValue(labelsVector) << std::endl;
+    std::cout << "SQ Term Real Value: " << energy.sqRealValue(labelsVector) << std::endl;
 }

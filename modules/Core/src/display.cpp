@@ -1,4 +1,4 @@
-#include "SCaBOliC//Core/display.h"
+#include "SCaBOliC/Core/display.h"
 
 namespace SCaBOliC
 {

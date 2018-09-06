@@ -10,13 +10,13 @@ target_include_directories(scabolic-api PRIVATE
         include
         ../Optimization/include
         ../Core/include
-        ../Regularization/include
+        ../Energy/include
         ../../ext/include
         )
 
 target_link_libraries(scabolic-api
         -lscabolic-optimization
-        -lscabolic-regularization
+        -lscabolic-energy
         -lscabolic-core
         -ldipacus-components
         -ldipacus-base

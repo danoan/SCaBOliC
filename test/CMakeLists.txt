@@ -12,7 +12,7 @@ target_include_directories(test-scabolic PRIVATE
         include
         ../modules/Optimization/include
         ../modules/Core/include
-        ../modules/Regularization/include
+        ../modules/Energy/include
         ../modules/API/include
         )
 
