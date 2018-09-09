@@ -16,7 +16,7 @@ int main()
     typedef SCaBOliC::API::BoundaryCorrection::BoundaryCorrectionInput BCInput;
 
     std::string outputFolder = "../../output";
-    boost::filesystem::path p("../../test/images/single_square.pgm");
+    boost::filesystem::path p("../../test/images/img0.pgm");
 
 
     Image2D image = DGtal::GenericReader<Image2D>::import(p.generic_string());

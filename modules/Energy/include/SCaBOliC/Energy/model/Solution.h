@@ -35,6 +35,8 @@ namespace SCaBOliC
                 unlabeled=0;
             }
 
+	    bool isValid(){return valid;}
+
         public:
             DigitalSet outputDS;
             LabelsVector labelsVector;

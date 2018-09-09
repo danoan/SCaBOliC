@@ -38,6 +38,8 @@ namespace SCaBOliC {
                                            original,
                                            DIPaCUS::Morphology::RECT,
                                            1);
+                
+                EightNeighborhood en(originalBoundary,original);
 
                 DIPaCUS::SetOperations::SetDifference(dilatedBoundary,dilated,original);
                 DIPaCUS::SetOperations::SetDifference(erodedBoundary,original,eroded);

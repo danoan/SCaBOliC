@@ -12,6 +12,7 @@ ISQEnergy::ISQEnergy(const InputData& id):dt(id),sqt(id)
 
 void ISQEnergy::solve(Solution& solution)
 {
+    assert(solution.isValid());
     MyQPBOSolver(solution.energyValue,
                  solution.unlabeled,
                  energy.od.localUTM,
