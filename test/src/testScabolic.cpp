@@ -18,7 +18,7 @@ public:
 private:
     typedef DIPaCUS::Representation::ImageAsDigitalSet::Image2D Image2D;
     typedef GEOC::Adapter::GridCurve::IdentityRangeCurvature<
-            GEOC::Estimator::Standard::IICurvature,true > MyClosedSymmetricCurvature;
+            GEOC::Estimator::Standard::IICurvature,true > MyClosedIICurvature;
 
 
     typedef GEOC::Adapter::GeneralAdapter::ProjectedLength<
@@ -40,10 +40,10 @@ public:
         DIPaCUS::Misc::ComputeBoundaryCurve(img,boundary,100);
 
         std::vector<double> curvatureEstimations;
-        MyClosedSymmetricCurvature(boundary.begin(),
-                                   boundary.end(),
-                                   KImage,
-                                   curvatureEstimations);
+        MyClosedIICurvature(boundary.begin(),
+                            boundary.end(),
+                            KImage,
+                            curvatureEstimations);
 
         std::vector<double> lengthEstimations;
         MyProjectedLength(boundary.begin(),

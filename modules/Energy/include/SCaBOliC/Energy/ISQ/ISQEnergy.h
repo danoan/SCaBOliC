@@ -35,7 +35,7 @@ namespace SCaBOliC
         public:
             ISQEnergy(const InputData& id);
 
-            template<template <typename,typename,typename> typename TQPBOSolver>
+            template<template <class,class,class> class TQPBOSolver>
             void solve(Solution& solution);
 
             int numVars() const{return nvars;}

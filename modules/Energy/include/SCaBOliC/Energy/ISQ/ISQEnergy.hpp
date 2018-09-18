@@ -2,7 +2,7 @@
 
 using namespace SCaBOliC::Energy;
 
-template<template <typename,typename,typename> typename TQPBOSolver>
+template<template <class,class,class> class TQPBOSolver>
 void ISQEnergy::solve(Solution& solution)
 {
     assert(solution.isValid());
