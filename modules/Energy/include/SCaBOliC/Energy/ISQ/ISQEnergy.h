@@ -11,7 +11,9 @@
 #include <SCaBOliC/Energy/ISQ/Terms/Data/DataTerm.h>
 #include <SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.h>
 
-#include <SCaBOliC/Optimization/solver/QPBOSolver.h>
+#include <SCaBOliC/Optimization/solver/simple/QPBOSimpleSolver.h>
+#include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
+#include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
 
 
 namespace SCaBOliC
@@ -30,15 +32,10 @@ namespace SCaBOliC
             typedef SCaBOliC::Energy::OptimizationData::PairwiseTermsMatrix PairwiseTermsMatrix;
             typedef Solution::LabelsVector LabelsVector;
 
-
-            typedef SCaBOliC::Optimization::QPBOSolver<UnaryTermsMatrix,
-                    PairwiseTermsMatrix,
-                    LabelsVector>  MyQPBOSolver;
-
-
         public:
             ISQEnergy(const InputData& id);
 
+            template<template <typename,typename,typename> typename TQPBOSolver>
             void solve(Solution& solution);
 
             int numVars() const{return nvars;}
@@ -68,5 +65,7 @@ namespace SCaBOliC
         };
     }
 }
+
+#include "ISQEnergy.hpp"
 
 #endif //SCABOLIC_ISQ_H

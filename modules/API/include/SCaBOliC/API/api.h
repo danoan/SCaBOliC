@@ -59,6 +59,8 @@ namespace SCaBOliC
                 DigitalSet& ds;
             };
 
+            enum QPBOSolverClass{Simple,Improve,Probe};
+
         private:
             typedef SCaBOliC::Energy::ISQEnergy::InputData ISQInputData;
 
@@ -66,6 +68,7 @@ namespace SCaBOliC
 
             BoundaryCorrection(Solution& solution,
                                const BoundaryCorrectionInput& input,
+                               QPBOSolverClass qsc,
                                bool debug);
 
         private:

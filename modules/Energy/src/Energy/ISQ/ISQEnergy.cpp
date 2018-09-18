@@ -10,17 +10,6 @@ ISQEnergy::ISQEnergy(const InputData& id):dt(id),sqt(id)
     energy = sqt+dt;
 }
 
-void ISQEnergy::solve(Solution& solution)
-{
-    assert(solution.isValid());
-    MyQPBOSolver(solution.energyValue,
-                 solution.unlabeled,
-                 energy.od.localUTM,
-                 energy.od.localPTM,
-                 solution.labelsVector,
-                 1000);
-}
-
 double ISQEnergy::dataRealValue(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,

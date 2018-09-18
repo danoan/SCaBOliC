@@ -4,6 +4,7 @@ using namespace SCaBOliC::API;
 
 BoundaryCorrection::BoundaryCorrection(Solution& solution,
                                        const BoundaryCorrectionInput& input,
+                                       QPBOSolverClass qsc,
                                        bool debug=false)
 {
 
@@ -23,7 +24,13 @@ BoundaryCorrection::BoundaryCorrection(Solution& solution,
     ISQEnergy energy(energyInput);
     solution.init(energy.numVars());
     solution.labelsVector.setZero();
-    energy.solve(solution);
+    
+    if(qsc==QPBOSolverClass::Simple)
+        energy.solve<QPBOSimpleSolver>(solution);
+    else if(qsc==QPBOSolverClass::Improve)
+        energy.solve<QPBOImproveSolver>(solution);
+    else if(qsc==QPBOSolverClass::Probe)
+        energy.solve<QPBOProbeSolver>(solution);
 
 
     updateSet(solution,energyInput,energy);

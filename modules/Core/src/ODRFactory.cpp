@@ -79,8 +79,8 @@ namespace SCaBOliC {
                         break;
                     }
                     case ApplicationMode::AM_AroundBoundary: {
-                        applicationRegion = dilatedBoundary;
-                        applicationRegion += erodedBoundary;
+                        applicationRegion.insert(dilatedBoundary.begin(),dilatedBoundary.end());
+                        applicationRegion.insert(erodedBoundary.begin(),erodedBoundary.end());
 
                         break;
                     }
