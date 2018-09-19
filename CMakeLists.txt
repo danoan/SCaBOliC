@@ -9,14 +9,12 @@ project(SCaBOliC)
 
 link_directories(${EXTRA_LINK_DIR}
         ${BUILD_PATH}/modules/Optimization
-        ${BUILD_PATH}/modules/API
         ${BUILD_PATH}/modules/Core
         ${BUILD_PATH}/modules/Energy)
 
 add_subdirectory(modules/Core)
 add_subdirectory(modules/Optimization)
 add_subdirectory(modules/Energy)
-add_subdirectory(modules/API)
 
 add_subdirectory(test)
 

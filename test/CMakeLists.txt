@@ -4,21 +4,25 @@ project(test-scabolic)
 find_package(DGtal REQUIRED)
 find_package(OpenCV REQUIRED)
 
-add_executable(test-scabolic src/testScabolic.cpp)
+add_executable(test-scabolic
+        testScabolic.cpp
+        src/TestEnergyOptimization.cpp)
+
+target_compile_definitions(test-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(test-scabolic PRIVATE
-        ${DGTAL_INCLUDE_DIRS}
-        ../ext/include
         include
+        ../ext/include
         ../modules/Optimization/include
         ../modules/Core/include
         ../modules/Energy/include
-        ../modules/API/include
+        ${DGTAL_INCLUDE_DIRS}
         )
 
 target_link_libraries(test-scabolic
-        -lscabolic-api
+        -lscabolic-energy
         -lscabolic-core
+        -lscabolic-optimization
         -ldipacus-derivates
         -ldipacus-components
         -ldipacus-base
