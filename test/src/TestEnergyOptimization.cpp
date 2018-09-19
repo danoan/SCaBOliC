@@ -2,18 +2,23 @@
 
 using namespace SCaBOliC::Test;
 
-TestEnergyOptimization::TestEnergyOptimization(std::string imagePath, QPBOSolver solverType)
+TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
 {
-    boost::filesystem::path p(imagePath);
-    ISQInputData input = prepareInput(p,3);
+    boost::filesystem::path p(testInput.imagePath);
+    ISQInputData input = prepareInput(p,3,testInput.om,testInput.am);
 
-    Solution solution = solve(input,solverType);
+    Solution solution = solve(input,testInput.solverType);
+    std::string prefix = resolvePrefix(testInput);
 
-    if(displayOutput) display(input,solution,solverType,p);
+    data = new TestOutput(input,solution,prefix);
+
+    if(visualOutput) display(input,solution,prefix,p);
 }
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost::filesystem::path p,
-                                                  double estimatingBallRadius)
+                                                                          double estimatingBallRadius,
+                                                                          TestInput::OptimizationMode om,
+                                                                          TestInput::ApplicationMode am)
 {
     Image2D image = DGtal::GenericReader<Image2D>::import(p.generic_string());
     Domain domain = image.domain();
@@ -24,8 +29,8 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost:
 
     DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
 
-    ODR odr = Core::ODRFactory::createODR(Core::ODRFactory::OM_OriginalBoundary,
-                                          Core::ODRFactory::AM_FullImage,
+    ODR odr = Core::ODRFactory::createODR(om,
+                                          am,
                                           estimatingBallRadius,
                                           ds);
 
@@ -38,7 +43,8 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost:
                        1);
 }
 
-TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,QPBOSolver solverType)
+TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
+                                                               QPBOSolver solverType)
 {
     Solution solution(input.optimizationRegions.domain);
     ISQEnergy energy(input);
@@ -57,26 +63,40 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
 
 void TestEnergyOptimization::display(const ISQInputData& input,
                                      const Solution& solution,
-                                     QPBOSolver solverType,
+                                     std::string prefix,
                                      boost::filesystem::path imagePath)
 {
     std::string imageOutputFolder = outputFolder + "/" + imagePath.stem().generic_string();
     boost::filesystem::path p2(imageOutputFolder.c_str());
     boost::filesystem::create_directories(p2);
 
-    std::string solverTypeStr;
-    if(solverType==Simple)
-        solverTypeStr = "Simple";
-    else if(solverType==Probe)
-        solverTypeStr="Probe";
-    else if(solverType==Improve)
-        solverTypeStr="Improve";
+
 
     SCaBOliC::Core::Display::DisplayModifiedBoundary(input.optimizationRegions,
                                                      solution.outputDS,
-                                                     imageOutputFolder + "/" + solverTypeStr + "-modified-boundary.eps");
+                                                     imageOutputFolder + "/" + prefix + "-modified-boundary.eps");
 
     SCaBOliC::Core::Display::DisplayODR(input.optimizationRegions,
-                                        imageOutputFolder + "/" + solverTypeStr + "-opt-regions.eps");
+                                        imageOutputFolder + "/" + prefix + "-opt-regions.eps");
+}
+
+std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
+{
+    std::string solverTypeStr;
+    if(testInput.solverType==Simple)
+        solverTypeStr = "Simple";
+    else if(testInput.solverType==Probe)
+        solverTypeStr="Probe";
+    else if(testInput.solverType==Improve)
+        solverTypeStr="Improve";
+
+    if(testInput.om==TestInput::ApplicationMode::AM_FullImage)
+        solverTypeStr+="-Full";
+    else if(testInput.om==TestInput::ApplicationMode::AM_AroundBoundary)
+        solverTypeStr+="-Around";
+    else if(testInput.om==TestInput::ApplicationMode::AM_OriginalBoundary)
+        solverTypeStr+="-Original";
+
+    return solverTypeStr;
 }
 

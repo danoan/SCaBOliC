@@ -15,6 +15,7 @@ link_directories(${EXTRA_LINK_DIR}
 add_subdirectory(modules/Core)
 add_subdirectory(modules/Optimization)
 add_subdirectory(modules/Energy)
+add_subdirectory(modules/Utils)
 
 add_subdirectory(test)
 

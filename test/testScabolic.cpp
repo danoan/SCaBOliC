@@ -8,7 +8,7 @@ namespace SCaBOliC
         std::string outputFolder = projectDir + "/output";
         std::string imageFolder = projectDir + "/images";
 
-        bool displayOutput=true;
+        bool visualOutput=true;
         bool verbose = true;
     }
 }

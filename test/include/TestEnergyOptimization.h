@@ -15,7 +15,7 @@ namespace SCaBOliC
     {
         extern std::string outputFolder;
         extern std::string imageFolder;
-        extern bool displayOutput;
+        extern bool visualOutput;
         extern bool verbose;
 
         class TestEnergyOptimization
@@ -32,22 +32,64 @@ namespace SCaBOliC
             typedef SCaBOliC::Energy::ISQEnergy ISQEnergy;
 
             enum QPBOSolver{Simple,Probe,Improve};
-        private:
 
+            struct TestInput
+            {
+                typedef Core::ODRFactory::OptimizationMode OptimizationMode;
+                typedef Core::ODRFactory::ApplicationMode ApplicationMode;
+
+                TestInput(std::string imagePath,
+                          QPBOSolver solverType,
+                          OptimizationMode om,
+                          ApplicationMode am):imagePath(imagePath),
+                                              solverType(solverType),
+                                              om(om),
+                                              am(am){}
+
+                const std::string imagePath;
+                const QPBOSolver solverType;
+                const OptimizationMode om;
+                const ApplicationMode am;
+            };
+
+            struct TestOutput
+            {
+                TestOutput(ISQInputData input,
+                            Solution solution,
+                            std::string prefix):input(input),
+                                                solution(solution),
+                                                prefix(prefix){}
+                ISQInputData input;
+                Solution solution;
+                std::string prefix;
+            };
         public:
-            TestEnergyOptimization(std::string imagePath,QPBOSolver solverType);
+            TestEnergyOptimization(){throw std::runtime_error("Operation not allowed.");}
+            TestEnergyOptimization(const TestEnergyOptimization&){throw std::runtime_error("Operation not allowed.");}
+            TestEnergyOptimization& operator=(const TestEnergyOptimization){throw std::runtime_error("Operation not allowed.");}
+            ~TestEnergyOptimization(){delete data;}
+
+            TestEnergyOptimization(const TestInput& testInput);
         private:
             ISQInputData prepareInput(boost::filesystem::path p,
-                                      double estimatingBallRadius);
+                                      double estimatingBallRadius,
+                                      TestInput::OptimizationMode om,
+                                      TestInput::ApplicationMode am);
 
             Solution solve(const ISQInputData& input,QPBOSolver solverType);
+
+            std::string resolvePrefix(const TestInput& testInput);
+
             void display(const ISQInputData& input,
                          const Solution& solution,
-                         QPBOSolver solverType,
+                         std::string prefix,
                          boost::filesystem::path imagePath);
         private:
             MockDistribution frgDistribution;
             MockDistribution bkgDistribution;
+
+        public:
+            TestOutput* data;
         };
     }
 }
