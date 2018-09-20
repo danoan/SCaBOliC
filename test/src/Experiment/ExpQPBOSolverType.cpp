@@ -47,18 +47,25 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
 void ExpQPBOSolverType::printTable(const std::vector<TableEntry>& entries,
                                    std::ostream &os)
 {
-    os << "FULL IMAGE \t Opt. Energy \t Elastica II \t Elastica MDCA \t Unlabeled" << std::endl;
+    os << Test::fixedStrLength(20,"FULL IMAGE") << "\t"  
+       << Test::fixedStrLength(20,"Opt. Energy") << "\t" 
+       << Test::fixedStrLength(20,"Elastica II") << "\t" 
+       << Test::fixedStrLength(20,"Elastica MDCA") << "\t" 
+       << Test::fixedStrLength(20,"Unlabeled") << std::endl << std::endl;
+    
     for(int i=0;i<entries.size();++i)
     {
         const TableEntry& current = entries[i];
-        os << current.name << "\t";
-        os << current.data->solution.energyValue << "\t";
+        os << Test::fixedStrLength(20,current.name) << "\t";
+        os << Test::fixedStrLength(20,current.data->solution.energyValue) << "\t";
 
         double IIValue,MDCAValue;
         Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
         Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
 
-        os << IIValue << "\t" << MDCAValue << "\t" << current.data->solution.unlabeled;
+        os << Test::fixedStrLength(20,IIValue) << "\t" 
+           << Test::fixedStrLength(20,MDCAValue) << "\t" 
+           << current.data->solution.unlabeled << std::endl << std::endl;
     }
 
 

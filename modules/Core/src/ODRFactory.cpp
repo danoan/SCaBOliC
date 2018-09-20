@@ -79,8 +79,29 @@ namespace SCaBOliC {
                         break;
                     }
                     case ApplicationMode::AM_AroundBoundary: {
-                        applicationRegion.insert(dilatedBoundary.begin(),dilatedBoundary.end());
-                        applicationRegion.insert(erodedBoundary.begin(),erodedBoundary.end());
+                        DigitalSet originalInLargerDomain (applicationDomain);
+                        originalInLargerDomain.insert(original.begin(),original.end());
+
+                        DigitalSet ballReachDilation(applicationDomain);
+                        DIPaCUS::Morphology::Dilate(ballReachDilation,originalInLargerDomain,DIPaCUS::Morphology::RECT,radius);
+
+                        DigitalSet dilationApplication(applicationDomain);
+                        DIPaCUS::SetOperations::SetDifference(dilationApplication,ballReachDilation,originalInLargerDomain);
+
+                        applicationRegion.insert(dilationApplication.begin(),dilationApplication.end());
+
+
+                        DigitalSet erodedInLargerDomain (applicationDomain);
+                        erodedInLargerDomain.insert(eroded.begin(),eroded.end());
+                        
+                        DigitalSet ballReachErosion(applicationDomain);
+                        DIPaCUS::Morphology::Erode(ballReachErosion,erodedInLargerDomain,DIPaCUS::Morphology::RECT,radius);
+
+                        DigitalSet erosionApplication(applicationDomain);
+                        DIPaCUS::SetOperations::SetDifference(erosionApplication,erodedInLargerDomain,ballReachErosion);
+
+                        applicationRegion.insert(erosionApplication.begin(),erosionApplication.end());
+
 
                         break;
                     }

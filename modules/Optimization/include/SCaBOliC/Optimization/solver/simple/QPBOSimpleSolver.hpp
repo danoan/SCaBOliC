@@ -15,6 +15,8 @@ QPBOSimpleSolver<Unary,Graph,Labels>::QPBOSimpleSolver(Scalar& energyValue,
 {
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
+
+    energyValue = this->computeEnergy(U,G,labels);
 }
 
 
@@ -32,9 +34,6 @@ void QPBOSimpleSolver<Unary,Graph,Labels>::solve(Scalar & energyValue,
 
     this->qpbo->Solve();
     this->qpbo->ComputeWeakPersistencies();
-
-
-    energyValue = this->qpbo->ComputeTwiceEnergy()/2.0;
 }
 
 

@@ -15,6 +15,8 @@ QPBOImproveSolver<Unary,Graph,Labels>::QPBOImproveSolver(Scalar &energyValue,
 {
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
+
+    energyValue = this->computeEnergy(U,G,labels);
 }
 
 template <typename Unary,
@@ -38,6 +40,4 @@ void QPBOImproveSolver<Unary,Graph,Labels>::solve(Scalar & energyValue,
         --max_num_iterations;
     }
 
-
-    energyValue = this->qpbo->ComputeTwiceEnergy() / 2.0;
 }

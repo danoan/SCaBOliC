@@ -52,14 +52,35 @@ void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,Labels& labels)
     for (Index j = 0; j < numVariables; ++j)
     {
         int xi = qpbo->GetLabel( mapping[j]/2.0 );
-        if(mapping[j]%2==0)
-            labels[j] = xi;
-        else
-            labels[j] = (1+xi)%2;
         if (xi < 0)
         {
             labels[j] = originalLabels[j];
             unlabelled+= 1;
         }
+        else
+        {
+            if(mapping[j]%2==0)
+                labels[j] = xi;
+            else
+                labels[j] = (1+xi)%2;
+        }
+
     }
 }
+
+template <typename Unary, typename Graph, typename Labels>
+double IQPBOSolver<Unary,Graph,Labels>::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
+{
+    double energyValue=0;
+    for(int i=0;i<labels.size();++i)
+    {
+        energyValue += 2*U.coeff(i)*labels[i];
+        for(int j=0;j<labels.size();++j)
+        {
+            energyValue += G.coeff(i,j)*labels[i]*labels[j];
+        }
+    }
+
+    return energyValue/2.0;
+}
+

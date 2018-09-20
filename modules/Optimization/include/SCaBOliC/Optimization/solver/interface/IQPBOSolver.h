@@ -36,6 +36,7 @@ namespace SCaBOliC
 
         protected:
             void fillLabels(int& unlabelled,Labels& labels);
+            double computeEnergy(const Unary& U, const Graph& G, const Labels& labels);
 
         protected:
             int numVariables;

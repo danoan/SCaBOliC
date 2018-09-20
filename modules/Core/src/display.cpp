@@ -15,18 +15,18 @@ namespace SCaBOliC
 
                 std::string specificStyle = ODR.original.className() + "/Paving";
 
+                board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Yellow, DGtal::Color::Yellow));
+                board << ODR.trustBKG;
 
-                board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Red, DGtal::Color::Red));
-                board << ODR.applicationRegion;
+                board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Blue, DGtal::Color::Blue));
+                board << ODR.trustFRG;
 
                 board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Green, DGtal::Color::Green));
                 board << ODR.optRegion;
 
-                board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Yellow, DGtal::Color::Yellow));
-                board << ODR.trustBKG;
-                
-                board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Blue, DGtal::Color::Blue));
-                board << ODR.trustFRG;
+                board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Red, DGtal::Color::Red));
+                board << ODR.applicationRegion;
+
 
                 board.saveEPS( outputPath.c_str() );
             }

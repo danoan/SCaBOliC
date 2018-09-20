@@ -15,6 +15,8 @@ QPBOProbeSolver<Unary,Graph,Labels>::QPBOProbeSolver(Scalar &energyValue,
 {
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
+
+    energyValue = this->computeEnergy(U,G,labels);
 }
 
 
@@ -31,9 +33,13 @@ void QPBOProbeSolver<Unary,Graph,Labels>::solve(Scalar &energyValue,
     this->qpbo->MergeParallelEdges();
 
     typename QPBO<Scalar>::ProbeOptions poptions;
+//    poptions.order_seed = time(NULL);
 
+    this->qpbo->Solve();
+    this->qpbo->ComputeWeakPersistencies();
+
+//    this->qpbo->Improve();
     this->qpbo->Probe(this->mapping,poptions);
 
-    
-    this->qpbo->ComputeWeakPersistencies();
+
 }
