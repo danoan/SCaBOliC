@@ -13,7 +13,6 @@ QPBOSimpleSolver<Unary,Graph,Labels>::QPBOSimpleSolver(Scalar& energyValue,
                                                        int max_num_iterations):
         IQPBOSolver<Unary,Graph,Labels>(energyValue,unlabelled,U,G,labels,max_num_iterations)
 {
-    std::cout << "Simple" << std::endl;
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
 }

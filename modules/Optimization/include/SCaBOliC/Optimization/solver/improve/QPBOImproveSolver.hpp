@@ -13,7 +13,6 @@ QPBOImproveSolver<Unary,Graph,Labels>::QPBOImproveSolver(Scalar &energyValue,
                                                         int max_num_iterations):
         IQPBOSolver<Unary,Graph,Labels>(energyValue,unlabelled,U,G,labels,max_num_iterations)
 {
-    std::cout << "Improve" << std::endl;
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
 }

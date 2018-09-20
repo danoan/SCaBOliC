@@ -4,9 +4,10 @@
 #include <SCaBOliC/Core/display.h>
 #include <SCaBOliC/Core/ODRFactory.h>
 #include <SCaBOliC/Energy/ISQ/InputData.h>
-#include <MockDistribution.h>
+#include <Utils/MockDistribution.h>
 #include <SCaBOliC/Energy/model/Solution.h>
 #include <SCaBOliC/Energy/ISQ/ISQEnergy.h>
+#include <Utils/TestUtils.h>
 #include "boost/filesystem.hpp"
 
 namespace SCaBOliC
@@ -31,15 +32,14 @@ namespace SCaBOliC
             typedef Energy::Solution Solution;
             typedef SCaBOliC::Energy::ISQEnergy ISQEnergy;
 
-            enum QPBOSolver{Simple,Probe,Improve};
-
             struct TestInput
             {
                 typedef Core::ODRFactory::OptimizationMode OptimizationMode;
                 typedef Core::ODRFactory::ApplicationMode ApplicationMode;
+                typedef Test::QPBOSolverType QPBOSolverType;
 
                 TestInput(std::string imagePath,
-                          QPBOSolver solverType,
+                          QPBOSolverType solverType,
                           OptimizationMode om,
                           ApplicationMode am):imagePath(imagePath),
                                               solverType(solverType),
@@ -47,7 +47,7 @@ namespace SCaBOliC
                                               am(am){}
 
                 const std::string imagePath;
-                const QPBOSolver solverType;
+                const QPBOSolverType solverType;
                 const OptimizationMode om;
                 const ApplicationMode am;
             };
@@ -76,7 +76,7 @@ namespace SCaBOliC
                                       TestInput::OptimizationMode om,
                                       TestInput::ApplicationMode am);
 
-            Solution solve(const ISQInputData& input,QPBOSolver solverType);
+            Solution solve(const ISQInputData& input,QPBOSolverType solverType);
 
             std::string resolvePrefix(const TestInput& testInput);
 

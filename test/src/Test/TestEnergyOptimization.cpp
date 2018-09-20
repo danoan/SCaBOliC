@@ -1,4 +1,4 @@
-#include "TestEnergyOptimization.h"
+#include "Test/TestEnergyOptimization.h"
 
 using namespace SCaBOliC::Test;
 
@@ -44,7 +44,7 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost:
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
-                                                               QPBOSolver solverType)
+                                                               QPBOSolverType solverType)
 {
     Solution solution(input.optimizationRegions.domain);
     ISQEnergy energy(input);
@@ -57,6 +57,25 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         energy.solve<QPBOProbeSolver>(solution);
     else if(solverType==Improve)
         energy.solve<QPBOImproveSolver>(solution);
+
+
+    //Invert Solution
+    Solution::LabelsVector& labelsVector = solution.labelsVector;
+    for (int i = 0; i < labelsVector.rows(); ++i)
+    {
+        labelsVector.coeffRef(i) = 1-labelsVector.coeff(i);
+    }
+
+    const DigitalSet& trustFRG = input.optimizationRegions.trustFRG;
+    const DigitalSet& optRegion = input.optimizationRegions.optRegion;
+    solution.outputDS.insert(trustFRG.begin(),trustFRG.end());
+    for (DigitalSet::ConstIterator it = optRegion.begin();
+         it != optRegion.end(); ++it)
+    {
+        if (labelsVector.coeff(energy.vm().pim.at(*it)) == 1) {
+            solution.outputDS.insert(*it);
+        }
+    }
 
     return solution;
 }
@@ -82,19 +101,13 @@ void TestEnergyOptimization::display(const ISQInputData& input,
 
 std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
-    std::string solverTypeStr;
-    if(testInput.solverType==Simple)
-        solverTypeStr = "Simple";
-    else if(testInput.solverType==Probe)
-        solverTypeStr="Probe";
-    else if(testInput.solverType==Improve)
-        solverTypeStr="Improve";
+    std::string solverTypeStr = resolveQPBOSolverTypeName(testInput.solverType);
 
-    if(testInput.om==TestInput::ApplicationMode::AM_FullImage)
+    if(testInput.am==TestInput::ApplicationMode::AM_FullImage)
         solverTypeStr+="-Full";
-    else if(testInput.om==TestInput::ApplicationMode::AM_AroundBoundary)
+    else if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
         solverTypeStr+="-Around";
-    else if(testInput.om==TestInput::ApplicationMode::AM_OriginalBoundary)
+    else if(testInput.am==TestInput::ApplicationMode::AM_OriginalBoundary)
         solverTypeStr+="-Original";
 
     return solverTypeStr;

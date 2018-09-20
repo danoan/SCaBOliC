@@ -1,7 +1,5 @@
 #include "Utils.h"
 
-
-
 namespace SCaBOliC
 {
     namespace Utils
@@ -9,7 +7,7 @@ namespace SCaBOliC
         typedef GEOC::Adapter::GridCurve::IdentityRangeCurvature<
                 GEOC::Estimator::Standard::IICurvature,false > MyOpenIICurvatureAdapter;
 
-        typedef GEOC::Adapter::GridCurve::IdentityRangeCurvature<
+        typedef GEOC::Adapter::GridCurve::SymmetricCurvature<
                 GEOC::Estimator::Standard::MDCACurvature,true > MyClosedMDCACurvatureAdapter;
 
         typedef GEOC::Adapter::GridCurve::SymmetricTangent<
@@ -40,22 +38,25 @@ ISQEvaluation<TCurvatureAdaptor,TTangentAdaptor>::ISQEvaluation(double &value,
     Curve boundary;
     DIPaCUS::Misc::ComputeBoundaryCurve(img,boundary,100);
 
+    double h = 1.0; ///Warning: originalDS must be scaled appropriately as well!
+
     std::vector<double> curvatureEstimations;
     MyCurvatureAdaptor(boundary.begin(),
                       boundary.end(),
+                       KImage,
                       curvatureEstimations,
-                      1.0);
+                      h);
 
     std::vector<double> lengthEstimations;
     MyProjectedLength(boundary.begin(),
                       boundary.end(),
                       KImage,
                       lengthEstimations,
-                      1.0);
+                      h);
 
     value=0;
     for(int i=0;i<lengthEstimations.size();++i)
     {
-        value += curvatureEstimations[i]*lengthEstimations[i];
+        value += pow(curvatureEstimations[i],2)*lengthEstimations[i];
     }
 }

@@ -1,4 +1,4 @@
-#include <TestEnergyOptimization.h>
+#include <Test/TestEnergyOptimization.h>
 
 namespace SCaBOliC
 {
@@ -18,7 +18,15 @@ int main()
     using namespace SCaBOliC;
 
     std::string squarex9 = Test::imageFolder +"/single_squarex9.pgm";
-    Test::TestEnergyOptimization teo(squarex9,Test::TestEnergyOptimization::Simple);
+
+    typedef Test::TestEnergyOptimization::TestInput TestInput;
+    TestInput tinput(squarex9,
+                     TestInput::QPBOSolverType::Simple,
+                     TestInput::OptimizationMode::OM_OriginalBoundary,
+                     TestInput::ApplicationMode::AM_FullImage);
+
+
+    Test::TestEnergyOptimization teo(tinput);
 
     return 0;
 }
