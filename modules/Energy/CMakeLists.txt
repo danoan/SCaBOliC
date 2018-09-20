@@ -7,6 +7,7 @@ find_package(OpenCV REQUIRED)
 add_library(scabolic-energy SHARED
         src/Energy/ISQ/base/EnergyTerm.cpp
         src/Energy/ISQ/Terms/Data/DataTerm.cpp
+        src/Energy/ISQ/Terms/Data/LengthTerm.cpp
         src/Energy/ISQ/Terms/SquaredCurvature/CoefficientComputer.cpp
         src/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.cpp
         src/Energy/ISQ/ISQEnergy.cpp

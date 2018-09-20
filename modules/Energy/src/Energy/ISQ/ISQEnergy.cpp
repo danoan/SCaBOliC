@@ -2,12 +2,12 @@
 
 using namespace SCaBOliC::Energy;
 
-ISQEnergy::ISQEnergy(const InputData& id):dt(id),sqt(id)
+ISQEnergy::ISQEnergy(const InputData& id):dt(id),sqt(id),lt(id)
 {
     assert(dt.numVars()==sqt.numVars());
     this->nvars = dt.numVars();
 
-    energy = sqt+dt;
+    energy = sqt+dt+lt;
 }
 
 double ISQEnergy::dataRealValue(const LabelsVector& labelsVector) const

@@ -72,15 +72,15 @@ template <typename Unary, typename Graph, typename Labels>
 double IQPBOSolver<Unary,Graph,Labels>::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
 {
     double energyValue=0;
-    for(int i=0;i<labels.size();++i)
+    for(int i=0;i<this->numVariables;++i)
     {
-        energyValue += 2*U.coeff(i)*labels[i];
-        for(int j=0;j<labels.size();++j)
+        energyValue += U.coeff(i)*labels[i];
+        for(int j=0;j<this->numVariables;++j)
         {
             energyValue += G.coeff(i,j)*labels[i]*labels[j];
         }
     }
 
-    return energyValue/2.0;
+    return energyValue;
 }
 

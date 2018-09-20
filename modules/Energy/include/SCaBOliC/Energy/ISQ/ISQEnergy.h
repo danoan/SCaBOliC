@@ -14,6 +14,7 @@
 #include <SCaBOliC/Optimization/solver/simple/QPBOSimpleSolver.h>
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
 #include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
+#include <SCaBOliC/Energy/ISQ/Terms/Data/LengthTerm.h>
 
 
 namespace SCaBOliC
@@ -59,6 +60,7 @@ namespace SCaBOliC
             int nvars;
 
             ISQ::DataTerm dt;
+            ISQ::LengthTerm lt;
             ISQ::SquaredCurvatureTerm sqt;
 
             EnergyTerm energy;

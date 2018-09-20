@@ -36,11 +36,12 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost:
 
 
     return ISQInputData (odr,
-                       estimatingBallRadius,
-                       frgDistribution,
-                       bkgDistribution,
-                       0,
-                       1);
+                         estimatingBallRadius,
+                         frgDistribution,
+                         bkgDistribution,
+                         0,
+                         1,
+                         1);
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,

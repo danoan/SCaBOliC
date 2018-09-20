@@ -28,18 +28,21 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           double dataTermWeight=1.0,
-                          double sqTermWeight=1.0):optimizationRegions(ODR),
+                          double sqTermWeight=1.0,
+                          double lengthTermWeight=1.0):optimizationRegions(ODR),
                                                    radius(radius),
                                                    fgDistr(fgDistr),
                                                    bgDistr(bgDistr),
                                                    dataTermWeight(dataTermWeight),
-                                                   sqTermWeight(sqTermWeight){}
+                                                   sqTermWeight(sqTermWeight),
+                                                       lengthTermWeight(lengthTermWeight){}
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
                 const unsigned long int radius;
                 double dataTermWeight;
                 double sqTermWeight;
+                double lengthTermWeight;
 
                 const MyProbabilityDistribution& fgDistr;
                 const MyProbabilityDistribution& bgDistr;
