@@ -101,7 +101,7 @@ void expFlow()
 int main()
 {
     //expApplication();
-    //expSolver();
-    expFlow();
+    expSolver();
+    //expFlow();
     return 0;
 }

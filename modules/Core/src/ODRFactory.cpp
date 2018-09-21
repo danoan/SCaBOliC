@@ -11,11 +11,14 @@ namespace SCaBOliC {
             {
                 typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
 
-                Domain domain(original.domain());
-                Domain applicationDomain(domain.lowerBound() + Point(radius,radius),
-                                         domain.upperBound() - Point(radius,radius));
+                Domain applicationDomain(original.domain() );
+                Domain domain(original.domain().lowerBound() - Point(radius,radius),
+                              original.domain().upperBound() + Point(radius,radius));
 
-                DigitalSet emptySet(domain);
+                DigitalSet originalInLargerDomain (domain);
+                originalInLargerDomain.insert(original.begin(),original.end());
+
+                DigitalSet emptySet(applicationDomain);
                 DigitalSet originalBoundary(domain);
 
                 DigitalSet dilated(domain);
@@ -29,21 +32,22 @@ namespace SCaBOliC {
 
 
                 DIPaCUS::Morphology::Dilate(dilated,
-                                            original,
+                                            originalInLargerDomain,
                                             DIPaCUS::Morphology::RECT,
                                             1);
 
 
                 DIPaCUS::Morphology::Erode(eroded,
-                                           original,
+                                           originalInLargerDomain,
                                            DIPaCUS::Morphology::RECT,
                                            1);
                 
-                EightNeighborhood en(originalBoundary,original);
+                EightNeighborhood en(originalBoundary,originalInLargerDomain);
 
-                DIPaCUS::SetOperations::SetDifference(dilatedBoundary,dilated,original);
-                DIPaCUS::SetOperations::SetDifference(erodedBoundary,original,eroded);
+                DIPaCUS::SetOperations::SetDifference(dilatedBoundary,dilated,originalInLargerDomain);
+                DIPaCUS::SetOperations::SetDifference(erodedBoundary,originalInLargerDomain,eroded);
 
+                DigitalSet& originalAlias = originalInLargerDomain;
 
                 switch (optMode) {
                     case OptimizationMode::OM_OriginalBoundary: {
@@ -52,6 +56,7 @@ namespace SCaBOliC {
                     }
                     case OptimizationMode::OM_DilationBoundary: {
                         optRegion = dilatedBoundary;
+                        originalAlias = dilated;
                         break;
                     }
                     case OptimizationMode::OM_FullForeground: {
@@ -79,25 +84,27 @@ namespace SCaBOliC {
                         break;
                     }
                     case ApplicationMode::AM_AroundBoundary: {
-                        DigitalSet originalInLargerDomain (applicationDomain);
-                        originalInLargerDomain.insert(original.begin(),original.end());
+                        DigitalSet originalPlusOptRegion (domain);
+                        originalPlusOptRegion.insert(originalAlias.begin(),originalAlias.end());
 
-                        DigitalSet ballReachDilation(applicationDomain);
-                        DIPaCUS::Morphology::Dilate(ballReachDilation,originalInLargerDomain,DIPaCUS::Morphology::RECT,radius);
+                        DigitalSet ballReachDilation(domain);
+                        DIPaCUS::Morphology::Dilate(ballReachDilation,originalPlusOptRegion,DIPaCUS::Morphology::RECT,radius);
 
-                        DigitalSet dilationApplication(applicationDomain);
-                        DIPaCUS::SetOperations::SetDifference(dilationApplication,ballReachDilation,originalInLargerDomain);
+                        DigitalSet dilationApplication(domain);
+                        DIPaCUS::SetOperations::SetDifference(dilationApplication,ballReachDilation,originalPlusOptRegion);
 
                         applicationRegion.insert(dilationApplication.begin(),dilationApplication.end());
 
 
-                        DigitalSet erodedInLargerDomain (applicationDomain);
-                        erodedInLargerDomain.insert(eroded.begin(),eroded.end());
+                        DigitalSet tempDS (domain);
+                        DigitalSet erodedInLargerDomain (domain);
+                        tempDS.insert(originalAlias.begin(),originalAlias.end());
+                        DIPaCUS::SetOperations::SetDifference(erodedInLargerDomain,tempDS,optRegion);
                         
-                        DigitalSet ballReachErosion(applicationDomain);
+                        DigitalSet ballReachErosion(domain);
                         DIPaCUS::Morphology::Erode(ballReachErosion,erodedInLargerDomain,DIPaCUS::Morphology::RECT,radius);
 
-                        DigitalSet erosionApplication(applicationDomain);
+                        DigitalSet erosionApplication(domain);
                         DIPaCUS::SetOperations::SetDifference(erosionApplication,erodedInLargerDomain,ballReachErosion);
 
                         applicationRegion.insert(erosionApplication.begin(),erosionApplication.end());

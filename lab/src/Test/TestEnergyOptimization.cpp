@@ -44,7 +44,7 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost:
                          bkgDistribution,
                          0,
                          1,
-                         1);
+                         0.5);
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,

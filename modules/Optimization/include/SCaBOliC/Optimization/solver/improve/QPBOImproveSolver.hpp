@@ -34,6 +34,16 @@ void QPBOImproveSolver<Unary,Graph,Labels>::solve(Scalar & energyValue,
     this->qpbo->Solve();
     this->qpbo->ComputeWeakPersistencies();
 
+    for(int i=0;i<this->numVariables;++i)
+    {
+        if(this->qpbo->GetLabel(i)>=0)
+            this->qpbo->SetLabel(i,this->qpbo->GetLabel(i));
+        else
+            this->qpbo->SetLabel(i,0);
+    }
+
+    srand(time(NULL));
+
     while(max_num_iterations>0)
     {
         this->qpbo->Improve();
