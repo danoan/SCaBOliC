@@ -1,10 +1,12 @@
 #include "Test/TestEnergyOptimization.h"
 
-using namespace SCaBOliC::Test;
+using namespace SCaBOliC::Lab::Test;
 
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
 {
     boost::filesystem::path p(testInput.imagePath);
+    std::string imageOutputFolder = outputFolder + "/" + p.stem().generic_string();
+
     ISQInputData input = prepareInput(p,3,testInput.om,testInput.am);
 
     Solution solution = solve(input,testInput.solverType);
@@ -12,7 +14,8 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
 
     data = new TestOutput(input,solution,prefix);
 
-    if(visualOutput) display(input,solution,prefix,p);
+
+    if(visualOutput) Lab::Utils::display(input,solution,imageOutputFolder,prefix);
 }
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost::filesystem::path p,
@@ -23,8 +26,8 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost:
     Image2D image = DGtal::GenericReader<Image2D>::import(p.generic_string());
     Domain domain = image.domain();
 
-    DigitalSet ds( Domain(domain.lowerBound()-Point(5,5),
-                          domain.upperBound()+Point(5,5) )
+    DigitalSet ds( Domain(domain.lowerBound()-Point(0,0),
+                          domain.upperBound()+Point(0,0) )
     );
 
     DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
@@ -52,11 +55,11 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     solution.init(energy.numVars());
 
     solution.labelsVector.setZero();
-    if(solverType==Simple)
+    if(solverType==QPBOSolverType::Simple)
         energy.solve<QPBOSimpleSolver>(solution);
-    else if(solverType==Probe)
+    else if(solverType==QPBOSolverType::Probe)
         energy.solve<QPBOProbeSolver>(solution);
-    else if(solverType==Improve)
+    else if(solverType==QPBOSolverType::Improve)
         energy.solve<QPBOImproveSolver>(solution);
 
 
@@ -81,28 +84,11 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     return solution;
 }
 
-void TestEnergyOptimization::display(const ISQInputData& input,
-                                     const Solution& solution,
-                                     std::string prefix,
-                                     boost::filesystem::path imagePath)
-{
-    std::string imageOutputFolder = outputFolder + "/" + imagePath.stem().generic_string();
-    boost::filesystem::path p2(imageOutputFolder.c_str());
-    boost::filesystem::create_directories(p2);
 
-
-
-    SCaBOliC::Core::Display::DisplayModifiedBoundary(input.optimizationRegions,
-                                                     solution.outputDS,
-                                                     imageOutputFolder + "/" + prefix + "-modified-boundary.eps");
-
-    SCaBOliC::Core::Display::DisplayODR(input.optimizationRegions,
-                                        imageOutputFolder + "/" + prefix + "-opt-regions.eps");
-}
 
 std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
-    std::string solverTypeStr = resolveQPBOSolverTypeName(testInput.solverType);
+    std::string solverTypeStr = Lab::Utils::resolveQPBOSolverTypeName(testInput.solverType);
 
     if(testInput.am==TestInput::ApplicationMode::AM_FullImage)
         solverTypeStr+="-Full";

@@ -7,7 +7,7 @@ find_package(OpenCV REQUIRED)
 add_executable(test-scabolic
         testScabolic.cpp
         src/Test/TestEnergyOptimization.cpp
-        src/Utils/TestUtils.cpp)
+        src/Utils/Utils.cpp)
 
 target_compile_definitions(test-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
@@ -43,7 +43,8 @@ add_executable(experiment-scabolic
         expScabolic.cpp
         src/Experiment/ExpQPBOSolverType.cpp
         src/Experiment/ExpApplicationType.cpp
-        src/Utils/TestUtils.cpp
+        src/Experiment/ExpFlow.cpp
+        src/Utils/Utils.cpp
         src/Test/TestEnergyOptimization.cpp)
 
 target_compile_definitions(experiment-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")

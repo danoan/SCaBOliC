@@ -1,6 +1,7 @@
+
 #include "Experiment/ExpApplicationType.h"
 
-using namespace SCaBOliC::Experiment;
+using namespace SCaBOliC::Lab::Experiment;
 
 ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                                        QPBOSolverType solverType,
@@ -33,7 +34,7 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
 
     os << "Experiment: Application Type" << std::endl
        << "Image: " << imageInput.imageName << std::endl
-       << "QPBOSolver Type: " << Test::resolveQPBOSolverTypeName(solverType)
+       << "QPBOSolver Type: " << Lab::Utils::resolveQPBOSolverTypeName(solverType)
        << std::endl << std::endl;
 
     printTable(entries,os);
@@ -47,22 +48,27 @@ void ExpApplicationType::printTable(const std::vector<TableEntry>& entries,
                                    std::ostream &os)
 {
     int colLength = 20;
-    os << Test::fixedStrLength(colLength,"FULL IMAGE") << "\t"
-       << Test::fixedStrLength(colLength,"Opt. Energy") << "\t"
-       << Test::fixedStrLength(colLength,"Elastica II") <<  "\t"
-       << Test::fixedStrLength(colLength,"Elastica MDCA") << "\t"
-       << Test::fixedStrLength(colLength,"Unlabeled") << std::endl;
+    std::string (*fnS)(int,std::string) = Lab::Utils::fixedStrLength;
+    std::string (*fnD)(int,double) = Lab::Utils::fixedStrLength;
+
+    os << fnS(colLength,"FULL IMAGE") << "\t"
+       << fnS(colLength,"Opt. Energy") << "\t"
+       << fnS(colLength,"Elastica II") <<  "\t"
+       << fnS(colLength,"Elastica MDCA") << "\t"
+       << fnS(colLength,"Unlabeled") << std::endl;
     for(int i=0;i<entries.size();++i)
     {
         const TableEntry& current = entries[i];
-        os << Test::fixedStrLength(colLength,current.name) << "\t";
-        os << Test::fixedStrLength(colLength,current.data->solution.energyValue) << "\t";
+        os << fnS(colLength,current.name) << "\t";
+        os << fnD(colLength,current.data->solution.energyValue) << "\t";
 
         double IIValue,MDCAValue;
-        Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
-        Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
+        SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
+        SCaBOliC::Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
 
-        os << Test::fixedStrLength(colLength,IIValue) << "\t" << Test::fixedStrLength(colLength,MDCAValue) << "\t" << current.data->solution.unlabeled << std::endl;
+        os << fnD(colLength,IIValue) << "\t"
+           << fnD(colLength,MDCAValue) << "\t"
+           << fnD(colLength,current.data->solution.unlabeled) << std::endl;
     }
 
     os << std::endl << std::endl;

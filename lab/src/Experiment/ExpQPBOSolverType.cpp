@@ -1,26 +1,24 @@
 #include "Experiment/ExpQPBOSolverType.h"
 
 
-using namespace SCaBOliC::Experiment;
+using namespace SCaBOliC::Lab::Experiment;
 
 ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                                      ApplicationMode am,
                                      std::ostream& os)
 {
-    std::string square = Test::imageFolder  + "/single_square.pgm";
-
-    TEOInput inputSimple(square,
-                         Test::QPBOSolverType::Simple,
+    TEOInput inputSimple(imageInput.imagePath,
+                         QPBOSolverType::Simple,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am);
 
-    TEOInput inputProbe(square,
-                         Test::QPBOSolverType::Probe,
+    TEOInput inputProbe(imageInput.imagePath,
+                         QPBOSolverType::Probe,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am);
 
-    TEOInput inputImprove(square,
-                         Test::QPBOSolverType::Improve,
+    TEOInput inputImprove(imageInput.imagePath,
+                         QPBOSolverType::Improve,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am);
 
@@ -36,7 +34,7 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
 
     os << "Experiment: Solver Type" << std::endl
        << "Image:" << imageInput.imageName << std::endl
-       << "Application Mode" << Test::resolveApplicationModeName(am) << std::endl;
+       << "Application Mode" << Lab::Utils::resolveApplicationModeName(am) << std::endl;
 
     printTable(entries,os);
 
@@ -47,26 +45,33 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
 void ExpQPBOSolverType::printTable(const std::vector<TableEntry>& entries,
                                    std::ostream &os)
 {
-    os << Test::fixedStrLength(20,"FULL IMAGE") << "\t"  
-       << Test::fixedStrLength(20,"Opt. Energy") << "\t" 
-       << Test::fixedStrLength(20,"Elastica II") << "\t" 
-       << Test::fixedStrLength(20,"Elastica MDCA") << "\t" 
-       << Test::fixedStrLength(20,"Unlabeled") << std::endl << std::endl;
+    int colLength = 20;
+    std::string (*fnS)(int,std::string) = Lab::Utils::fixedStrLength;
+    std::string (*fnD)(int,double) = Lab::Utils::fixedStrLength;
+
+
+    os << fnS(colLength,"FULL IMAGE") << "\t"
+       << fnS(colLength,"Opt. Energy") << "\t"
+       << fnS(colLength,"Elastica II") << "\t"
+       << fnS(colLength,"Elastica MDCA") << "\t"
+       << fnS(colLength,"Unlabeled") << std::endl << std::endl;
     
     for(int i=0;i<entries.size();++i)
     {
         const TableEntry& current = entries[i];
-        os << Test::fixedStrLength(20,current.name) << "\t";
-        os << Test::fixedStrLength(20,current.data->solution.energyValue) << "\t";
+        os << fnS(colLength,current.name) << "\t";
+        os << fnD(colLength,current.data->solution.energyValue) << "\t";
 
         double IIValue,MDCAValue;
-        Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
-        Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
+        SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
+        SCaBOliC::Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
 
-        os << Test::fixedStrLength(20,IIValue) << "\t" 
-           << Test::fixedStrLength(20,MDCAValue) << "\t" 
-           << current.data->solution.unlabeled << std::endl << std::endl;
+        os << fnD(colLength,IIValue) << "\t"
+           << fnD(colLength,MDCAValue) << "\t"
+           << fnD(colLength,current.data->solution.unlabeled) << std::endl;
     }
+
+    os << std::endl;
 
 
 }

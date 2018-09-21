@@ -2,28 +2,32 @@
 
 namespace SCaBOliC
 {
-    namespace Test
+    namespace Lab
     {
-        std::string projectDir = PROJECT_DIR;
-        std::string outputFolder = projectDir + "/output";
-        std::string imageFolder = projectDir + "/images";
+        namespace Test
+        {
+            std::string projectDir = PROJECT_DIR;
+            std::string outputFolder = projectDir + "/output";
+            std::string imageFolder = projectDir + "/images";
 
-        bool visualOutput=true;
-        bool verbose = true;
+            bool visualOutput=true;
+            bool verbose = true;
+        }
     }
 }
 
 int main()
 {
-    using namespace SCaBOliC;
+    using namespace SCaBOliC::Lab;
 
     std::string squarex9 = Test::imageFolder +"/single_squarex9.pgm";
 
-    typedef Test::TestEnergyOptimization::TestInput TestInput;
+    typedef Model::UserInput TestInput;
+    typedef Model::QPBOSolverType QPBOSolverType;
 
     {
         TestInput tinput(squarex9,
-                         TestInput::QPBOSolverType::Probe,
+                         QPBOSolverType::Probe,
                          TestInput::OptimizationMode::OM_OriginalBoundary,
                          TestInput::ApplicationMode::AM_AroundBoundary);
 
@@ -38,7 +42,7 @@ int main()
 
     {
         TestInput tinput2(squarex9,
-                          TestInput::QPBOSolverType::Improve,
+                          QPBOSolverType::Improve,
                           TestInput::OptimizationMode::OM_OriginalBoundary,
                           TestInput::ApplicationMode::AM_AroundBoundary);
 
