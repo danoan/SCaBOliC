@@ -38,7 +38,7 @@ namespace SCaBOliC
             OptimizationDigitalRegions createODR(OptimizationMode optMode,
                                                  ApplicationMode appMode,
                                                  unsigned int radius,
-                                                 DigitalSet original);
+                                                 const DigitalSet& original);
         }
     }
 }

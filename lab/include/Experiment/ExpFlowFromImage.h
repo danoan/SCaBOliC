@@ -17,7 +17,7 @@ namespace SCaBOliC
         {
         namespace Experiment
         {
-            class ExpFlow
+            class ExpFlowFromImage
             {
             public:
                 typedef Lab::Model::UserInput TEOInput;
@@ -37,7 +37,7 @@ namespace SCaBOliC
                 };
 
             public:
-                ExpFlow(ImageInput imageInput,
+                ExpFlowFromImage(ImageInput imageInput,
                         QPBOSolverType solverType,
                         ApplicationMode am,
                         int maxIterations,

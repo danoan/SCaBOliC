@@ -59,7 +59,8 @@ namespace SCaBOliC
 
                 TestEnergyOptimization(const TestInput& testInput);
             private:
-                ISQInputData prepareInput(boost::filesystem::path p,
+                DigitalSet deriveDS(const TestInput& testInput);
+                ISQInputData prepareInput(const DigitalSet& ds,
                                           double estimatingBallRadius,
                                           TestInput::OptimizationMode om,
                                           TestInput::ApplicationMode am);

@@ -10,12 +10,17 @@ namespace SCaBOliC
     {
         namespace Model
         {
-            struct UserInput
+            class UserInput
             {
+            public:
+                typedef DGtal::Z2i::DigitalSet DigitalSet;
+                typedef DGtal::Z2i::Domain Domain;
+
                 typedef Core::ODRFactory::OptimizationMode OptimizationMode;
                 typedef Core::ODRFactory::ApplicationMode ApplicationMode;
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
+            public:
                 UserInput(std::string imagePath,
                           QPBOSolverType solverType,
                           OptimizationMode om,
@@ -24,7 +29,9 @@ namespace SCaBOliC
                                               om(om),
                                               am(am){}
 
+            public:
                 const std::string imagePath;
+
                 const QPBOSolverType solverType;
                 const OptimizationMode om;
                 const ApplicationMode am;

@@ -20,7 +20,7 @@ namespace SCaBOliC
 
                 double operator()(Index row, Index col) const
                 {
-                    return 1.0/( ( rand()%20 )+1 );
+                    return 1.0/( ( rand()%20 )+1.1 );
                 }
 
             };

@@ -2,12 +2,31 @@
 
 using namespace SCaBOliC::Lab::Test;
 
+TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestInput& testInput)
+{
+    Image2D image = DGtal::GenericReader<Image2D>::import(testInput.imagePath);
+    Domain domain = image.domain();
+
+    DigitalSet ds( Domain(domain.lowerBound()-Point(0,0),
+                          domain.upperBound()+Point(0,0) )
+    );
+
+    DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
+
+    return ds;
+}
+
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
 {
+
+    DigitalSet ds = deriveDS(testInput);
+
+
     boost::filesystem::path p(testInput.imagePath);
     std::string imageOutputFolder = outputFolder + "/" + p.stem().generic_string();
 
-    ISQInputData input = prepareInput(p,3,testInput.om,testInput.am);
+
+    ISQInputData input = prepareInput(ds,3,testInput.om,testInput.am);
 
     Solution solution = solve(input,testInput.solverType);
     std::string prefix = resolvePrefix(testInput);
@@ -18,20 +37,11 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
     if(visualOutput) Lab::Utils::display(input,solution,imageOutputFolder,prefix);
 }
 
-TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(boost::filesystem::path p,
+TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const DigitalSet& ds,
                                                                           double estimatingBallRadius,
                                                                           TestInput::OptimizationMode om,
                                                                           TestInput::ApplicationMode am)
 {
-    Image2D image = DGtal::GenericReader<Image2D>::import(p.generic_string());
-    Domain domain = image.domain();
-
-    DigitalSet ds( Domain(domain.lowerBound()-Point(0,0),
-                          domain.upperBound()+Point(0,0) )
-    );
-
-    DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
-
     ODR odr = Core::ODRFactory::createODR(om,
                                           am,
                                           estimatingBallRadius,
@@ -55,6 +65,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     solution.init(energy.numVars());
 
     solution.labelsVector.setZero();
+
     if(solverType==QPBOSolverType::Simple)
         energy.solve<QPBOSimpleSolver>(solution);
     else if(solverType==QPBOSolverType::Probe)

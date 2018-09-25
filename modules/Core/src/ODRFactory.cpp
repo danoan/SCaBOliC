@@ -7,13 +7,17 @@ namespace SCaBOliC {
             OptimizationDigitalRegions createODR(OptimizationMode optMode,
                                                  ApplicationMode appMode,
                                                  unsigned int radius,
-                                                 DigitalSet original)
+                                                 const DigitalSet& original)
             {
                 typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
 
-                Domain applicationDomain(original.domain() );
-                Domain domain(original.domain().lowerBound() - Point(radius,radius),
-                              original.domain().upperBound() + Point(radius,radius));
+                Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
+                              original.domain().upperBound() + 2*Point(radius,radius));
+
+                Domain applicationDomain(original.domain().lowerBound(),
+                                         original.domain().upperBound());
+
+
 
                 DigitalSet originalInLargerDomain (domain);
                 originalInLargerDomain.insert(original.begin(),original.end());

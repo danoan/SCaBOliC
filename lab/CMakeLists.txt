@@ -43,7 +43,8 @@ add_executable(experiment-scabolic
         expScabolic.cpp
         src/Experiment/ExpQPBOSolverType.cpp
         src/Experiment/ExpApplicationType.cpp
-        src/Experiment/ExpFlow.cpp
+        src/Experiment/ExpFlowFromImage.cpp
+        src/Experiment/ExpFlowFromDigitizer.cpp
         src/Utils/Utils.cpp
         src/Test/TestEnergyOptimization.cpp)
 

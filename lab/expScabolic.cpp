@@ -1,5 +1,6 @@
 #include <string>
-#include <Experiment/ExpFlow.h>
+#include <Experiment/ExpFlowFromImage.h>
+#include <Experiment/ExpFlowFromDigitizer.h>
 #include "Experiment/ExpApplicationType.h"
 #include "Experiment/ExpQPBOSolverType.h"
 
@@ -13,7 +14,7 @@ namespace SCaBOliC
             std::string outputFolder = projectDir + "/output";
             std::string imageFolder = projectDir + "/images";
 
-            bool visualOutput=true;
+            bool visualOutput=false;
             bool verbose = true;
         }
     }
@@ -77,7 +78,7 @@ void expSolver()
     ofs.close();
 }
 
-void expFlow()
+void expFlowFromImage()
 {
     typedef ExpApplicationType::QPBOSolverType QPBOSolverType;
     typedef ExpQPBOSolverType::ApplicationMode ApplicationMode;
@@ -86,22 +87,28 @@ void expFlow()
 
     std::ofstream ofs(SCaBOliC::Lab::Test::outputFolder + "/exp-flow.txt",std::ios_base::out);
 
-    ExpFlow(ExpInput::squarex9Input,QPBOSolverType::Simple,ApplicationMode::AM_AroundBoundary,10,ofs);
+    ExpFlowFromImage(ExpInput::squarex9Input,QPBOSolverType::Simple,ApplicationMode::AM_AroundBoundary,10,ofs);
     ofs.flush();
 
-    ExpFlow(ExpInput::squarex9Input,QPBOSolverType::Probe,ApplicationMode::AM_AroundBoundary,10,ofs);
+    ExpFlowFromImage(ExpInput::squarex9Input,QPBOSolverType::Probe,ApplicationMode::AM_AroundBoundary,10,ofs);
     ofs.flush();
 
-    ExpFlow(ExpInput::squarex9Input,QPBOSolverType::Improve,ApplicationMode::AM_AroundBoundary,10,ofs);
+    ExpFlowFromImage(ExpInput::squarex9Input,QPBOSolverType::Improve,ApplicationMode::AM_AroundBoundary,10,ofs);
     ofs.flush();
 
     ofs.close();
 }
 
+void expFlowFromDigitizer()
+{
+    ExpFlowFromDigitizer();
+}
+
 int main()
 {
     //expApplication();
-    expSolver();
+    //expSolver();
     //expFlow();
+    expFlowFromDigitizer();
     return 0;
 }

@@ -1,8 +1,8 @@
-#include "Experiment/ExpFlow.h"
+#include "Experiment/ExpFlowFromImage.h"
 
 using namespace SCaBOliC::Lab::Experiment;
 
-ExpFlow::ExpFlow(ImageInput imageInput,
+ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                  QPBOSolverType solverType,
                  ApplicationMode am,
                  int maxIterations,
@@ -33,7 +33,10 @@ ExpFlow::ExpFlow(ImageInput imageInput,
 
         entries.push_back(TableEntry(*teo.data,"IT " + std::to_string(i)));
 
-        Image2D image(solution.outputDS.domain());
+        DGtal::Z2i::Point lb,ub;
+        solution.outputDS.computeBoundingBox(lb,ub);
+
+        Image2D image( DGtal::Z2i::Domain(lb,ub) );
         DIPaCUS::Representation::DigitalSetToImage(image, solution.outputDS);
 
         std::string imageToSavePath = flowFolder + "/" + std::to_string(i) + ".pgm";
@@ -50,7 +53,7 @@ ExpFlow::ExpFlow(ImageInput imageInput,
     printTable(entries,os);
 }
 
-void ExpFlow::printTable(const std::vector<TableEntry> &entries, std::ostream &os)
+void ExpFlowFromImage::printTable(const std::vector<TableEntry> &entries, std::ostream &os)
 {
     int colLength=20;
 
