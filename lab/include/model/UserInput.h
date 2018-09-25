@@ -1,8 +1,8 @@
 #ifndef SCABOLIC_LAB_MODEL_USERINPUT_H
 #define SCABOLIC_LAB_MODEL_USERINPUT_H
 
+#include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
 #include <SCaBOliC/Core/ODRFactory.h>
-#include "QPBOSolverType.h"
 
 namespace SCaBOliC
 {
@@ -14,6 +14,7 @@ namespace SCaBOliC
             {
                 typedef Core::ODRFactory::OptimizationMode OptimizationMode;
                 typedef Core::ODRFactory::ApplicationMode ApplicationMode;
+                typedef Optimization::QPBOSolverType QPBOSolverType;
 
                 UserInput(std::string imagePath,
                           QPBOSolverType solverType,

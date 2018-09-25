@@ -3,6 +3,10 @@
 
 #include "boost/filesystem.hpp"
 
+#include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
+#include <SCaBOliC/Optimization/solver/improveProbe/QPBOIP.h>
+#include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
+
 #include <SCaBOliC/Core/display.h>
 #include <SCaBOliC/Core/ODRFactory.h>
 
@@ -37,13 +41,14 @@ namespace SCaBOliC
                 typedef Core::ODRFactory::DigitalSet DigitalSet;
                 typedef Core::OptimizationDigitalRegions ODR;
 
+                typedef Optimization::QPBOSolverType QPBOSolverType;
+
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;
-                typedef SCaBOliC::Energy::ISQEnergy ISQEnergy;
+                typedef Energy::ISQEnergy ISQEnergy;
 
                 typedef Lab::Model::UserInput TestInput;
                 typedef Lab::Model::OptOutput TestOutput;
-                typedef Lab::Model::QPBOSolverType QPBOSolverType;
 
 
             public:

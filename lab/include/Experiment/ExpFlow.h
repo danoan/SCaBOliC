@@ -23,7 +23,8 @@ namespace SCaBOliC
                 typedef Lab::Model::UserInput TEOInput;
                 typedef Lab::Model::OptOutput TEOOutput;
                 typedef Lab::Model::ImageInput ImageInput;
-                typedef Lab::Model::QPBOSolverType QPBOSolverType;
+
+                typedef Optimization::QPBOSolverType QPBOSolverType;
 
                 typedef TEOInput::ApplicationMode ApplicationMode;
 

@@ -23,7 +23,7 @@ int main()
     std::string squarex9 = Test::imageFolder +"/single_squarex9.pgm";
 
     typedef Model::UserInput TestInput;
-    typedef Model::QPBOSolverType QPBOSolverType;
+    typedef SCaBOliC::Optimization::QPBOSolverType QPBOSolverType;
 
     {
         TestInput tinput(squarex9,

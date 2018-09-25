@@ -8,7 +8,6 @@
 
 #include <model/UserInput.h>
 #include <model/OptOutput.h>
-#include <model/QPBOSolverType.h>
 #include <model/ImageInput.h>
 
 namespace SCaBOliC
@@ -24,7 +23,7 @@ namespace SCaBOliC
                 typedef Lab::Model::UserInput TEOInput;
                 typedef Lab::Model::OptOutput TEOOutput;
 
-                typedef Lab::Model::QPBOSolverType QPBOSolverType;
+                typedef Optimization::QPBOSolverType QPBOSolverType;
 
             private:
                 struct TableEntry

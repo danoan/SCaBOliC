@@ -6,7 +6,7 @@ namespace SCaBOliC
     {
         namespace Utils
         {
-            std::string resolveQPBOSolverTypeName(Lab::Model::QPBOSolverType solverType)
+            std::string resolveQPBOSolverTypeName(Optimization::QPBOSolverType solverType)
             {
                 switch(solverType)
                 {
@@ -16,6 +16,8 @@ namespace SCaBOliC
                         return "Probe";
                     case(QPBOSolverType::Improve):
                         return "Improve";
+                    case(QPBOSolverType::ImproveProbe):
+                        return "Improve-Probe";
                 }
             }
 

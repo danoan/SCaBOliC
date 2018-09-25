@@ -61,6 +61,8 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         energy.solve<QPBOProbeSolver>(solution);
     else if(solverType==QPBOSolverType::Improve)
         energy.solve<QPBOImproveSolver>(solution);
+    else if(solverType==QPBOSolverType::ImproveProbe)
+        energy.solve<QPBOIP>(solution);
 
 
     //Invert Solution

@@ -6,13 +6,14 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
+#include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
+
 #include <SCaBOliC/Core/ODRFactory.h>
 #include <SCaBOliC/Core/display.h>
 
 #include <SCaBOliC/Energy/model/Solution.h>
 #include <SCaBOliC/Energy/ISQ/InputData.h>
 
-#include <model/QPBOSolverType.h>
 
 namespace SCaBOliC
 {
@@ -23,7 +24,7 @@ namespace SCaBOliC
             typedef Energy::ISQ::InputData ISQInputData;
             typedef Energy::Solution Solution;
 
-            typedef Lab::Model::QPBOSolverType QPBOSolverType;
+            typedef Optimization::QPBOSolverType QPBOSolverType;
             typedef SCaBOliC::Core::ODRFactory::ApplicationMode ApplicationMode;
 
             std::string resolveQPBOSolverTypeName(QPBOSolverType solverType);
