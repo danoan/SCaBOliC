@@ -16,5 +16,5 @@ void ISQEnergy::solve(Solution& solution)
                  energy.od.localUTM,
                  energy.od.localPTM,
                  solution.labelsVector,
-                 100);
+                 10);
 }

@@ -5,7 +5,9 @@ using namespace SCaBOliC::Lab::Experiment;
 
 ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                                      ApplicationMode am,
-                                     std::ostream& os)
+                                     std::ostream& os,
+                                     std::string outputFolder,
+                                     bool exportRegions)
 {
     TEOInput inputSimple(imageInput.imagePath,
                          QPBOSolverType::Simple,
@@ -22,9 +24,9 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am);
 
-    Test::TestEnergyOptimization teoSimple(inputSimple);
-    Test::TestEnergyOptimization teoProbe(inputProbe);
-    Test::TestEnergyOptimization teoImprove(inputImprove);
+    Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImprove(inputImprove,outputFolder,exportRegions);
 
 
 
@@ -34,7 +36,7 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
 
     os << "Experiment: Solver Type" << std::endl
        << "Image:" << imageInput.imageName << std::endl
-       << "Application Mode" << Lab::Utils::resolveApplicationModeName(am) << std::endl;
+       << "Application Mode: " << Lab::Utils::resolveApplicationModeName(am) << std::endl << std::endl;
 
     printTable(entries,os);
 
@@ -50,7 +52,7 @@ void ExpQPBOSolverType::printTable(const std::vector<TableEntry>& entries,
     std::string (*fnD)(int,double) = Lab::Utils::fixedStrLength;
 
 
-    os << fnS(colLength,"FULL IMAGE") << "\t"
+    os << fnS(colLength,"") << "\t"
        << fnS(colLength,"Opt. Energy") << "\t"
        << fnS(colLength,"Elastica II") << "\t"
        << fnS(colLength,"Elastica MDCA") << "\t"

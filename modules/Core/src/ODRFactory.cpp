@@ -1,143 +1,195 @@
 #include "SCaBOliC/Core/ODRFactory.h"
 
-namespace SCaBOliC {
-    namespace Core
+using namespace SCaBOliC::Core;
+
+ODRFactory::DigitalSet ODRFactory::omOriginalBoundary(const DigitalSet& original)
+{
+    DigitalSet originalBoundary(original.domain());
+    EightNeighborhood en(originalBoundary,original);
+
+    return originalBoundary;
+}
+
+ODRFactory::DigitalSet ODRFactory::omDilationBoundary(const DigitalSet& original)
+{
+    DigitalSet dilated(original.domain());
+    DigitalSet dilatedBoundary(original.domain());
+
+    DIPaCUS::Morphology::Dilate(dilated,
+                                original,
+                                DIPaCUS::Morphology::RECT,
+                                1);
+
+    EightNeighborhood en(dilatedBoundary,dilated);
+
+    return dilatedBoundary;
+}
+
+ODRFactory::DigitalSet ODRFactory::omFullDomain(const Domain& originalDomain)
+{
+    DigitalSet fullDomain(originalDomain);
+    fullDomain.insert(originalDomain.begin(),originalDomain.end());
+
+    return fullDomain;
+}
+
+ODRFactory::DigitalSet ODRFactory::amOriginalBoundary(const DigitalSet& original)
+{
+    return omOriginalBoundary(original);
+}
+
+
+ODRFactory::DigitalSet ODRFactory::amFullDomain(const Domain& applicationDomain)
+{
+    return omFullDomain(applicationDomain);
+}
+
+ODRFactory::DigitalSet ODRFactory::amAroundBoundary(const DigitalSet& original,
+                                                    const DigitalSet& optRegion,
+                                                    int length)
+{
+    DigitalSet internRegion = amInternRange(original,optRegion,length);
+    DigitalSet externRegion = amExternRange(original,optRegion,length);
+
+    for(auto it=optRegion.begin();it!=optRegion.end();++it)
     {
-        namespace ODRFactory {
-            OptimizationDigitalRegions createODR(OptimizationMode optMode,
+        internRegion.erase(*it);
+        externRegion.erase(*it);
+    }
+
+    DigitalSet aroundBoundary(original.domain());
+
+    aroundBoundary.insert(externRegion.begin(),externRegion.end());
+    aroundBoundary.insert(internRegion.begin(),internRegion.end());
+
+    return aroundBoundary;
+}
+
+ODRFactory::DigitalSet ODRFactory::amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
+{
+    DigitalSet originalPlusOptRegion(original.domain());
+    originalPlusOptRegion.insert(original.begin(),original.end());
+    originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
+
+    DigitalSet eroded (originalPlusOptRegion.domain());
+    DIPaCUS::Morphology::Erode(eroded,originalPlusOptRegion,DIPaCUS::Morphology::RECT,length+1);
+
+    DigitalSet internRegion(originalPlusOptRegion.domain());
+    DIPaCUS::SetOperations::SetDifference(internRegion,originalPlusOptRegion,eroded);
+
+    return internRegion;
+}
+
+ODRFactory::DigitalSet ODRFactory::amExternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
+{
+    DigitalSet originalPlusOptRegion(original.domain());
+    originalPlusOptRegion.insert(original.begin(),original.end());
+    originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
+
+    DigitalSet dilated (originalPlusOptRegion.domain());
+    DIPaCUS::Morphology::Dilate(dilated,originalPlusOptRegion,DIPaCUS::Morphology::RECT,length);
+
+    DigitalSet externRegion(originalPlusOptRegion.domain());
+    DIPaCUS::SetOperations::SetDifference(externRegion,dilated,originalPlusOptRegion);
+
+    return externRegion;
+}
+
+OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
                                                  ApplicationMode appMode,
                                                  unsigned int radius,
                                                  const DigitalSet& original)
-            {
-                typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
+{
+    typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
 
-                Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
-                              original.domain().upperBound() + 2*Point(radius,radius));
+    Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
+                  original.domain().upperBound() + 2*Point(radius,radius));
 
-                Domain applicationDomain(original.domain().lowerBound(),
-                                         original.domain().upperBound());
-
-
-
-                DigitalSet originalInLargerDomain (domain);
-                originalInLargerDomain.insert(original.begin(),original.end());
-
-                DigitalSet emptySet(applicationDomain);
-                DigitalSet originalBoundary(domain);
-
-                DigitalSet dilated(domain);
-                DigitalSet dilatedBoundary(domain);
-
-                DigitalSet eroded(domain);
-                DigitalSet erodedBoundary(domain);
-
-                DigitalSet optRegion(domain);
-                DigitalSet applicationRegion(applicationDomain);
+    Domain applicationDomain(original.domain().lowerBound(),
+                             original.domain().upperBound());
 
 
-                DIPaCUS::Morphology::Dilate(dilated,
-                                            originalInLargerDomain,
-                                            DIPaCUS::Morphology::RECT,
-                                            1);
+
+    DigitalSet originalInLargerDomain (domain);
+    originalInLargerDomain.insert(original.begin(),original.end());
 
 
-                DIPaCUS::Morphology::Erode(eroded,
-                                           originalInLargerDomain,
-                                           DIPaCUS::Morphology::RECT,
-                                           1);
-                
-                EightNeighborhood en(originalBoundary,originalInLargerDomain);
-
-                DIPaCUS::SetOperations::SetDifference(dilatedBoundary,dilated,originalInLargerDomain);
-                DIPaCUS::SetOperations::SetDifference(erodedBoundary,originalInLargerDomain,eroded);
-
-                DigitalSet& originalAlias = originalInLargerDomain;
-
-                switch (optMode) {
-                    case OptimizationMode::OM_OriginalBoundary: {
-                        optRegion = originalBoundary;
-                        break;
-                    }
-                    case OptimizationMode::OM_DilationBoundary: {
-                        optRegion = dilatedBoundary;
-                        originalAlias = dilated;
-                        break;
-                    }
-                    case OptimizationMode::OM_FullForeground: {
-                        optRegion = dilated;
-                        break;
-                    }
-                    case OptimizationMode::OM_FullImage: {
-                        optRegion.assignFromComplement(emptySet);
-                        break;
-                    }
-                }
+    DigitalSet optRegion(domain);
+    DigitalSet applicationRegion(applicationDomain);
 
 
-                switch (appMode) {
-                    case ApplicationMode::AM_OriginalBoundary: {
-                        applicationRegion.insert(originalBoundary.begin(),originalBoundary.end());
-                        break;
-                    }
-                    case ApplicationMode::AM_DilatedBoundary: {
-                        applicationRegion.insert(dilatedBoundary.begin(),dilatedBoundary.end());
-                        break;
-                    }
-                    case ApplicationMode::AM_FullImage: {
-                        applicationRegion.assignFromComplement(emptySet);
-                        break;
-                    }
-                    case ApplicationMode::AM_AroundBoundary: {
-                        DigitalSet originalPlusOptRegion (domain);
-                        originalPlusOptRegion.insert(originalAlias.begin(),originalAlias.end());
-
-                        DigitalSet ballReachDilation(domain);
-                        DIPaCUS::Morphology::Dilate(ballReachDilation,originalPlusOptRegion,DIPaCUS::Morphology::RECT,radius);
-
-                        DigitalSet dilationApplication(domain);
-                        DIPaCUS::SetOperations::SetDifference(dilationApplication,ballReachDilation,originalPlusOptRegion);
-
-                        applicationRegion.insert(dilationApplication.begin(),dilationApplication.end());
-
-
-                        DigitalSet tempDS (domain);
-                        DigitalSet erodedInLargerDomain (domain);
-                        tempDS.insert(originalAlias.begin(),originalAlias.end());
-                        DIPaCUS::SetOperations::SetDifference(erodedInLargerDomain,tempDS,optRegion);
-                        
-                        DigitalSet ballReachErosion(domain);
-                        DIPaCUS::Morphology::Erode(ballReachErosion,erodedInLargerDomain,DIPaCUS::Morphology::RECT,radius);
-
-                        DigitalSet erosionApplication(domain);
-                        DIPaCUS::SetOperations::SetDifference(erosionApplication,erodedInLargerDomain,ballReachErosion);
-
-                        applicationRegion.insert(erosionApplication.begin(),erosionApplication.end());
-
-
-                        break;
-                    }
-                }
-
-                DigitalSet trustFRG(domain);
-                DIPaCUS::SetOperations::SetDifference(trustFRG, original, optRegion);
-
-                DigitalSet trustBKG(domain);
-                DigitalSet tempp(domain);
-
-                tempp += trustFRG;
-                tempp += optRegion;
-
-                trustBKG.assignFromComplement(tempp);
-
-                return OptimizationDigitalRegions(domain,
-                                                  original,
-                                                  optRegion,
-                                                  trustFRG,
-                                                  trustBKG,
-                                                  applicationRegion);
-            }
-
+    switch (optMode) {
+        case OptimizationMode::OM_OriginalBoundary: {
+            optRegion = omOriginalBoundary(original);
+            break;
         }
-
+        case OptimizationMode::OM_DilationBoundary: {
+            optRegion = omDilationBoundary(original);
+            break;
+        }
     }
+
+
+    switch (appMode) {
+        case ApplicationMode::AM_OptimizationBoundary: {
+            DigitalSet temp = amOriginalBoundary(optRegion);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_FullDomain: {
+            DigitalSet temp = amFullDomain(applicationDomain);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_AroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InternRange:{
+            DigitalSet temp = amInternRange(original,optRegion,1);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_ExternRange:{
+            DigitalSet temp = amExternRange(original,optRegion,1);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InverseInternRange:{
+            DigitalSet temp = amExternRange(original,optRegion,1);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+    }
+    
+    DigitalSet extendedOriginal(original.domain());
+    extendedOriginal.insert(original.begin(),original.end());
+    extendedOriginal.insert(optRegion.begin(),optRegion.end());
+
+    DigitalSet trustFRG(domain);
+    DIPaCUS::SetOperations::SetDifference(trustFRG, extendedOriginal, optRegion);
+
+    DigitalSet trustBKG(domain);
+    DigitalSet tempp(domain);
+
+    tempp += trustFRG;
+    tempp += optRegion;
+
+    trustBKG.assignFromComplement(tempp);
+
+
+    if(appMode==ApplicationMode::AM_InverseInternRange)
+    {
+        DigitalSet swap = trustFRG;
+        trustFRG = trustBKG;
+        trustBKG = swap;
+    }
+
+    return OptimizationDigitalRegions(domain,
+                                      original,
+                                      optRegion,
+                                      trustFRG,
+                                      trustBKG,
+                                      applicationRegion);
 }

@@ -15,31 +15,53 @@ namespace SCaBOliC
 {
     namespace Core
     {
-        namespace ODRFactory
+        class ODRFactory
         {
+        public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Domain Domain;
             typedef DGtal::Z2i::Point Point;
 
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
+            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
 
             enum OptimizationMode{
                 OM_OriginalBoundary,
-                OM_DilationBoundary,
-                OM_FullForeground,
-                OM_FullImage};
+                OM_DilationBoundary};
 
             enum ApplicationMode{
-                AM_OriginalBoundary,
-                AM_DilatedBoundary,
-                AM_FullImage,
-                AM_AroundBoundary};
+                AM_OptimizationBoundary,
+                AM_FullDomain,
+                AM_AroundBoundary,
+                AM_InternRange,
+                AM_ExternRange,
+                AM_InverseInternRange};
 
-            OptimizationDigitalRegions createODR(OptimizationMode optMode,
-                                                 ApplicationMode appMode,
-                                                 unsigned int radius,
-                                                 const DigitalSet& original);
-        }
+        private:
+
+            static DigitalSet omOriginalBoundary(const DigitalSet& original);
+
+            static DigitalSet omDilationBoundary(const DigitalSet& original);
+            static DigitalSet omFullDomain(const Domain& originalDomain);
+
+            static DigitalSet amOriginalBoundary(const DigitalSet& original);
+            static DigitalSet amFullDomain(const Domain& applicationDomain);
+            static DigitalSet amAroundBoundary(const DigitalSet& original,
+                                               const DigitalSet& optRegion,
+                                               int length);
+            static DigitalSet amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length);
+            static DigitalSet amExternRange(const DigitalSet& original,const DigitalSet& optRegion,  int length);
+
+        public:
+
+            static OptimizationDigitalRegions createODR(OptimizationMode optMode,
+                                                        ApplicationMode appMode,
+                                                        unsigned int radius,
+                                                        const DigitalSet& original);
+
+        private:
+
+        };
     }
 }
 

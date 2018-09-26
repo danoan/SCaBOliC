@@ -27,6 +27,7 @@ namespace SCaBOliC
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
                 typedef TEOInput::ApplicationMode ApplicationMode;
+                typedef TEOInput::OptimizationMode OptimizationMode;
 
             private:
                 struct TableEntry
@@ -37,11 +38,14 @@ namespace SCaBOliC
                 };
 
             public:
-                ExpFlowFromImage(ImageInput imageInput,
-                        QPBOSolverType solverType,
-                        ApplicationMode am,
-                        int maxIterations,
-                        std::ostream& os);
+                ExpFlowFromImage(ImageInput imageInput, 
+                                 QPBOSolverType solverType, 
+                                 ApplicationMode am,
+                                 OptimizationMode om,
+                                 int maxIterations, 
+                                 std::ostream& os,
+                                 const std::string& outputFolder,
+                                 bool exportRegions=false);
 
             private:
                 void printTable(const std::vector<TableEntry>& entries, std::ostream& os);

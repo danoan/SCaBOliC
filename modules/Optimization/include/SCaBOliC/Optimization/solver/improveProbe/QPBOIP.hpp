@@ -45,13 +45,14 @@ void QPBOIP<Unary,Graph,Labels>::solve(Scalar & energyValue,
 
     typename QPBO<Scalar>::ProbeOptions poptions;
     srand(time(NULL));
-    poptions.order_seed = time(NULL);
 
     int* tempMapping = (int*) malloc(sizeof(int)*this->numVariables);
     memcpy(tempMapping,this->mapping,sizeof(int)*this->numVariables);
 
     while(max_num_iterations>0)
     {
+        poptions.order_array = NULL;
+
         this->qpbo->Improve();
         this->qpbo->Probe(tempMapping,poptions);
 

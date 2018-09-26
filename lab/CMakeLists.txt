@@ -7,6 +7,7 @@ find_package(OpenCV REQUIRED)
 add_executable(test-scabolic
         testScabolic.cpp
         src/Test/TestEnergyOptimization.cpp
+        src/Test/TestInstances.cpp
         src/Utils/Utils.cpp)
 
 target_compile_definitions(test-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")

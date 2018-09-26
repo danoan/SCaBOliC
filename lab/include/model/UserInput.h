@@ -30,11 +30,11 @@ namespace SCaBOliC
                                               am(am){}
 
             public:
-                const std::string imagePath;
+                std::string imagePath;
 
-                const QPBOSolverType solverType;
-                const OptimizationMode om;
-                const ApplicationMode am;
+                QPBOSolverType solverType;
+                OptimizationMode om;
+                ApplicationMode am;
             };
         }
     }

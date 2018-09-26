@@ -38,7 +38,6 @@ void QPBOProbeSolver<Unary,Graph,Labels>::solve(Scalar &energyValue,
     this->qpbo->Solve();
     this->qpbo->ComputeWeakPersistencies();
 
-//    this->qpbo->Improve();
     this->qpbo->Probe(this->mapping,poptions);
 
 

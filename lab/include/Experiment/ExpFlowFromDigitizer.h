@@ -31,11 +31,11 @@ namespace SCaBOliC
                 typedef DGtal::Ellipse2D<Space> Ellipse;
 
             public:
-                ExpFlowFromDigitizer();
+                ExpFlowFromDigitizer(std::string outputFolder, std::ostream& os, bool exportRegions=false);
 
             private:
                 template<class TShape>
-                void doIt(TShape s, std::string name, std::string imageOutputFolder);
+                void doIt(TShape s, std::string name, std::string imageOutputFolder, std::ostream& os, bool exportRegions);
             };
         }
     }

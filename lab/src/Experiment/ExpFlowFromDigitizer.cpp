@@ -5,29 +5,25 @@ using namespace SCaBOliC::Lab::Experiment;
 template<class TShape>
 void ExpFlowFromDigitizer::doIt(TShape s,
                                 std::string name,
-                                std::string imageOutputFolder)
+                                std::string imageOutputFolder,
+                                std::ostream& os,
+                                bool exportRegions)
 {
-    ImageInput starInput = SCaBOliC::Lab::Utils::ShapeDigitizer<TShape>::digitize(s,1.0,Test::outputFolder + "/" + imageOutputFolder,name);
+    ImageInput starInput = SCaBOliC::Lab::Utils::ShapeDigitizer<TShape>::digitize(s,1.0,imageOutputFolder,name);
 
     ExpFlowFromImage(starInput,
-                     ExpFlowFromImage::QPBOSolverType::Simple,
-                     ExpFlowFromImage::ApplicationMode::AM_AroundBoundary,
+                     ExpFlowFromImage::QPBOSolverType::ImproveProbe,
+                     ExpFlowFromImage::ApplicationMode::AM_InternRange,
+                     ExpFlowFromImage::OptimizationMode::OM_DilationBoundary,
                      20,
-                     std::cout);
-
-    ExpFlowFromImage(starInput,
-                     ExpFlowFromImage::QPBOSolverType::Simple,
-                     ExpFlowFromImage::ApplicationMode::AM_FullImage,
-                     20,
-                     std::cout);
+                     std::cout,
+                     imageOutputFolder,
+                     exportRegions);
 }
 
-ExpFlowFromDigitizer::ExpFlowFromDigitizer()
+ExpFlowFromDigitizer::ExpFlowFromDigitizer(std::string outputFolder, std::ostream& os, bool exportRegions)
 {
-
-
-    std::string imageOutputFolder = "digitizer-flow";
-    boost::filesystem::create_directories(imageOutputFolder);
+    boost::filesystem::create_directories(outputFolder);
 
     double r=40;
     Ball ball(0,0,r);
@@ -38,11 +34,11 @@ ExpFlowFromDigitizer::ExpFlowFromDigitizer()
     NGon heptagon(0,0,r,7,1);
     Ellipse ellipse(0,0,r,r-10,0);
 
-    doIt(ball,imageOutputFolder,"Ball");
-    doIt(flower,imageOutputFolder,"Flower");
-    doIt(triangle,imageOutputFolder,"Triangle");
-    doIt(square,imageOutputFolder,"Square");
-    doIt(pentagon,imageOutputFolder,"Pentagon");
-    doIt(heptagon,imageOutputFolder,"Heptagon");
-    doIt(ellipse,imageOutputFolder,"Ellipse");
+    doIt(ball,outputFolder,"Ball",os,exportRegions);
+    doIt(flower,outputFolder,"Flower",os,exportRegions);
+    doIt(triangle,outputFolder,"Triangle",os,exportRegions);
+    doIt(square,outputFolder,"Square",os,exportRegions);
+    doIt(pentagon,outputFolder,"Pentagon",os,exportRegions);
+    doIt(heptagon,outputFolder,"Heptagon",os,exportRegions);
+    doIt(ellipse,outputFolder,"Ellipse",os,exportRegions);
 }

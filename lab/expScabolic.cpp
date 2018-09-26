@@ -11,11 +11,8 @@ namespace SCaBOliC
         namespace Test
         {
             std::string projectDir = PROJECT_DIR;
-            std::string outputFolder = projectDir + "/output";
+            std::string outputFolder = projectDir + "/output/expScabolic";
             std::string imageFolder = projectDir + "/images";
-
-            bool visualOutput=false;
-            bool verbose = true;
         }
     }
 }
@@ -46,15 +43,20 @@ void expApplication()
 {
     typedef ExpApplicationType::QPBOSolverType QPBOSolverType;
 
-    std::ofstream ofs(SCaBOliC::Lab::Test::outputFolder + "/exp-application.txt",std::ios_base::out);
+    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expApplication";
+    boost::filesystem::create_directories(expOutputFolder);
 
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Simple,ofs);
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Probe,ofs);
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Improve,ofs);
+    std::ofstream ofs(expOutputFolder + "/exp-application.txt",std::ios_base::out);
 
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Simple,ofs);
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Probe,ofs);
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Improve,ofs);
+    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Simple,ofs,expOutputFolder);
+    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Probe,ofs,expOutputFolder);
+    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Improve,ofs,expOutputFolder);
+    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::ImproveProbe,ofs,expOutputFolder);
+
+    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Simple,ofs,expOutputFolder);
+    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Probe,ofs,expOutputFolder);
+    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Improve,ofs,expOutputFolder);
+    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::ImproveProbe,ofs,expOutputFolder);
 
     ofs.flush();
     ofs.close();
@@ -64,15 +66,22 @@ void expSolver()
 {
     typedef ExpQPBOSolverType::ApplicationMode ApplicationMode;
 
-    std::ofstream ofs(SCaBOliC::Lab::Test::outputFolder + "/exp-solver.txt",std::ios_base::out);
+    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expSolver";
+    boost::filesystem::create_directories(expOutputFolder);
 
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_FullImage,ofs);
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_AroundBoundary,ofs);
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_OriginalBoundary,ofs);
+    std::ofstream ofs(expOutputFolder + "/exp-solver.txt",std::ios_base::out);
 
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_FullImage,ofs);
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_AroundBoundary,ofs);
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_OriginalBoundary,ofs);
+    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_FullDomain,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_InverseInternRange,ofs,expOutputFolder);
+
+    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_FullDomain,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
+    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
+    //ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_InverseInternRange,ofs,expOutputFolder);
 
     ofs.flush();
     ofs.close();
@@ -80,20 +89,19 @@ void expSolver()
 
 void expFlowFromImage()
 {
-    typedef ExpApplicationType::QPBOSolverType QPBOSolverType;
-    typedef ExpQPBOSolverType::ApplicationMode ApplicationMode;
+    typedef ExpFlowFromImage::QPBOSolverType QPBOSolverType;
+    typedef ExpFlowFromImage::ApplicationMode ApplicationMode;
+    typedef ExpFlowFromImage::OptimizationMode OptimizationMode;
 
-    SCaBOliC::Lab::Test::visualOutput=false;
+    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlow";
+    boost::filesystem::create_directories(expOutputFolder);
 
-    std::ofstream ofs(SCaBOliC::Lab::Test::outputFolder + "/exp-flow.txt",std::ios_base::out);
+    std::ofstream ofs(expOutputFolder + "/exp-flow.txt",std::ios_base::out);
 
-    ExpFlowFromImage(ExpInput::squarex9Input,QPBOSolverType::Simple,ApplicationMode::AM_AroundBoundary,10,ofs);
-    ofs.flush();
-
-    ExpFlowFromImage(ExpInput::squarex9Input,QPBOSolverType::Probe,ApplicationMode::AM_AroundBoundary,10,ofs);
-    ofs.flush();
-
-    ExpFlowFromImage(ExpInput::squarex9Input,QPBOSolverType::Improve,ApplicationMode::AM_AroundBoundary,10,ofs);
+    ExpFlowFromImage(ExpInput::squarex9Input,
+                     QPBOSolverType::ImproveProbe,
+                     ApplicationMode::AM_ExternRange,
+                     OptimizationMode::OM_OriginalBoundary,10,ofs,expOutputFolder,true);
     ofs.flush();
 
     ofs.close();
@@ -101,14 +109,19 @@ void expFlowFromImage()
 
 void expFlowFromDigitizer()
 {
-    ExpFlowFromDigitizer();
+    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlowDigitizer";
+    boost::filesystem::create_directories(expOutputFolder);
+
+    std::ofstream ofs(expOutputFolder + "/exp-flow-digitizer.txt",std::ios_base::out);
+
+    ExpFlowFromDigitizer(expOutputFolder,ofs);
 }
 
 int main()
 {
     //expApplication();
     //expSolver();
-    //expFlow();
-    expFlowFromDigitizer();
+    expFlowFromImage();
+    //expFlowFromDigitizer();
     return 0;
 }
