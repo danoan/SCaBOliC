@@ -7,6 +7,8 @@ project(SCaBOliC)
 #EXTRA_LINK_DIR: extra link directories
 #BUILD_PATH: location of build files
 
+set(BUILD_TEST OFF CACHE BOOL "Build tests.")
+
 link_directories(${EXTRA_LINK_DIR}
         ${BUILD_PATH}/modules/Optimization
         ${BUILD_PATH}/modules/Core
@@ -17,5 +19,6 @@ add_subdirectory(modules/Optimization)
 add_subdirectory(modules/Energy)
 add_subdirectory(modules/Utils)
 
-add_subdirectory(lab)
-
+if(${BUILD_TEST})
+    add_subdirectory(lab)
+endif()

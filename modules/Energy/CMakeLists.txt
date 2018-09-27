@@ -13,6 +13,8 @@ add_library(scabolic-energy SHARED
         src/Energy/ISQ/ISQEnergy.cpp
         src/Energy/ISQ/VariableMap.cpp)
 
+add_dependencies(scabolic-energy scabolic-core scabolic-optimization scabolic-utils)
+
 target_include_directories(scabolic-energy PRIVATE
         ${DGTAL_INCLUDE_DIRS}
         include

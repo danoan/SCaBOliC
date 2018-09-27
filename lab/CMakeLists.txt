@@ -11,6 +11,8 @@ add_executable(test-scabolic
         src/Test/TestEnergyEvaluation.cpp
         src/Utils/Utils.cpp)
 
+add_dependencies(test-scabolic scabolic-core scabolic-energy scabolic-optimization scabolic-utils)
+
 target_compile_definitions(test-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(test-scabolic PRIVATE
@@ -49,6 +51,8 @@ add_executable(experiment-scabolic
         src/Experiment/ExpFlowFromDigitizer.cpp
         src/Utils/Utils.cpp
         src/Test/TestEnergyOptimization.cpp)
+
+add_dependencies(experiment-scabolic scabolic-core scabolic-energy scabolic-optimization scabolic-utils)
 
 target_compile_definitions(experiment-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
