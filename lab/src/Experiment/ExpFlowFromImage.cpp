@@ -3,14 +3,17 @@
 using namespace SCaBOliC::Lab::Experiment;
 
 ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
-                 QPBOSolverType solverType,
-                 ApplicationMode am,
-                 int maxIterations,
-                 std::ostream& os)
+                                   QPBOSolverType solverType,
+                                   ApplicationMode am,
+                                   OptimizationMode om,
+                                   int maxIterations,
+                                   std::ostream& os,
+                                   const std::string& outputFolder,
+                                   bool exportRegions)
 {
     typedef DIPaCUS::Representation::DigitalSetToImage::Image2D Image2D;
 
-    std::string flowFolder = SCaBOliC::Lab::Test::outputFolder
+    std::string flowFolder = outputFolder
                              + "/" + Lab::Utils::resolveQPBOSolverTypeName(solverType)
                              + "/" + Lab::Utils::resolveApplicationModeName(am)
                              + "/" + imageInput.imageName;
@@ -25,17 +28,18 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
     {
         TEOInput input(imageInput.imagePath,
                        solverType,
-                       TEOInput::OptimizationMode::OM_OriginalBoundary,
+                       om,
                        am);
 
-        Test::TestEnergyOptimization teo(input);
+        Test::TestEnergyOptimization teo(input,outputFolder,exportRegions                                                                                                                                                                                                                                                                                                                                                                                                                               );
         const TEOOutput::Solution& solution = teo.data->solution;
 
         entries.push_back(TableEntry(*teo.data,"IT " + std::to_string(i)));
 
         DGtal::Z2i::Point lb,ub;
         solution.outputDS.computeBoundingBox(lb,ub);
-
+        lb+=DGtal::Z2i::Point(-10,-10);
+        ub+=DGtal::Z2i::Point(10,10);
         Image2D image( DGtal::Z2i::Domain(lb,ub) );
         DIPaCUS::Representation::DigitalSetToImage(image, solution.outputDS);
 

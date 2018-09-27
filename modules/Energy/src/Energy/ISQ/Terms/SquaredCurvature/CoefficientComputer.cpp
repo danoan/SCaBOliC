@@ -10,6 +10,7 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     C = (PI * R * R) / 2.0;
     F = 9.0 / pow(R, 6.0);
 
+
     DIPaCUS::Misc::DigitalBallIntersection DBI(radius, trustForegroundRegion);
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);

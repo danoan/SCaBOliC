@@ -20,12 +20,8 @@ namespace SCaBOliC
             typedef typename Unary::Scalar Scalar;
             typedef typename Unary::Index Index;
         public:
-            IQPBOSolver(Scalar& energyValue,
-                       int& unlabelled,
-                       const Unary& U,
-                       const Graph& G,
-                       Labels& labels,
-                       int max_num_iterations);
+            IQPBOSolver(const Unary& U,
+                       const Graph& G);
 
             virtual void solve(Scalar& energyValue,
                                int& unlabelled,
@@ -35,7 +31,10 @@ namespace SCaBOliC
                                int max_num_iterations) = 0;
 
         protected:
-            void fillLabels(int& unlabelled,Labels& labels);
+            void fillLabels(int& unlabelled,
+                            Labels& labels);
+            
+            void invertLabels(Labels& labels);
             double computeEnergy(const Unary& U, const Graph& G, const Labels& labels);
 
         protected:

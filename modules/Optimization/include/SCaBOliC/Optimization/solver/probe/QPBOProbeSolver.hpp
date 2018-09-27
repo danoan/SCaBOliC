@@ -5,17 +5,20 @@ using namespace SCaBOliC::Optimization;
 template <typename Unary,
         typename Graph,
         typename Labels>
-QPBOProbeSolver<Unary,Graph,Labels>::QPBOProbeSolver(Scalar &energyValue,
+QPBOProbeSolver<Unary,Graph,Labels>::QPBOProbeSolver(Scalar& energyValue,
+                                                     Scalar& energyValuePriorInversion,
                                                      int &unlabelled,
                                                      const Unary &U,
                                                      const Graph &G,
                                                      Labels &labels,
                                                      int max_num_iterations):
-        IQPBOSolver<Unary,Graph,Labels>(energyValue,unlabelled,U,G,labels,max_num_iterations)
+        IQPBOSolver<Unary,Graph,Labels>(U,G)
 {
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
-
+    energyValuePriorInversion = this->computeEnergy(U,G,labels);
+    
+    this->invertLabels(labels);
     energyValue = this->computeEnergy(U,G,labels);
 }
 
@@ -38,7 +41,6 @@ void QPBOProbeSolver<Unary,Graph,Labels>::solve(Scalar &energyValue,
     this->qpbo->Solve();
     this->qpbo->ComputeWeakPersistencies();
 
-//    this->qpbo->Improve();
     this->qpbo->Probe(this->mapping,poptions);
 
 

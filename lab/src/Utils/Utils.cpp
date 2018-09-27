@@ -26,14 +26,18 @@ namespace SCaBOliC
             {
                 switch (am)
                 {
-                    case(ApplicationMode::AM_OriginalBoundary):
-                        return "Original Boundary";
+                    case(ApplicationMode::AM_OptimizationBoundary):
+                        return "Optimizaiton Boundary";
                     case(ApplicationMode::AM_AroundBoundary):
                         return "Around Boundary";
-                    case(ApplicationMode::AM_FullImage):
-                        return "Full Image";
-                    case(ApplicationMode::AM_DilatedBoundary):
-                        return "Dilated Boundary";
+                    case(ApplicationMode::AM_FullDomain):
+                        return "Full Domain";
+                    case(ApplicationMode::AM_InternRange):
+                        return "Intern Range";
+                    case(ApplicationMode::AM_ExternRange):
+                        return "Extern Range";
+                    case(ApplicationMode::AM_InverseInternRange):
+                        return "Inverse Intern Range";
                 }
             }
 

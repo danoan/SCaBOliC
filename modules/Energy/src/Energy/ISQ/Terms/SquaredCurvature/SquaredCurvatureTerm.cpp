@@ -64,6 +64,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
     OptimizationData::PairwiseTermsMatrix &PTM = od.localPTM;
 
+
     maxCtrb=0;
     for(auto yit=ODR.applicationRegion.begin();yit!=ODR.applicationRegion.end();++yit)
     {

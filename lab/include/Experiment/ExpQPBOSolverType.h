@@ -36,7 +36,9 @@ namespace SCaBOliC
             public:
                 ExpQPBOSolverType(ImageInput imageInput,
                                   ApplicationMode am,
-                                  std::ostream& os);
+                                  std::ostream& os,
+                                  std::string outputFolder,
+                                  bool exportRegions=false);
 
             private:
                 void printTable(const std::vector<TableEntry>& entries,

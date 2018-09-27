@@ -16,7 +16,9 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
     return ds;
 }
 
-TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
+TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput, 
+                                               const std::string& outputFolder, 
+                                               bool exportRegions)
 {
 
     DigitalSet ds = deriveDS(testInput);
@@ -33,8 +35,8 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput)
 
     data = new TestOutput(input,solution,prefix);
 
-
-    if(visualOutput) Lab::Utils::display(input,solution,imageOutputFolder,prefix);
+    
+    if(exportRegions) Lab::Utils::display(input,solution,outputFolder + "/regions",prefix);
 }
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const DigitalSet& ds,
@@ -76,12 +78,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         energy.solve<QPBOIP>(solution);
 
 
-    //Invert Solution
     Solution::LabelsVector& labelsVector = solution.labelsVector;
-    for (int i = 0; i < labelsVector.rows(); ++i)
-    {
-        labelsVector.coeffRef(i) = 1-labelsVector.coeff(i);
-    }
 
     const DigitalSet& trustFRG = input.optimizationRegions.trustFRG;
     const DigitalSet& optRegion = input.optimizationRegions.optRegion;
@@ -103,12 +100,24 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
     std::string solverTypeStr = Lab::Utils::resolveQPBOSolverTypeName(testInput.solverType);
 
-    if(testInput.am==TestInput::ApplicationMode::AM_FullImage)
-        solverTypeStr+="-Full";
+    if(testInput.am==TestInput::ApplicationMode::AM_FullDomain)
+        solverTypeStr+="-AM_Full";
     else if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
-        solverTypeStr+="-Around";
-    else if(testInput.am==TestInput::ApplicationMode::AM_OriginalBoundary)
-        solverTypeStr+="-Original";
+        solverTypeStr+="-AM_Around";
+    else if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
+        solverTypeStr+="-AM_OptRegion";
+    else if(testInput.am==TestInput::ApplicationMode::AM_InternRange)
+        solverTypeStr+="-AM_InternRange";
+    else if(testInput.am==TestInput::ApplicationMode::AM_InverseInternRange)
+        solverTypeStr+="-AM_InverseInternRange";
+
+
+
+    if(testInput.om==TestInput::OptimizationMode::OM_DilationBoundary)
+        solverTypeStr+="-OM_Dilation";
+    else if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
+        solverTypeStr+="-OM_Original";
+
 
     return solverTypeStr;
 }

@@ -5,7 +5,9 @@ using namespace SCaBOliC::Lab::Experiment;
 
 ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                                      ApplicationMode am,
-                                     std::ostream& os)
+                                     std::ostream& os,
+                                     std::string outputFolder,
+                                     bool exportRegions)
 {
     TEOInput inputSimple(imageInput.imagePath,
                          QPBOSolverType::Simple,
@@ -22,19 +24,26 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am);
 
-    Test::TestEnergyOptimization teoSimple(inputSimple);
-    Test::TestEnergyOptimization teoProbe(inputProbe);
-    Test::TestEnergyOptimization teoImprove(inputImprove);
+    TEOInput inputImproveProbe(imageInput.imagePath,
+                               QPBOSolverType::ImproveProbe,
+                               TEOInput::OptimizationMode::OM_OriginalBoundary,
+                               am);
+
+    Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImprove(inputImprove,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,outputFolder,exportRegions);
 
 
 
     std::vector<TableEntry> entries = { TableEntry(teoSimple.data,"Simple"),
                                         TableEntry(teoProbe.data,"Probe"),
-                                        TableEntry(teoImprove.data,"Improve") };
+                                        TableEntry(teoImprove.data,"Improve"),
+                                        TableEntry(teoImproveProbe.data,"Improve-Probe") };
 
     os << "Experiment: Solver Type" << std::endl
        << "Image:" << imageInput.imageName << std::endl
-       << "Application Mode" << Lab::Utils::resolveApplicationModeName(am) << std::endl;
+       << "Application Mode: " << Lab::Utils::resolveApplicationModeName(am) << std::endl << std::endl;
 
     printTable(entries,os);
 
@@ -45,13 +54,14 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
 void ExpQPBOSolverType::printTable(const std::vector<TableEntry>& entries,
                                    std::ostream &os)
 {
-    int colLength = 20;
+    int colLength = 16;
     std::string (*fnS)(int,std::string) = Lab::Utils::fixedStrLength;
     std::string (*fnD)(int,double) = Lab::Utils::fixedStrLength;
 
 
-    os << fnS(colLength,"FULL IMAGE") << "\t"
+    os << fnS(colLength,"") << "\t"
        << fnS(colLength,"Opt. Energy") << "\t"
+       << fnS(colLength,"Prior Inversion") << "\t"
        << fnS(colLength,"Elastica II") << "\t"
        << fnS(colLength,"Elastica MDCA") << "\t"
        << fnS(colLength,"Unlabeled") << std::endl << std::endl;
@@ -59,8 +69,9 @@ void ExpQPBOSolverType::printTable(const std::vector<TableEntry>& entries,
     for(int i=0;i<entries.size();++i)
     {
         const TableEntry& current = entries[i];
-        os << fnS(colLength,current.name) << "\t";
-        os << fnD(colLength,current.data->solution.energyValue) << "\t";
+        os << fnS(colLength,current.name) << "\t"
+           << fnD(colLength,current.data->solution.energyValue) << "\t"
+           << fnD(colLength,current.data->solution.energyValuePriorInversion) << "\t";
 
         double IIValue,MDCAValue;
         SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);

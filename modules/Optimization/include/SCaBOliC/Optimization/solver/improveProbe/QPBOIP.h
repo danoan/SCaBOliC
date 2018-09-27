@@ -17,6 +17,7 @@ namespace SCaBOliC
             typedef typename Unary::Index Index;
         public:
             QPBOIP(Scalar& energyValue,
+                   Scalar& energyValuePriorInversion,
                              int& unlabelled,
                              const Unary& U,
                              const Graph& G,

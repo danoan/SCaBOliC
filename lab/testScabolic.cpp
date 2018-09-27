@@ -1,4 +1,7 @@
 #include <Test/TestEnergyOptimization.h>
+#include <Test/TestInstances.h>
+#include <model/ImageInput.h>
+#include <Test/TestEnergyEvaluation.h>
 
 namespace SCaBOliC
 {
@@ -12,47 +15,48 @@ namespace SCaBOliC
 
             bool visualOutput=true;
             bool verbose = true;
+
+            namespace TestInput
+            {
+                typedef Lab::Model::ImageInput ImageInput;
+
+                std::string square = Lab::Test::imageFolder + "/single_square.pgm";
+                ImageInput squareInput(square,"Square");
+
+                std::string squarex9 = Lab::Test::imageFolder + "/single_squarex9.pgm";
+                ImageInput squarex9Input(squarex9,"Square X9");
+            }
         }
     }
 }
 
+
+
+using namespace SCaBOliC::Lab;
+
+void runInstances(Model::ImageInput imageInput)
+{
+    Test::TestInstances TI(imageInput.imagePath);
+    bool success;
+    Test::TestInstances::UserInput input = TI.next(success);
+    while(success)
+    {
+        Test::TestEnergyOptimization teo(input,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
+        input = TI.next(success);
+    }
+}
+
+
 int main()
 {
-    using namespace SCaBOliC::Lab;
+    runInstances(Test::TestInput::squareInput);
+    runInstances(Test::TestInput::squarex9Input);
 
-    std::string squarex9 = Test::imageFolder +"/single_squarex9.pgm";
+    Test::TestEnergyEvaluation::UserInput ui(Test::TestInput::squarex9Input.imagePath,
+                                             QPBOSolverType::Probe,
+                                             Model::UserInput::OptimizationMode::OM_OriginalBoundary,
+                                             Model::UserInput::ApplicationMode::AM_AroundBoundary);
+    Test::TestEnergyEvaluation tev(ui);
 
-    typedef Model::UserInput TestInput;
-    typedef SCaBOliC::Optimization::QPBOSolverType QPBOSolverType;
-
-    {
-        TestInput tinput(squarex9,
-                         QPBOSolverType::Probe,
-                         TestInput::OptimizationMode::OM_OriginalBoundary,
-                         TestInput::ApplicationMode::AM_AroundBoundary);
-
-
-        Test::TestEnergyOptimization teo(tinput);
-        std::cout << "PROBE: " << teo.data->solution.energyValue << std::endl;
-
-        DGtal::Board2D board;
-        board << teo.data->solution.outputDS;
-        board.saveEPS("probe.eps");
-    }
-
-    {
-        TestInput tinput2(squarex9,
-                          QPBOSolverType::Improve,
-                          TestInput::OptimizationMode::OM_OriginalBoundary,
-                          TestInput::ApplicationMode::AM_AroundBoundary);
-
-
-        Test::TestEnergyOptimization teo2(tinput2);
-        std::cout << "IMPROVE: " << teo2.data->solution.energyValue << std::endl;
-
-        DGtal::Board2D board;
-        board << teo2.data->solution.outputDS;
-        board.saveEPS("improve.eps");
-    }
     return 0;
 }

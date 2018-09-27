@@ -27,11 +27,6 @@ namespace SCaBOliC
         {
         namespace Test
         {
-            extern std::string outputFolder;
-            extern std::string imageFolder;
-            extern bool visualOutput;
-            extern bool verbose;
-
             class TestEnergyOptimization
             {
             public:
@@ -57,7 +52,9 @@ namespace SCaBOliC
                 TestEnergyOptimization& operator=(const TestEnergyOptimization){throw std::runtime_error("Operation not allowed.");}
                 ~TestEnergyOptimization(){delete data;}
 
-                TestEnergyOptimization(const TestInput& testInput);
+                TestEnergyOptimization(const TestInput& testInput, 
+                                       const std::string& outputFolder,
+                                       bool exportRegions=false);
             private:
                 DigitalSet deriveDS(const TestInput& testInput);
                 ISQInputData prepareInput(const DigitalSet& ds,
