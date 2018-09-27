@@ -3,12 +3,8 @@
 using namespace SCaBOliC::Optimization;
 
 template <typename Unary, typename Graph, typename Labels>
-IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(Scalar &energyValue,
-                                             int &unlabelled,
-                                             const Unary &U,
-                                             const Graph &G,
-                                             Labels &labels,
-                                             int max_num_iterations)
+IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
+                                             const Graph &G)
 {
     numVariables = U.cols();
     mapping = (int*) malloc(sizeof(int)*this->numVariables);
@@ -44,7 +40,8 @@ IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(Scalar &energyValue,
 }
 
 template <typename Unary, typename Graph, typename Labels>
-void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,Labels& labels)
+void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,
+                                                 Labels& labels)
 {
     Labels originalLabels = labels;
 
@@ -64,7 +61,17 @@ void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,Labels& labels)
             else
                 labels[j] = (1+xi)%2;
         }
+    }
+    
+}
 
+template <typename Unary, typename Graph, typename Labels>
+void IQPBOSolver<Unary,Graph,Labels>::invertLabels(Labels& labels) 
+{
+    //Invert Solution
+    for (int i = 0; i < labels.rows(); ++i)
+    {
+        labels.coeffRef(i) = 1-labels.coeff(i);
     }
 }
 
@@ -72,15 +79,18 @@ template <typename Unary, typename Graph, typename Labels>
 double IQPBOSolver<Unary,Graph,Labels>::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
 {
     double energyValue=0;
+    double EU=0;
+    double EP=0;
     for(int i=0;i<this->numVariables;++i)
     {
-        energyValue += U.coeff(i)*labels[i];
+        EU += U.coeff(1,i)*labels[i];
         for(int j=0;j<this->numVariables;++j)
         {
-            energyValue += G.coeff(i,j)*labels[i]*labels[j];
+            EP += G.coeff(i,j)*labels[i]*labels[j];
         }
     }
-
+    
+    energyValue=EU+EP;
     return energyValue;
 }
 

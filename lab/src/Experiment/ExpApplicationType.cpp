@@ -24,15 +24,22 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                            TEOInput::OptimizationMode::OM_OriginalBoundary,
                            TEOInput::ApplicationMode::AM_OptimizationBoundary);
 
+    TEOInput inputInternRange(imageInput.imagePath,
+                              solverType,
+                              TEOInput::OptimizationMode::OM_OriginalBoundary,
+                              TEOInput::ApplicationMode::AM_InternRange);
+
     Test::TestEnergyOptimization teoFull(inputFull,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoAround(inputAround,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoOriginal(inputOriginal,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoIntRange(inputInternRange,outputFolder,exportRegions);
 
 
 
     std::vector<TableEntry> entries = { TableEntry(teoFull.data,"Full"),
                                         TableEntry(teoAround.data,"Around"),
-                                        TableEntry(teoOriginal.data,"Original") };
+                                        TableEntry(teoOriginal.data,"Original"),
+                                        TableEntry(teoIntRange.data,"Int Range") };
 
     os << "Experiment: Application Type" << std::endl
        << "Image: " << imageInput.imageName << std::endl
@@ -55,6 +62,7 @@ void ExpApplicationType::printTable(const std::vector<TableEntry>& entries,
 
     os << fnS(colLength,"") << "\t"
        << fnS(colLength,"Opt. Energy") << "\t"
+       << fnS(colLength,"Prior Inversion") << "\t"
        << fnS(colLength,"Elastica II") <<  "\t"
        << fnS(colLength,"Elastica MDCA") << "\t"
        << fnS(colLength,"Unlabeled") << std::endl;
@@ -63,6 +71,7 @@ void ExpApplicationType::printTable(const std::vector<TableEntry>& entries,
         const TableEntry& current = entries[i];
         os << fnS(colLength,current.name) << "\t";
         os << fnD(colLength,current.data->solution.energyValue) << "\t";
+        os << fnD(colLength,current.data->solution.energyValuePriorInversion) << "\t";
 
         double IIValue,MDCAValue;
         SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);

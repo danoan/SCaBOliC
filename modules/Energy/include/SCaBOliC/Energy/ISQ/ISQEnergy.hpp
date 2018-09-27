@@ -12,6 +12,7 @@ void ISQEnergy::solve(Solution& solution)
             LabelsVector>  MyQPBOSolver;
 
     MyQPBOSolver(solution.energyValue,
+                 solution.energyValuePriorInversion,
                  solution.unlabeled,
                  energy.od.localUTM,
                  energy.od.localPTM,

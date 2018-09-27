@@ -56,7 +56,7 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                          bkgDistribution,
                          0,
                          1,
-                         0);
+                         0.5);
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
@@ -78,12 +78,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         energy.solve<QPBOIP>(solution);
 
 
-    //Invert Solution
     Solution::LabelsVector& labelsVector = solution.labelsVector;
-    for (int i = 0; i < labelsVector.rows(); ++i)
-    {
-        labelsVector.coeffRef(i) = 1-labelsVector.coeff(i);
-    }
 
     const DigitalSet& trustFRG = input.optimizationRegions.trustFRG;
     const DigitalSet& optRegion = input.optimizationRegions.optRegion;

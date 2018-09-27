@@ -6,16 +6,19 @@ template <typename Unary,
         typename Graph,
         typename Labels>
 QPBOIP<Unary,Graph,Labels>::QPBOIP(Scalar &energyValue,
-                                                        int &unlabelled,
-                                                        const Unary &U,
-                                                        const Graph &G,
-                                                        Labels &labels,
-                                                        int max_num_iterations):
-        IQPBOSolver<Unary,Graph,Labels>(energyValue,unlabelled,U,G,labels,max_num_iterations)
+                                   Scalar &energyValuePriorInversion,
+                                   int &unlabelled,
+                                   const Unary &U,
+                                   const Graph &G,
+                                   Labels &labels,
+                                   int max_num_iterations):
+        IQPBOSolver<Unary,Graph,Labels>(U,G)
 {
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
+    energyValuePriorInversion = this->computeEnergy(U,G,labels);
 
+    this->invertLabels(labels);
     energyValue = this->computeEnergy(U,G,labels);
 }
 
@@ -34,32 +37,23 @@ void QPBOIP<Unary,Graph,Labels>::solve(Scalar & energyValue,
     this->qpbo->Solve();
     this->qpbo->ComputeWeakPersistencies();
 
-    for(int i=0;i<this->numVariables;++i)
-    {
-        if(this->qpbo->GetLabel(i)>=0)
-            this->qpbo->SetLabel(i,this->qpbo->GetLabel(i));
-        else
-            this->qpbo->SetLabel(i,0);
-    }
+
 
 
     typename QPBO<Scalar>::ProbeOptions poptions;
     srand(time(NULL));
 
-    int* tempMapping = (int*) malloc(sizeof(int)*this->numVariables);
-    memcpy(tempMapping,this->mapping,sizeof(int)*this->numVariables);
+    poptions.order_array = NULL;
+    this->qpbo->Probe(this->mapping,poptions);
+
+
 
     while(max_num_iterations>0)
     {
-        poptions.order_array = NULL;
-
         this->qpbo->Improve();
-        this->qpbo->Probe(tempMapping,poptions);
-
-        QPBO<Scalar>::MergeMappings(this->numVariables,this->mapping,tempMapping);
         --max_num_iterations;
     }
 
-    free(tempMapping);
+
 
 }

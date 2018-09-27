@@ -32,6 +32,7 @@ namespace SCaBOliC
                 labelsVector = LabelsVector(numVars);
                 labelsVector.setZero();
                 energyValue=0;
+                energyValuePriorInversion=0;
                 unlabeled=0;
             }
 
@@ -41,6 +42,7 @@ namespace SCaBOliC
             DigitalSet outputDS;
             LabelsVector labelsVector;
             Scalar energyValue;
+            Scalar energyValuePriorInversion;
             int unlabeled;
 
         private:

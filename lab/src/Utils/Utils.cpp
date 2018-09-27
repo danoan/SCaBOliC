@@ -31,7 +31,7 @@ namespace SCaBOliC
                     case(ApplicationMode::AM_AroundBoundary):
                         return "Around Boundary";
                     case(ApplicationMode::AM_FullDomain):
-                        return "Full Image";
+                        return "Full Domain";
                     case(ApplicationMode::AM_InternRange):
                         return "Intern Range";
                     case(ApplicationMode::AM_ExternRange):
