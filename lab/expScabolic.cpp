@@ -121,7 +121,7 @@ int main()
 {
     //expApplication();
     //expSolver();
-    expFlowFromImage();
-    //expFlowFromDigitizer();
+    //expFlowFromImage();
+    expFlowFromDigitizer();
     return 0;
 }

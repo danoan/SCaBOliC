@@ -41,7 +41,6 @@ namespace SCaBOliC
                 ExpFlowFromImage(ImageInput imageInput, 
                                  QPBOSolverType solverType, 
                                  ApplicationMode am,
-                                 OptimizationMode om,
                                  int maxIterations, 
                                  std::ostream& os,
                                  const std::string& outputFolder,

@@ -30,7 +30,7 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
 
     ISQInputData input = prepareInput(ds,3,testInput.om,testInput.am);
 
-    Solution solution = solve(input,testInput.solverType);
+    Solution solution = solve(input,testInput.solverType,testInput.om);
     std::string prefix = resolvePrefix(testInput);
 
     data = new TestOutput(input,solution,prefix);
@@ -60,13 +60,17 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
-                                                               QPBOSolverType solverType)
+                                                               QPBOSolverType solverType,
+                                                               TestInput::OptimizationMode om)
 {
     Solution solution(input.optimizationRegions.domain);
     ISQEnergy energy(input);
     solution.init(energy.numVars());
 
-    solution.labelsVector.setZero();
+    if(om==TestInput::OptimizationMode::OM_OriginalBoundary)
+        solution.labelsVector.setZero();
+    else
+        solution.labelsVector.setOnes();
 
     if(solverType==QPBOSolverType::Simple)
         energy.solve<QPBOSimpleSolver>(solution);

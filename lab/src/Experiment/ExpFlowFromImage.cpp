@@ -5,7 +5,6 @@ using namespace SCaBOliC::Lab::Experiment;
 ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                                    QPBOSolverType solverType,
                                    ApplicationMode am,
-                                   OptimizationMode om,
                                    int maxIterations,
                                    std::ostream& os,
                                    const std::string& outputFolder,
@@ -23,9 +22,13 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                                  flowFolder + "/0.pgm",
                                  boost::filesystem::copy_option::overwrite_if_exists);
 
+    OptimizationMode om = OptimizationMode::OM_OriginalBoundary;
     std::vector<TableEntry> entries;
     for(int i=1;i<=maxIterations;++i)
     {
+        if(i%2==0) om = OptimizationMode::OM_OriginalBoundary;
+        else om = OptimizationMode::OM_DilationBoundary;
+
         TEOInput input(imageInput.imagePath,
                        solverType,
                        om,

@@ -12,9 +12,8 @@ void ExpFlowFromDigitizer::doIt(TShape s,
     ImageInput starInput = SCaBOliC::Lab::Utils::ShapeDigitizer<TShape>::digitize(s,1.0,imageOutputFolder,name);
 
     ExpFlowFromImage(starInput,
-                     ExpFlowFromImage::QPBOSolverType::ImproveProbe,
+                     ExpFlowFromImage::QPBOSolverType::Simple,
                      ExpFlowFromImage::ApplicationMode::AM_AroundBoundary,
-                     ExpFlowFromImage::OptimizationMode::OM_DilationBoundary,
                      20,
                      std::cout,
                      imageOutputFolder,

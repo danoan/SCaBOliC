@@ -62,7 +62,9 @@ namespace SCaBOliC
                                           TestInput::OptimizationMode om,
                                           TestInput::ApplicationMode am);
 
-                Solution solve(const ISQInputData& input,QPBOSolverType solverType);
+                Solution solve(const ISQInputData& input,
+                               QPBOSolverType solverType,
+                               TestInput::OptimizationMode om);
 
                 std::string resolvePrefix(const TestInput& testInput);
 
