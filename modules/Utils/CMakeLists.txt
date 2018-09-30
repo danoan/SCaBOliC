@@ -6,9 +6,9 @@ find_package(DGtal REQUIRED)
 add_library(scabolic-utils INTERFACE)
 
 target_include_directories(scabolic-utils INTERFACE
-        ${DGTAL_INCLUDE_DIRS}
         include
-        ../../ext/include)
+        ${DGTAL_INCLUDE_DIRS}
+        ${DIPACUS_INCLUDE_DIRS})
 
 install(TARGETS scabolic-utils
         DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

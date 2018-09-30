@@ -108,6 +108,8 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
         solverTypeStr+="-AM_OptRegion";
     else if(testInput.am==TestInput::ApplicationMode::AM_InternRange)
         solverTypeStr+="-AM_InternRange";
+    else if(testInput.am==TestInput::ApplicationMode::AM_ExternRange)
+        solverTypeStr+="-AM_ExternRange";
     else if(testInput.am==TestInput::ApplicationMode::AM_InverseInternRange)
         solverTypeStr+="-AM_InverseInternRange";
 

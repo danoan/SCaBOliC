@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 project(test-scabolic)
 
-find_package(DGtal REQUIRED)
-find_package(OpenCV REQUIRED)
-
 add_executable(test-scabolic
         testScabolic.cpp
         src/Test/TestEnergyOptimization.cpp
@@ -17,11 +14,11 @@ target_compile_definitions(test-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_
 
 target_include_directories(test-scabolic PRIVATE
         include
-        ../ext/include
-        ../modules/Optimization/include
-        ../modules/Core/include
-        ../modules/Energy/include
-        ../modules/Utils/include
+        ${CMAKE_SOURCE_DIR}/modules/Optimization/include
+        ${CMAKE_SOURCE_DIR}/modules/Core/include
+        ${CMAKE_SOURCE_DIR}/modules/Energy/include
+        ${CMAKE_SOURCE_DIR}/modules/Utils/include
+        ${DIPACUS_INCLUDE_DIRS}
         ${DGTAL_INCLUDE_DIRS}
         )
 
@@ -58,11 +55,11 @@ target_compile_definitions(experiment-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_S
 
 target_include_directories(experiment-scabolic PRIVATE
         include
-        ../ext/include
-        ../modules/Optimization/include
-        ../modules/Core/include
-        ../modules/Energy/include
-        ../modules/Utils/include
+        ${CMAKE_SOURCE_DIR}/modules/Optimization/include
+        ${CMAKE_SOURCE_DIR}/modules/Core/include
+        ${CMAKE_SOURCE_DIR}/modules/Energy/include
+        ${CMAKE_SOURCE_DIR}/modules/Utils/include
+        ${DIPACUS_INCLUDE_DIRS}
         ${DGTAL_INCLUDE_DIRS}
         )
 

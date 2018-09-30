@@ -1,6 +1,10 @@
+#include <DGtal/io/boards/Board2D.h>
 #include "SCaBOliC/Core/ODRFactory.h"
 
 using namespace SCaBOliC::Core;
+
+DIPaCUS::Morphology::StructuringElement ODRFactory::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
+DIPaCUS::Morphology::StructuringElement ODRFactory::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
 
 ODRFactory::DigitalSet ODRFactory::omOriginalBoundary(const DigitalSet& original)
 {
@@ -17,7 +21,7 @@ ODRFactory::DigitalSet ODRFactory::omDilationBoundary(const DigitalSet& original
 
     DIPaCUS::Morphology::Dilate(dilated,
                                 original,
-                                DIPaCUS::Morphology::RECT,
+                                dilationSE,
                                 1);
 
     EightNeighborhood en(dilatedBoundary,dilated);
@@ -72,7 +76,7 @@ ODRFactory::DigitalSet ODRFactory::amInternRange(const DigitalSet& original, con
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet eroded (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::Erode(eroded,originalPlusOptRegion,DIPaCUS::Morphology::RECT,length+1);
+    DIPaCUS::Morphology::Erode(eroded,originalPlusOptRegion,erosionSE,length+1);
 
     DigitalSet internRegion(originalPlusOptRegion.domain());
     DIPaCUS::SetOperations::SetDifference(internRegion,originalPlusOptRegion,eroded);
@@ -87,12 +91,30 @@ ODRFactory::DigitalSet ODRFactory::amExternRange(const DigitalSet& original, con
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet dilated (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::Dilate(dilated,originalPlusOptRegion,DIPaCUS::Morphology::RECT,length);
+    DIPaCUS::Morphology::Dilate(dilated,originalPlusOptRegion,dilationSE,length);
 
     DigitalSet externRegion(originalPlusOptRegion.domain());
     DIPaCUS::SetOperations::SetDifference(externRegion,dilated,originalPlusOptRegion);
 
     return externRegion;
+}
+
+ODRFactory::DigitalSet ODRFactory::isolatedPoints(const DigitalSet& original, const DigitalSet& optRegion)
+{
+    DigitalSet dilated(original.domain());
+
+    DIPaCUS::Morphology::Dilate(dilated,
+                                original,
+                                dilationSE,
+                                1);
+    
+    DigitalSet tempDS(original.domain());
+    DigitalSet isolatedDS(original.domain());
+    DIPaCUS::SetOperations::SetDifference(tempDS,dilated,original);
+    DIPaCUS::SetOperations::SetDifference(isolatedDS,tempDS,optRegion);
+    
+    return isolatedDS;
+    
 }
 
 OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
@@ -149,10 +171,11 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
         case ApplicationMode::AM_InternRange:{
             DigitalSet temp = amInternRange(original,optRegion,1);
             applicationRegion.insert(temp.begin(),temp.end());
+            //for(auto it=optRegion.begin();it!=optRegion.end();++it) applicationRegion.erase(*it);
             break;
         }
         case ApplicationMode::AM_ExternRange:{
-            DigitalSet temp = amExternRange(original,optRegion,1);
+            DigitalSet temp = amExternRange(original,optRegion,radius);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
@@ -169,6 +192,12 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
 
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::SetDifference(trustFRG, extendedOriginal, optRegion);
+    
+    if(optMode==OM_DilationBoundary)
+    {
+        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
+        trustFRG+=isolatedDS;
+    }
 
     DigitalSet trustBKG(domain);
     DigitalSet tempp(domain);

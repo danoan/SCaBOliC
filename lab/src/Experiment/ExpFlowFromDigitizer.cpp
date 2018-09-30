@@ -13,7 +13,7 @@ void ExpFlowFromDigitizer::doIt(TShape s,
 
     ExpFlowFromImage(starInput,
                      ExpFlowFromImage::QPBOSolverType::ImproveProbe,
-                     ExpFlowFromImage::ApplicationMode::AM_InternRange,
+                     ExpFlowFromImage::ApplicationMode::AM_AroundBoundary,
                      ExpFlowFromImage::OptimizationMode::OM_DilationBoundary,
                      20,
                      std::cout,
@@ -34,11 +34,11 @@ ExpFlowFromDigitizer::ExpFlowFromDigitizer(std::string outputFolder, std::ostrea
     NGon heptagon(0,0,r,7,1);
     Ellipse ellipse(0,0,r,r-10,0);
 
-    doIt(ball,outputFolder,"Ball",os,exportRegions);
-    doIt(flower,outputFolder,"Flower",os,exportRegions);
-    doIt(triangle,outputFolder,"Triangle",os,exportRegions);
-    doIt(square,outputFolder,"Square",os,exportRegions);
-    doIt(pentagon,outputFolder,"Pentagon",os,exportRegions);
-    doIt(heptagon,outputFolder,"Heptagon",os,exportRegions);
-    doIt(ellipse,outputFolder,"Ellipse",os,exportRegions);
+    doIt(ball,"Ball",outputFolder,os,exportRegions);
+    doIt(flower,"Flower",outputFolder,os,exportRegions);
+    doIt(triangle,"Triangle",outputFolder,os,exportRegions);
+    doIt(square,"Square",outputFolder,os,exportRegions);
+    doIt(pentagon,"Pentagon",outputFolder,os,exportRegions);
+    doIt(heptagon,"Heptagon",outputFolder,os,exportRegions);
+    doIt(ellipse,"Ellipse",outputFolder,os,exportRegions);
 }

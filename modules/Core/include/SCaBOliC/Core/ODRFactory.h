@@ -52,6 +52,8 @@ namespace SCaBOliC
             static DigitalSet amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length);
             static DigitalSet amExternRange(const DigitalSet& original,const DigitalSet& optRegion,  int length);
 
+            static DigitalSet isolatedPoints(const DigitalSet& original, const DigitalSet& optRegion);
+
         public:
 
             static OptimizationDigitalRegions createODR(OptimizationMode optMode,
@@ -60,7 +62,7 @@ namespace SCaBOliC
                                                         const DigitalSet& original);
 
         private:
-
+            static DIPaCUS::Morphology::StructuringElement dilationSE,erosionSE;
         };
     }
 }

@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-energy)
 
-find_package(DGtal REQUIRED)
-find_package(OpenCV REQUIRED)
-
 add_library(scabolic-energy SHARED
         src/Energy/ISQ/base/EnergyTerm.cpp
         src/Energy/ISQ/Terms/Data/DataTerm.cpp
@@ -16,11 +13,11 @@ add_library(scabolic-energy SHARED
 add_dependencies(scabolic-energy scabolic-core scabolic-optimization scabolic-utils)
 
 target_include_directories(scabolic-energy PRIVATE
-        ${DGTAL_INCLUDE_DIRS}
         include
-        ../Optimization/include
-        ../Core/include
-        ../../ext/include)
+        ${CMAKE_SOURCE_DIR}/modules/Optimization/include
+        ${CMAKE_SOURCE_DIR}/modules/Core/include
+        ${DGTAL_INCLUDE_DIRS}
+        ${DIPACUS_INCLUDE_DIRS})
 
 target_link_libraries(scabolic-energy
         -lscabolic-core

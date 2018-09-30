@@ -101,7 +101,7 @@ void expFlowFromImage()
     ExpFlowFromImage(ExpInput::squarex9Input,
                      QPBOSolverType::ImproveProbe,
                      ApplicationMode::AM_AroundBoundary,
-                     OptimizationMode::OM_OriginalBoundary,10,ofs,expOutputFolder,true);
+                     OptimizationMode::OM_DilationBoundary,10,ofs,expOutputFolder,true);
     ofs.flush();
 
     ofs.close();
@@ -122,6 +122,6 @@ int main()
     //expApplication();
     //expSolver();
     expFlowFromImage();
-//  expFlowFromDigitizer();
+    //expFlowFromDigitizer();
     return 0;
 }

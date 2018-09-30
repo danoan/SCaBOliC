@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-core)
 
-find_package(DGtal REQUIRED)
-
 add_library(scabolic-core SHARED src/display.cpp src/ODRFactory.cpp)
 
 target_include_directories(scabolic-core PRIVATE
-        ${DGTAL_INCLUDE_DIRS}
         include
-        ../../ext/include)
+        ${DIPACUS_INCLUDE_DIRS}
+        ${DGTAL_INCLUDE_DIRS})
 
 target_link_libraries(scabolic-core
         -ldipacus-components

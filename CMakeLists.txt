@@ -1,24 +1,34 @@
 cmake_minimum_required(VERSION 3.0)
 project(SCaBOliC)
 
-#It expects variables
-#CMAKE_PREFIX_PATH: find_[package] macro directories
 #CMAKE_INSTALL_PREFIX: install location
-#EXTRA_LINK_DIR: extra link directories
-#BUILD_PATH: location of build files
 
-set(BUILD_TEST OFF CACHE BOOL "Build tests.")
+find_package(DGtal REQUIRED)
+find_package(OpenCV REQUIRED)
 
-link_directories(${EXTRA_LINK_DIR}
-        ${BUILD_PATH}/modules/Optimization
-        ${BUILD_PATH}/modules/Core
-        ${BUILD_PATH}/modules/Energy)
+message("Project Root Dir: ${CMAKE_SOURCE_DIR}")
+message("Build files at: ${CMAKE_BINARY_DIR}")
+message("Installation at: ${CMAKE_INSTALL_PREFIX}")
+
+set(BOOST_INCLUDE_DIRS /usr/local/include/boost CACHE PATH "Boost include location path." )
+
+set(DIPACUS_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/include CACHE PATH "DIPaCUS include location path.")
+set(DIPACUS_LIBS_DIR /usr/local/lib CACHE PATH "DIPaCUS libraries location path.")
+
+set(GEOC_INCLUDE_DIRS /usr/local/include/geoc CACHE PATH "geoc include location path.")
+
+set(BUILD_TESTS OFF CACHE BOOL "Build tests.")
+
+link_directories(${CMAKE_BINARY_DIR}/modules/Optimization
+        ${CMAKE_BINARY_DIR}/modules/Core
+        ${CMAKE_BINARY_DIR}/modules/Energy
+        ${DIPACUS_LIBS_DIR})
 
 add_subdirectory(modules/Core)
 add_subdirectory(modules/Optimization)
 add_subdirectory(modules/Energy)
 add_subdirectory(modules/Utils)
 
-if(${BUILD_TEST})
+if(${BUILD_TESTS})
     add_subdirectory(lab)
 endif()

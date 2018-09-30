@@ -64,8 +64,8 @@ void DataTerm::setCoeffs(OptimizationData& od,
         xi = vm.pim.at(*it);
 
         //Use of -log(1-x) instead of -log(x) because I invert the solution.
-        od.localUTM(0,xi) = -log( 1- id.bgDistr(row,col) );
-        od.localUTM(1,xi) = -log( 1- id.fgDistr(row,col) );
+        od.localUTM(0,xi) = -log( 1-id.fgDistr(row,col) );
+        od.localUTM(1,xi) = -log( 1-id.bgDistr(row,col) );
 
         maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;
         maxCtrb = fabs(od.localUTM(0,xi))>maxCtrb?fabs(od.localUTM(0,xi)):maxCtrb;
