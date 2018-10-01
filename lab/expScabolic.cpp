@@ -101,7 +101,10 @@ void expFlowFromImage()
     ExpFlowFromImage(ExpInput::squarex9Input,
                      QPBOSolverType::ImproveProbe,
                      ApplicationMode::AM_AroundBoundary,
-                     OptimizationMode::OM_DilationBoundary,10,ofs,expOutputFolder,true);
+                     10,
+                     ofs,
+                     expOutputFolder,
+                     true);
     ofs.flush();
 
     ofs.close();
