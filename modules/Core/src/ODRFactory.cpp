@@ -168,6 +168,11 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
+        case ApplicationMode::AM_InverseAroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
         case ApplicationMode::AM_InternRange:{
             DigitalSet temp = amInternRange(original,optRegion,1);
             applicationRegion.insert(temp.begin(),temp.end());
