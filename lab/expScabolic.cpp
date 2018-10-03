@@ -75,13 +75,11 @@ void expSolver()
     ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
     ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
     ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_InverseInternRange,ofs,expOutputFolder);
 
     ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_FullDomain,ofs,expOutputFolder);
     ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
     ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
     ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
-    //ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_InverseInternRange,ofs,expOutputFolder);
 
     ofs.flush();
     ofs.close();
@@ -99,9 +97,9 @@ void expFlowFromImage()
     std::ofstream ofs(expOutputFolder + "/exp-flow.txt",std::ios_base::out);
 
     ExpFlowFromImage(ExpInput::squarex9Input,
-                     QPBOSolverType::ImproveProbe,
+                     QPBOSolverType::Simple,
                      ApplicationMode::AM_AroundBoundary,
-                     10,
+                     1,
                      ofs,
                      expOutputFolder,
                      true);
@@ -124,7 +122,7 @@ int main()
 {
     //expApplication();
     //expSolver();
-    //expFlowFromImage();
-    expFlowFromDigitizer();
+    expFlowFromImage();
+    //expFlowFromDigitizer();
     return 0;
 }
