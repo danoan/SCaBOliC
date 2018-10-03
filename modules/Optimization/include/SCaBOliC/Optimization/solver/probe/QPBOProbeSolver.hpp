@@ -38,10 +38,8 @@ void QPBOProbeSolver<Unary,Graph,Labels>::solve(Scalar &energyValue,
     typename QPBO<Scalar>::ProbeOptions poptions;
 //    poptions.order_seed = time(NULL);
 
-    this->qpbo->Solve();
-    this->qpbo->ComputeWeakPersistencies();
-
     this->qpbo->Probe(this->mapping,poptions);
+    this->qpbo->ComputeWeakPersistencies();
 
 
 }

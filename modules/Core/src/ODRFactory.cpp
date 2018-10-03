@@ -179,11 +179,6 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
-        case ApplicationMode::AM_InverseInternRange:{
-            DigitalSet temp = amExternRange(original,optRegion,1);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
     }
     
     DigitalSet extendedOriginal(original.domain());
@@ -208,7 +203,7 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
     trustBKG.assignFromComplement(tempp);
 
 
-    if(appMode==ApplicationMode::AM_InverseInternRange)
+    if(appMode==ApplicationMode::AM_InverseAroundBoundary)
     {
         DigitalSet swap = trustFRG;
         trustFRG = trustBKG;

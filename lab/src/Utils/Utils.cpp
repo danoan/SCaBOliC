@@ -36,8 +36,6 @@ namespace SCaBOliC
                         return "Intern Range";
                     case(ApplicationMode::AM_ExternRange):
                         return "Extern Range";
-                    case(ApplicationMode::AM_InverseInternRange):
-                        return "Inverse Intern Range";
                 }
             }
 

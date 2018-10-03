@@ -12,7 +12,7 @@ TestInstances::OptimizationMode TestInstances::vectorOfOM[2] = {TestInstances::O
 
 TestInstances::ApplicationMode TestInstances::vectorOfAM[4] = {TestInstances::ApplicationMode::AM_InternRange,
                                                                TestInstances::ApplicationMode::AM_AroundBoundary,
-                                                               TestInstances::ApplicationMode::AM_InverseInternRange,
+                                                               TestInstances::ApplicationMode::AM_InverseAroundBoundary,
                                                                TestInstances::ApplicationMode::AM_OptimizationBoundary,
                                                               };
 

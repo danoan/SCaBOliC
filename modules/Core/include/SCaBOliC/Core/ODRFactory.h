@@ -33,9 +33,9 @@ namespace SCaBOliC
                 AM_OptimizationBoundary,
                 AM_FullDomain,
                 AM_AroundBoundary,
+                AM_InverseAroundBoundary,
                 AM_InternRange,
-                AM_ExternRange,
-                AM_InverseInternRange};
+                AM_ExternRange};
 
         private:
 
