@@ -2,6 +2,7 @@
 #define SCABOLIC_ENERGY_MODEL_H
 
 #include <eigen3/Eigen/Sparse>
+#include <opencv2/core/mat.hpp>
 
 #include "SCaBOliC/Core/OptimizationDigitalRegions.h"
 #include "SCaBOliC/Energy/ISQ/Terms/Data/IProbabilityDistribution.h"
@@ -21,15 +22,20 @@ namespace SCaBOliC
                 typedef SCaBOliC::Core::OptimizationDigitalRegions OptimizationDigitalRegions;
                 typedef IProbabilityDistribution<Scalar> MyProbabilityDistribution;
 
+                typedef DGtal::Z2i::Domain Domain;
+                typedef cv::Mat cvColorImage;
+                typedef cv::Vec3b cvColorType;
 
             public:
                 InputData(const OptimizationDigitalRegions& ODR,
+                          const cvColorImage& image,
                           unsigned long int radius,
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0):optimizationRegions(ODR),
+                                                       image(image),
                                                    radius(radius),
                                                    fgDistr(fgDistr),
                                                    bgDistr(bgDistr),
@@ -46,6 +52,8 @@ namespace SCaBOliC
 
                 const MyProbabilityDistribution& fgDistr;
                 const MyProbabilityDistribution& bgDistr;
+
+                const cvColorImage& image;
 
             };
         }

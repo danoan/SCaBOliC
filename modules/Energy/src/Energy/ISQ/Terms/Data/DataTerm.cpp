@@ -3,7 +3,8 @@
 using namespace SCaBOliC::Energy::ISQ;
 
 
-DataTerm::DataTerm(const InputData &id):vm(id.optimizationRegions)
+DataTerm::DataTerm(const InputData &id):vm(id.optimizationRegions),
+                                        image(id.image)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
@@ -54,6 +55,9 @@ void DataTerm::setCoeffs(OptimizationData& od,
     const InputData::OptimizationDigitalRegions ODR = id.optimizationRegions;
     int col,row;
     Index xi;
+
+    typedef DGtal::Z2i::Point Point;
+    Point n4[4] = {Point{1,0},Point{-1,0},Point(0,1),Point(0,-1)};
     
     maxCtrb=0;
     for(auto it = ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
@@ -66,6 +70,22 @@ void DataTerm::setCoeffs(OptimizationData& od,
         //Use of -log(1-x) instead of -log(x) because I invert the solution.
         od.localUTM(0,xi) = -log( 1-id.fgDistr(row,col) );
         od.localUTM(1,xi) = -log( 1-id.bgDistr(row,col) );
+
+        cvColorType v = image.at<cvColorType>(row,col);
+        cvColorType vn;
+        double heterogenity=0;
+        for(int j=0;j<4;++j)
+        {
+            Point neigh = *it + n4[j];
+            if(neigh(0)<0 || neigh(1)<0) continue;
+            if(neigh(0)>image.cols || neigh(1)>image.rows) continue;
+
+            vn = image.at<cvColorType>(neigh(1),neigh(0));
+
+            heterogenity += exp( (v-vn).dot(v-vn) );
+        }
+        //Again, think opposite way
+        od.localUTM(0,xi)+=heterogenity;
 
         maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;
         maxCtrb = fabs(od.localUTM(0,xi))>maxCtrb?fabs(od.localUTM(0,xi)):maxCtrb;

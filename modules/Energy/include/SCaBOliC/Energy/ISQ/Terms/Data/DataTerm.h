@@ -22,6 +22,8 @@ namespace SCaBOliC
 
                 typedef EnergyTerm Self;
 
+                typedef InputData::cvColorImage cvColorImage;
+                typedef InputData::cvColorType cvColorType;
 
             public:
                 DataTerm(const InputData& id);
@@ -50,6 +52,8 @@ namespace SCaBOliC
             public:
                 VariableMap vm;
 
+            private:
+                const cvColorImage& image;
             };
 
         }
