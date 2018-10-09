@@ -72,10 +72,10 @@ void LengthTerm::setCoeffs(OptimizationData& od,
             neigh = *it + filter[i];
             if(ODR.trustFRG(neigh))
             {
-                od.localUTM(1,xi) += -1;
+                od.localUTM(1,xi) += 1;
             }else if(ODR.trustBKG(neigh))
             {
-                od.localUTM(1,xi) += 1;
+                od.localUTM(0,xi) += 1;
             }else
             {
                 yi = vm.pim.at(neigh);
@@ -88,6 +88,7 @@ void LengthTerm::setCoeffs(OptimizationData& od,
             }
 
             maxCtrb = od.localUTM(1,xi)>maxCtrb?od.localUTM(1,xi):maxCtrb;
+            maxCtrb = od.localUTM(0,xi)>maxCtrb?od.localUTM(0,xi):maxCtrb;
         }
 
     }
