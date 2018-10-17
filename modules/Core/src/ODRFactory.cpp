@@ -6,6 +6,13 @@ using namespace SCaBOliC::Core;
 DIPaCUS::Morphology::StructuringElement ODRFactory::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
 DIPaCUS::Morphology::StructuringElement ODRFactory::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
 
+
+OptimizationDigitalRegions::Point OptimizationDigitalRegions::NeighborSet::neighborhoodFilter[5] = {OptimizationDigitalRegions::Point(0,1),
+                                                                                                           OptimizationDigitalRegions::Point(1,0),
+                                                                                                           OptimizationDigitalRegions::Point(-1,0),
+                                                                                                           OptimizationDigitalRegions::Point(0,-1),
+                                                                                                           OptimizationDigitalRegions::Point(0,0)};
+
 ODRFactory::DigitalSet ODRFactory::omOriginalBoundary(const DigitalSet& original)
 {
     DigitalSet originalBoundary(original.domain());

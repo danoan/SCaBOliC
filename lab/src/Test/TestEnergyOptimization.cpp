@@ -26,9 +26,10 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
 
     boost::filesystem::path p(testInput.imagePath);
     std::string imageOutputFolder = outputFolder + "/" + p.stem().generic_string();
+    cv::Mat cvImg = cv::imread(testInput.imagePath);
 
 
-    ISQInputData input = prepareInput(ds,3,testInput.om,testInput.am);
+    ISQInputData input = prepareInput(ds,3,testInput,cvImg);
 
     Solution solution = solve(input,testInput.solverType,testInput.om);
     std::string prefix = resolvePrefix(testInput);
@@ -41,16 +42,16 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const DigitalSet& ds,
                                                                           double estimatingBallRadius,
-                                                                          TestInput::OptimizationMode om,
-                                                                          TestInput::ApplicationMode am)
+                                                                          const TestInput& testInput,
+                                                                          const cv::Mat& cvImg)
 {
-    ODR odr = Core::ODRFactory::createODR(om,
-                                          am,
+    ODR odr = Core::ODRFactory::createODR(testInput.om,
+                                          testInput.am,
                                           estimatingBallRadius,
                                           ds);
 
-
     return ISQInputData (odr,
+                         cvImg,
                          estimatingBallRadius,
                          frgDistribution,
                          bkgDistribution,
@@ -81,19 +82,11 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     else if(solverType==QPBOSolverType::ImproveProbe)
         energy.solve<QPBOIP>(solution);
 
-
     Solution::LabelsVector& labelsVector = solution.labelsVector;
+    input.optimizationRegions.solutionSet(solution.outputDS,
+                                          labelsVector.data(),
+                                          energy.vm().pim);
 
-    const DigitalSet& trustFRG = input.optimizationRegions.trustFRG;
-    const DigitalSet& optRegion = input.optimizationRegions.optRegion;
-    solution.outputDS.insert(trustFRG.begin(),trustFRG.end());
-    for (DigitalSet::ConstIterator it = optRegion.begin();
-         it != optRegion.end(); ++it)
-    {
-        if (labelsVector.coeff(energy.vm().pim.at(*it)) == 1) {
-            solution.outputDS.insert(*it);
-        }
-    }
 
     return solution;
 }

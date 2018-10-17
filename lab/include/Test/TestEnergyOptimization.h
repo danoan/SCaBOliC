@@ -59,8 +59,8 @@ namespace SCaBOliC
                 DigitalSet deriveDS(const TestInput& testInput);
                 ISQInputData prepareInput(const DigitalSet& ds,
                                           double estimatingBallRadius,
-                                          TestInput::OptimizationMode om,
-                                          TestInput::ApplicationMode am);
+                                          const TestInput& testInput,
+                                          const cv::Mat& cvImg);
 
                 Solution solve(const ISQInputData& input,
                                QPBOSolverType solverType,
