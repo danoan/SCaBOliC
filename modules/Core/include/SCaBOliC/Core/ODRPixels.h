@@ -50,14 +50,13 @@ namespace SCaBOliC
         public:
 
             void solutionSet(DigitalSet& outputDS,
+                             const DigitalSet& initialDS,
                              const ODRModel& odrModel,
                              const int* varValue,
                              const std::unordered_map<Point, unsigned int>& pointToVar) const
             {
-                const DigitalSet& trustFRG = odrModel.trustFRG;
                 const DigitalSet& optRegion = odrModel.optRegion;
-
-                outputDS.insert(trustFRG.begin(),trustFRG.end());
+                outputDS.insert(initialDS.begin(),initialDS.end());
                 for (DigitalSet::ConstIterator it = optRegion.begin();
                      it != optRegion.end(); ++it)
                 {

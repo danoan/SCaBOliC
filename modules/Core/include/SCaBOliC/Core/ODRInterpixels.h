@@ -92,10 +92,12 @@ namespace SCaBOliC
             static DigitalSet doubleDS(const DigitalSet& ds);
 
             DigitalSet filterPointels(DigitalSet& ds) const;
+            DigitalSet filterPixels(DigitalSet& ds) const;
             DigitalSet convertToPixelMode(const DigitalSet& ds) const;
 
         public:
             void solutionSet(DigitalSet& outputDS,
+                             const DigitalSet& initialDS,
                              const ODRModel& odrModel,
                              const int* varValue,
                              const std::unordered_map<Point, unsigned int>& pointToVar) const;

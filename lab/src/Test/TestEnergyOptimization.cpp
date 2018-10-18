@@ -85,6 +85,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
     odrFactory.solutionSet(solution.outputDS,
+                           input.optimizationRegions.trustFRG,
                            input.optimizationRegions,
                            labelsVector.data(),
                            energy.vm().pim);

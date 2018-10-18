@@ -184,6 +184,18 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds) const
     return filtered;
 }
 
+ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds) const
+{
+    DigitalSet filtered(ds.domain());
+    for(auto it=ds.begin();it!=ds.end();++it)
+    {
+        Point p=*it;
+        if(p(0)%2==1 && p(1)%2==1) filtered.insert(*it);
+    }
+
+    return filtered;
+}
+
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,unsigned int radius,
                                     const DigitalSet& original) const
@@ -284,7 +296,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                     filterPointels(optRegion),
                     filterPointels(trustFRG),
                     filterPointels(trustBKG),
-                    filterPointels(applicationRegion)
+                    filterPixels(applicationRegion)
     );
 }
 
@@ -338,15 +350,15 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& 
 }
 
 void ODRInterpixels::solutionSet(DigitalSet& outputDS,
+                                 const DigitalSet& initialDS,
                                  const ODRModel& odrModel,
                                  const int* varValue,
                                  const std::unordered_map<Point, unsigned int>& pointToVar) const
 {
-    const DigitalSet& trustFRG = odrModel.trustFRG;
     const DigitalSet& optRegion = odrModel.optRegion;
 
     DigitalSet tempDS(outputDS.domain());
-    tempDS.insert(trustFRG.begin(),trustFRG.end());
+    tempDS.insert(initialDS.begin(),initialDS.end());
     for (DigitalSet::ConstIterator it = optRegion.begin();
          it != optRegion.end(); ++it)
     {
