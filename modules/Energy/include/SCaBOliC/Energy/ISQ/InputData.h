@@ -4,7 +4,7 @@
 #include <eigen3/Eigen/Sparse>
 #include <opencv2/core/mat.hpp>
 
-#include "SCaBOliC/Core/OptimizationDigitalRegions.h"
+#include "SCaBOliC/Core/ODRModel.h"
 #include "SCaBOliC/Energy/ISQ/Terms/Data/IProbabilityDistribution.h"
 
 namespace SCaBOliC
@@ -19,7 +19,7 @@ namespace SCaBOliC
                 typedef double Scalar;
                 typedef unsigned int Index;
 
-                typedef SCaBOliC::Core::OptimizationDigitalRegions OptimizationDigitalRegions;
+                typedef SCaBOliC::Core::ODRModel OptimizationDigitalRegions;
                 typedef IProbabilityDistribution<Scalar> MyProbabilityDistribution;
 
                 typedef DGtal::Z2i::Domain Domain;

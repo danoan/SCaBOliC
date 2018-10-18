@@ -57,7 +57,6 @@ void DataTerm::setCoeffs(OptimizationData& od,
     Index xi;
 
     typedef DGtal::Z2i::Point Point;
-    Point n4[4] = {Point{1,0},Point{-1,0},Point(0,1),Point(0,-1)};
     
     maxCtrb=0;
     for(auto it = ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
@@ -74,9 +73,10 @@ void DataTerm::setCoeffs(OptimizationData& od,
         cvColorType v = image.at<cvColorType>(row,col);
         cvColorType vn;
         double heterogenity=0;
-        for(int j=0;j<4;++j)
+        
+        for(auto itp = this->odrFactory.neighBegin(); itp!=this->odrFactory.neighEnd();++itp)
         {
-            Point neigh = *it + n4[j];
+            Point neigh = *it + *itp;
             if(neigh(0)<0 || neigh(1)<0) continue;
             if(neigh(0)>image.cols || neigh(1)>image.rows) continue;
 

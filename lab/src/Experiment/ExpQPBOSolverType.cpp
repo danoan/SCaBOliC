@@ -29,10 +29,11 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                                TEOInput::OptimizationMode::OM_OriginalBoundary,
                                am);
 
-    Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImprove(inputImprove,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,outputFolder,exportRegions);
+    ODRFactory odrFactory;
+    Test::TestEnergyOptimization teoSimple(inputSimple,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoProbe(inputProbe,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImprove(inputImprove,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,odrFactory,outputFolder,exportRegions);
 
 
 

@@ -26,7 +26,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
     std::vector<TableEntry> entries;
     for(int i=1;i<=maxIterations;++i)
     {
-        if(i%2==0) om = OptimizationMode::OM_OriginalBoundary;
+        if(i%2==0)om = OptimizationMode::OM_OriginalBoundary;
         else om = OptimizationMode::OM_DilationBoundary;
 
         TEOInput input(imageInput.imagePath,
@@ -34,7 +34,8 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                        om,
                        am);
 
-        Test::TestEnergyOptimization teo(input,outputFolder,exportRegions                                                                                                                                                                                                                                                                                                                                                                                                                               );
+        ODRFactory odrFactory;
+        Test::TestEnergyOptimization teo(input,odrFactory,outputFolder,exportRegions                                                                                                                                                                                                                                                                                                                                                                                                                               );
         const TEOOutput::Solution& solution = teo.data->solution;
 
         entries.push_back(TableEntry(*teo.data,"IT " + std::to_string(i)));

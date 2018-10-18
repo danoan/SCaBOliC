@@ -3,6 +3,7 @@
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DIPaCUS/derivates/Misc.h>
+#include <SCaBOliC/Core/ODRInterface.h>
 
 
 namespace SCaBOliC
@@ -17,6 +18,8 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::Point Point;
                 typedef DGtal::Z2i::Domain Domain;
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
+                
+                typedef Core::ODRInterface ODRInterface;
 
                 typedef unsigned int Index;
 
@@ -32,7 +35,8 @@ namespace SCaBOliC
 
                 CoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
-                                     int radius);
+                                     int radius,
+                                     ODRInterface& odrFactory);
 
                 inline const CoefficientData &retrieve(const Point &p) const { return _cm.at(p); }
 

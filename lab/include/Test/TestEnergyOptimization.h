@@ -8,7 +8,8 @@
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
 
 #include <SCaBOliC/Core/display.h>
-#include <SCaBOliC/Core/ODRFactory.h>
+#include <SCaBOliC/Core/ODRInterface.h>
+#include <SCaBOliC/Core/ODRModel.h>
 
 #include <SCaBOliC/Energy/ISQ/InputData.h>
 #include <SCaBOliC/Energy/model/Solution.h>
@@ -30,11 +31,13 @@ namespace SCaBOliC
             class TestEnergyOptimization
             {
             public:
-                typedef Core::ODRFactory::Domain Domain;
-                typedef Core::ODRFactory::Point Point;
-                typedef Core::ODRFactory::Image2D Image2D;
-                typedef Core::ODRFactory::DigitalSet DigitalSet;
-                typedef Core::OptimizationDigitalRegions ODR;
+                typedef DGtal::Z2i::Domain Domain;
+                typedef DGtal::Z2i::Point Point;
+                typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
+                typedef DGtal::Z2i::DigitalSet DigitalSet;
+
+                typedef Core::ODRInterface ODRInterface;
+                typedef Core::ODRModel ODRModel;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
@@ -47,12 +50,11 @@ namespace SCaBOliC
 
 
             public:
-                TestEnergyOptimization(){throw std::runtime_error("Operation not allowed.");}
-                TestEnergyOptimization(const TestEnergyOptimization&){throw std::runtime_error("Operation not allowed.");}
                 TestEnergyOptimization& operator=(const TestEnergyOptimization){throw std::runtime_error("Operation not allowed.");}
                 ~TestEnergyOptimization(){delete data;}
 
-                TestEnergyOptimization(const TestInput& testInput, 
+                TestEnergyOptimization(const TestInput& testInput,
+                                       const ODRInterface& odrFactory,
                                        const std::string& outputFolder,
                                        bool exportRegions=false);
             private:
@@ -71,6 +73,8 @@ namespace SCaBOliC
             private:
                 Lab::Utils::MockDistribution frgDistribution;
                 Lab::Utils::MockDistribution bkgDistribution;
+
+                const ODRInterface& odrFactory;
 
             public:
                 TestOutput* data;

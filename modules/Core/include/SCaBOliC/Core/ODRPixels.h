@@ -1,5 +1,5 @@
-#ifndef BCE_ODRFACTORY_H
-#define BCE_ODRFACTORY_H
+#ifndef BCE_ODRPIXELS_H
+#define BCE_ODRPIXELS_H
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DGtal/images/ImageContainerBySTLVector.h>
@@ -9,13 +9,14 @@
 #include "DIPaCUS/components/Neighborhood.h"
 #include "DIPaCUS/derivates/Misc.h"
 
-#include "OptimizationDigitalRegions.h"
+#include "ODRModel.h"
+#include "ODRInterface.h"
 
 namespace SCaBOliC
 {
     namespace Core
     {
-        class ODRFactory
+        class ODRPixels: public SCaBOliC::Core::ODRInterface
         {
         public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
@@ -24,18 +25,10 @@ namespace SCaBOliC
 
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
             typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
+            
+            typedef ODRModel::OptimizationMode OptimizationMode;
+            typedef ODRModel::ApplicationMode ApplicationMode;
 
-            enum OptimizationMode{
-                OM_OriginalBoundary,
-                OM_DilationBoundary};
-
-            enum ApplicationMode{
-                AM_OptimizationBoundary,
-                AM_FullDomain,
-                AM_AroundBoundary,
-                AM_InverseAroundBoundary,
-                AM_InternRange,
-                AM_ExternRange};
 
         private:
 
@@ -56,16 +49,41 @@ namespace SCaBOliC
 
         public:
 
-            static OptimizationDigitalRegions createODR(OptimizationMode optMode,
-                                                        ApplicationMode appMode,
-                                                        unsigned int radius,
-                                                        const DigitalSet& original);
+            void solutionSet(DigitalSet& outputDS,
+                             const ODRModel& odrModel,
+                             const int* varValue,
+                             const std::unordered_map<Point, unsigned int>& pointToVar) const
+            {
+                const DigitalSet& trustFRG = odrModel.trustFRG;
+                const DigitalSet& optRegion = odrModel.optRegion;
+
+                outputDS.insert(trustFRG.begin(),trustFRG.end());
+                for (DigitalSet::ConstIterator it = optRegion.begin();
+                     it != optRegion.end(); ++it)
+                {
+                    if (varValue[ pointToVar.at(*it) ] == 1) {
+                        outputDS.insert(*it);
+                    }
+                }
+            }
+
+            ODRModel createODR(OptimizationMode optMode,
+                               ApplicationMode appMode,
+                               unsigned int radius,
+                               const DigitalSet& original) const;
+
+            Point* neighBegin() const{ return neighborhoodFilter; }
+            Point* neighEnd() const{ return neighborhoodFilter+4; }
+
+            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
+                                                                        const DigitalSet& toIntersect) const;
 
         private:
             static DIPaCUS::Morphology::StructuringElement dilationSE,erosionSE;
+            static Point neighborhoodFilter[5];
         };
     }
 }
 
 
-#endif //BCE_ODRGENERATOR_H
+#endif //BCE_ODRPIXELS_H

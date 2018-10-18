@@ -29,7 +29,8 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
 {
     CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
                             id.optimizationRegions.trustFRG,
-                            id.radius);
+                            id.radius,
+                            this->odrFactory);
 
     this->constantFactor = cc.factor();
     this->constantTerm = cc.constantTerm();
@@ -57,8 +58,8 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
     DigitalSet temp(ODR.domain);
-    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization(id.radius,
-                                                           ODR.optRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = odrFactory.intersectionComputer(id.radius,
+                                                                                             ODR.optRegion);
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;

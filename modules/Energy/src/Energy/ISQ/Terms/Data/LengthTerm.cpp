@@ -57,7 +57,6 @@ void LengthTerm::setCoeffs(OptimizationData& od,
     int col,row;
     Index xi,yi;
 
-    Point filter[4] = { Point(1,0),Point(0,1),Point(-1,0),Point(0,-1) };
     Point neigh;
     maxCtrb=0;
     for(auto it = ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
@@ -67,9 +66,9 @@ void LengthTerm::setCoeffs(OptimizationData& od,
 
         xi = vm.pim.at(*it);
 
-        for(int i=0;i<4;++i)
+        for(auto itp=this->odrFactory.neighBegin();itp!=this->odrFactory.neighEnd();++itp)
         {
-            neigh = *it + filter[i];
+            neigh = *it + *itp;
             if(ODR.trustFRG(neigh))
             {
                 od.localUTM(1,xi) += 1;

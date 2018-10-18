@@ -1,15 +1,54 @@
-#include <Test/TestEnergyOptimization.h>
 #include "Test/TestEnergyEvaluation.h"
 
 using namespace SCaBOliC::Lab::Test;
 
 TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
 {
-    TestEnergyOptimization teo(ui,"",false);
-    ISQInputData input = teo.data->input;;
-    Solution solution = teo.data->solution;
+    int estimatingBallRadius=3;
+    MockDistribution frgDistribution;
+    MockDistribution bkgDistribution;
+
+    ODRFactory odrFactory;
+
+
+    Image2D image = DGtal::GenericReader<Image2D>::import(ui.imagePath);
+    Domain domain = image.domain();
+
+    DigitalSet ds( Domain(domain.lowerBound()-Point(0,0),
+                          domain.upperBound()+Point(0,0) )
+    );
+
+    DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
+
+    cv::Mat cvImg = cv::imread(ui.imagePath);
+    ODRModel odr = odrFactory.createODR(ui.om,
+                                        ui.am,
+                                        3,
+                                        ds);
+
+    ISQInputData input (odr,
+                        cvImg,
+                        estimatingBallRadius,
+                        frgDistribution,
+                        bkgDistribution,
+                        0,
+                        1);
 
     ISQEnergy energy(input);
+    Solution solution(input.optimizationRegions.domain);
+    solution.init(energy.numVars());
+    solution.labelsVector.setZero();
+
+    if(ui.solverType==QPBOSolverType::Simple)
+        energy.solve<QPBOSimpleSolver>(solution);
+    else if(ui.solverType==QPBOSolverType::Probe)
+        energy.solve<QPBOProbeSolver>(solution);
+    else if(ui.solverType==QPBOSolverType::Improve)
+        energy.solve<QPBOImproveSolver>(solution);
+    else if(ui.solverType==QPBOSolverType::ImproveProbe)
+        energy.solve<QPBOIP>(solution);
+
+    Solution::LabelsVector& labelsVector = solution.labelsVector;
 
     double e1 = energy.sqEnergy(solution.labelsVector);
     double e2 = solution.energyValue;

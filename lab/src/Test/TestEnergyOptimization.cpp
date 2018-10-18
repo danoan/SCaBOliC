@@ -16,9 +16,10 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
     return ds;
 }
 
-TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput, 
+TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
+                                               const ODRInterface& odrFactory,
                                                const std::string& outputFolder, 
-                                               bool exportRegions)
+                                               bool exportRegions):odrFactory(odrFactory)
 {
 
     DigitalSet ds = deriveDS(testInput);
@@ -45,10 +46,10 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                                                                           const TestInput& testInput,
                                                                           const cv::Mat& cvImg)
 {
-    ODR odr = Core::ODRFactory::createODR(testInput.om,
-                                          testInput.am,
-                                          estimatingBallRadius,
-                                          ds);
+    ODRModel odr = odrFactory.createODR(testInput.om,
+                                   testInput.am,
+                                   estimatingBallRadius,
+                                   ds);
 
     return ISQInputData (odr,
                          cvImg,
@@ -83,9 +84,10 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         energy.solve<QPBOIP>(solution);
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
-    input.optimizationRegions.solutionSet(solution.outputDS,
-                                          labelsVector.data(),
-                                          energy.vm().pim);
+    odrFactory.solutionSet(solution.outputDS,
+                           input.optimizationRegions,
+                           labelsVector.data(),
+                           energy.vm().pim);
 
 
     return solution;

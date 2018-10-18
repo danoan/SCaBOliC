@@ -4,6 +4,7 @@
 #include <DGtal/io/writers/GenericWriter.h>
 
 #include <SCaBOliC/Utils/Utils.h>
+#include <SCaBOliC/Core/ODRPixels.h>
 
 #include <Test/TestEnergyOptimization.h>
 
@@ -25,6 +26,7 @@ namespace SCaBOliC
                 typedef Lab::Model::ImageInput ImageInput;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
+                typedef SCaBOliC::Energy::EnergyTerm::ODRFactory ODRFactory;
 
                 typedef TEOInput::ApplicationMode ApplicationMode;
                 typedef TEOInput::OptimizationMode OptimizationMode;

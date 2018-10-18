@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-core)
 
-add_library(scabolic-core SHARED src/display.cpp src/ODRFactory.cpp)
+add_library(scabolic-core SHARED src/display.cpp src/ODRPixels.cpp src/ODRInterpixels.cpp)
 
 target_include_directories(scabolic-core PRIVATE
         include

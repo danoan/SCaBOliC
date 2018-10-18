@@ -2,6 +2,8 @@
 #define SCABOLIC_ENERGY_IENERGYTERM_H
 
 #include <SCaBOliC/Energy/model/OptimizationData.h>
+#include <SCaBOliC/Core/ODRPixels.h>
+#include <SCaBOliC/Core/ODRInterpixels.h>
 
 namespace SCaBOliC
 {
@@ -12,6 +14,9 @@ namespace SCaBOliC
         public:
             typedef unsigned int Index;
 
+            //typedef Core::ODRPixels ODRFactory;
+            typedef Core::ODRInterpixels ODRFactory;
+
         public:
             EnergyTerm& operator+(const EnergyTerm& other);
 
@@ -20,6 +25,7 @@ namespace SCaBOliC
 
         public:
             OptimizationData od;
+            ODRFactory odrFactory;
 
             double constantFactor;
             double constantTerm;

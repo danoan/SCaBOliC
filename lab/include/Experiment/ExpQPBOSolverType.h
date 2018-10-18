@@ -2,6 +2,7 @@
 #define SCABOLIC_LAB_EXPERIMENT_EXPQPBOSOLVERTYPE_H
 
 #include "SCaBOliC/Utils/Utils.h"
+#include "SCaBOliC/Core/ODRPixels.h"
 
 #include <model/UserInput.h>
 #include <model/OptOutput.h>
@@ -21,7 +22,9 @@ namespace SCaBOliC
                 typedef Lab::Model::ImageInput ImageInput;
                 typedef Lab::Model::UserInput TEOInput;
                 typedef Lab::Model::OptOutput TEOOutput;
+
                 typedef Optimization::QPBOSolverType QPBOSolverType;
+                typedef SCaBOliC::Energy::EnergyTerm::ODRFactory ODRFactory;
 
                 typedef TEOInput::ApplicationMode ApplicationMode;
 

@@ -2,7 +2,7 @@
 #define SCABOLIC_TESTINSTANCES_H
 
 #include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
-#include <SCaBOliC/Core/ODRFactory.h>
+#include <SCaBOliC/Core/ODRPixels.h>
 #include <Utils/Generator.h>
 #include <model/UserInput.h>
 
@@ -16,8 +16,8 @@ namespace SCaBOliC
             {
             public:
                 typedef SCaBOliC::Optimization::QPBOSolverType QPBOSolverType;
-                typedef SCaBOliC::Core::ODRFactory::OptimizationMode OptimizationMode;
-                typedef SCaBOliC::Core::ODRFactory::ApplicationMode ApplicationMode;
+                typedef SCaBOliC::Core::ODRModel::OptimizationMode OptimizationMode;
+                typedef SCaBOliC::Core::ODRModel::ApplicationMode ApplicationMode;
 
                 typedef SCaBOliC::Lab::Model::UserInput UserInput;
 

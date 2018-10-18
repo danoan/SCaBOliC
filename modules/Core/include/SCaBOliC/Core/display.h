@@ -5,7 +5,7 @@
 #include <string>
 #include <DGtal/helpers/StdDefs.h>
 #include <DGtal/io/boards/Board2D.h>
-#include "OptimizationDigitalRegions.h"
+#include "ODRModel.h"
 
 
 namespace SCaBOliC
@@ -15,7 +15,7 @@ namespace SCaBOliC
         namespace Display
         {
             typedef DGtal::Z2i::DigitalSet DigitalSet;
-            typedef OptimizationDigitalRegions OptimizationRegions;
+            typedef ODRModel OptimizationRegions;
 
             void DisplayODR(const OptimizationRegions& ODR,std::string outputPath);
 

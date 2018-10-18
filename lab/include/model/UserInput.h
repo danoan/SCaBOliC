@@ -2,7 +2,7 @@
 #define SCABOLIC_LAB_MODEL_USERINPUT_H
 
 #include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
-#include <SCaBOliC/Core/ODRFactory.h>
+#include <SCaBOliC/Core/ODRPixels.h>
 
 namespace SCaBOliC
 {
@@ -16,8 +16,8 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
                 typedef DGtal::Z2i::Domain Domain;
 
-                typedef Core::ODRFactory::OptimizationMode OptimizationMode;
-                typedef Core::ODRFactory::ApplicationMode ApplicationMode;
+                typedef Core::ODRModel::OptimizationMode OptimizationMode;
+                typedef Core::ODRModel::ApplicationMode ApplicationMode;
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
             public:

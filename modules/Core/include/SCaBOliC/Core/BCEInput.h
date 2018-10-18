@@ -4,7 +4,7 @@
 #include <DGtal/helpers/StdDefs.h>
 #include <DGtal/images/ImageContainerBySTLVector.h>
 
-#include "ODRFactory.h"
+#include "ODRPixels.h"
 
 namespace SCaBOliC
 {
@@ -19,8 +19,8 @@ namespace SCaBOliC
 
             BCEInput(Image2D refImage,
                      DigitalSet startDS,
-                     ODRFactory::OptimizationMode om,
-                     ODRFactory::ApplicationMode am,
+                     ODRModel::OptimizationMode om,
+                     ODRModel::ApplicationMode am,
                      unsigned int radius):refImage(refImage),
                                           startDS(startDS),
                                           om(om),
@@ -31,8 +31,8 @@ namespace SCaBOliC
             Image2D refImage;
             DigitalSet startDS;
 
-            ODRFactory::OptimizationMode om;
-            ODRFactory::ApplicationMode am;
+            ODRModel::OptimizationMode om;
+            ODRModel::ApplicationMode am;
 
             unsigned int radius;
 

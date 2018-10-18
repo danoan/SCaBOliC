@@ -120,9 +120,9 @@ void expFlowFromDigitizer()
 
 int main()
 {
-    //expApplication();
-    //expSolver();
+    expApplication();
+    expSolver();
     expFlowFromImage();
-    //expFlowFromDigitizer();
+    expFlowFromDigitizer();
     return 0;
 }

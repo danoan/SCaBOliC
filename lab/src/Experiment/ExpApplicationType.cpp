@@ -29,10 +29,11 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                               TEOInput::OptimizationMode::OM_OriginalBoundary,
                               TEOInput::ApplicationMode::AM_InternRange);
 
-    Test::TestEnergyOptimization teoFull(inputFull,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoAround(inputAround,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoOriginal(inputOriginal,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoIntRange(inputInternRange,outputFolder,exportRegions);
+    ODRFactory odrFactory;
+    Test::TestEnergyOptimization teoFull(inputFull,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoAround(inputAround,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoOriginal(inputOriginal,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoIntRange(inputInternRange,odrFactory,outputFolder,exportRegions);
 
 
 

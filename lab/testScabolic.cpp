@@ -2,6 +2,7 @@
 #include <Test/TestInstances.h>
 #include <model/ImageInput.h>
 #include <Test/TestEnergyEvaluation.h>
+#include <SCaBOliC/Core/ODRPixels.h>
 
 namespace SCaBOliC
 {
@@ -39,9 +40,11 @@ void runInstances(Model::ImageInput imageInput)
     Test::TestInstances TI(imageInput.imagePath);
     bool success;
     Test::TestInstances::UserInput input = TI.next(success);
+
+    SCaBOliC::Energy::EnergyTerm::ODRFactory odrFactory;
     while(success)
     {
-        Test::TestEnergyOptimization teo(input,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
+        Test::TestEnergyOptimization teo(input,odrFactory,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
         input = TI.next(success);
     }
 }

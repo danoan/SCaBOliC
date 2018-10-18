@@ -4,14 +4,15 @@ using namespace SCaBOliC::Energy::ISQ;
 
 CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            const DigitalSet &trustForegroundRegion,
-                                           int radius):R(radius)
+                                           int radius,
+                                           ODRInterface& odrFactory):R(radius)
 {
     W = 0;
     C = (PI * R * R) / 2.0;
     F = 9.0 / pow(R, 6.0);
 
 
-    DIPaCUS::Misc::DigitalBallIntersection DBI(radius, trustForegroundRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBI = odrFactory.intersectionComputer(radius, trustForegroundRegion);
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);
     for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it) {

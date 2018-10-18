@@ -2,6 +2,7 @@
 #define SCABOLIC_LAB_EXPERIMENT_EXPAPPLICATIONTYPE_H
 
 #include "SCaBOliC/Utils/Utils.h"
+#include "SCaBOliC/Energy/base/EnergyTerm.h"
 
 #include "Utils/Utils.h"
 #include <Test/TestEnergyOptimization.h>
@@ -23,6 +24,7 @@ namespace SCaBOliC
                 typedef Lab::Model::UserInput TEOInput;
                 typedef Lab::Model::OptOutput TEOOutput;
 
+                typedef SCaBOliC::Energy::EnergyTerm::ODRFactory ODRFactory;
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
             private:

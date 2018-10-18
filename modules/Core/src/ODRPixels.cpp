@@ -1,19 +1,19 @@
 #include <DGtal/io/boards/Board2D.h>
-#include "SCaBOliC/Core/ODRFactory.h"
+#include "SCaBOliC/Core/ODRPixels.h"
 
 using namespace SCaBOliC::Core;
 
-DIPaCUS::Morphology::StructuringElement ODRFactory::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
-DIPaCUS::Morphology::StructuringElement ODRFactory::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
+DIPaCUS::Morphology::StructuringElement ODRPixels::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
+DIPaCUS::Morphology::StructuringElement ODRPixels::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
 
 
-OptimizationDigitalRegions::Point OptimizationDigitalRegions::NeighborSet::neighborhoodFilter[5] = {OptimizationDigitalRegions::Point(0,1),
-                                                                                                           OptimizationDigitalRegions::Point(1,0),
-                                                                                                           OptimizationDigitalRegions::Point(-1,0),
-                                                                                                           OptimizationDigitalRegions::Point(0,-1),
-                                                                                                           OptimizationDigitalRegions::Point(0,0)};
+ODRPixels::Point ODRPixels::neighborhoodFilter[5] = {ODRPixels::Point(0,1),
+                                                     ODRPixels::Point(1,0),
+                                                     ODRPixels::Point(-1,0),
+                                                     ODRPixels::Point(0,-1),
+                                                     ODRPixels::Point(0,0)};
 
-ODRFactory::DigitalSet ODRFactory::omOriginalBoundary(const DigitalSet& original)
+ODRPixels::DigitalSet ODRPixels::omOriginalBoundary(const DigitalSet& original)
 {
     DigitalSet originalBoundary(original.domain());
     EightNeighborhood en(originalBoundary,original);
@@ -21,7 +21,7 @@ ODRFactory::DigitalSet ODRFactory::omOriginalBoundary(const DigitalSet& original
     return originalBoundary;
 }
 
-ODRFactory::DigitalSet ODRFactory::omDilationBoundary(const DigitalSet& original)
+ODRPixels::DigitalSet ODRPixels::omDilationBoundary(const DigitalSet& original)
 {
     DigitalSet dilated(original.domain());
     DigitalSet dilatedBoundary(original.domain());
@@ -36,7 +36,7 @@ ODRFactory::DigitalSet ODRFactory::omDilationBoundary(const DigitalSet& original
     return dilatedBoundary;
 }
 
-ODRFactory::DigitalSet ODRFactory::omFullDomain(const Domain& originalDomain)
+ODRPixels::DigitalSet ODRPixels::omFullDomain(const Domain& originalDomain)
 {
     DigitalSet fullDomain(originalDomain);
     fullDomain.insert(originalDomain.begin(),originalDomain.end());
@@ -44,18 +44,18 @@ ODRFactory::DigitalSet ODRFactory::omFullDomain(const Domain& originalDomain)
     return fullDomain;
 }
 
-ODRFactory::DigitalSet ODRFactory::amOriginalBoundary(const DigitalSet& original)
+ODRPixels::DigitalSet ODRPixels::amOriginalBoundary(const DigitalSet& original)
 {
     return omOriginalBoundary(original);
 }
 
 
-ODRFactory::DigitalSet ODRFactory::amFullDomain(const Domain& applicationDomain)
+ODRPixels::DigitalSet ODRPixels::amFullDomain(const Domain& applicationDomain)
 {
     return omFullDomain(applicationDomain);
 }
 
-ODRFactory::DigitalSet ODRFactory::amAroundBoundary(const DigitalSet& original,
+ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DigitalSet& original,
                                                     const DigitalSet& optRegion,
                                                     int length)
 {
@@ -76,7 +76,7 @@ ODRFactory::DigitalSet ODRFactory::amAroundBoundary(const DigitalSet& original,
     return aroundBoundary;
 }
 
-ODRFactory::DigitalSet ODRFactory::amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
+ODRPixels::DigitalSet ODRPixels::amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
 {
     DigitalSet originalPlusOptRegion(original.domain());
     originalPlusOptRegion.insert(original.begin(),original.end());
@@ -91,7 +91,7 @@ ODRFactory::DigitalSet ODRFactory::amInternRange(const DigitalSet& original, con
     return internRegion;
 }
 
-ODRFactory::DigitalSet ODRFactory::amExternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
+ODRPixels::DigitalSet ODRPixels::amExternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
 {
     DigitalSet originalPlusOptRegion(original.domain());
     originalPlusOptRegion.insert(original.begin(),original.end());
@@ -106,7 +106,7 @@ ODRFactory::DigitalSet ODRFactory::amExternRange(const DigitalSet& original, con
     return externRegion;
 }
 
-ODRFactory::DigitalSet ODRFactory::isolatedPoints(const DigitalSet& original, const DigitalSet& optRegion)
+ODRPixels::DigitalSet ODRPixels::isolatedPoints(const DigitalSet& original, const DigitalSet& optRegion)
 {
     DigitalSet dilated(original.domain());
 
@@ -124,10 +124,9 @@ ODRFactory::DigitalSet ODRFactory::isolatedPoints(const DigitalSet& original, co
     
 }
 
-OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
-                                                 ApplicationMode appMode,
-                                                 unsigned int radius,
-                                                 const DigitalSet& original)
+ODRModel ODRPixels::createODR (OptimizationMode optMode,
+                               ApplicationMode appMode,unsigned int radius,
+                               const DigitalSet& original) const
 {
     typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
 
@@ -200,7 +199,7 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::SetDifference(trustFRG, extendedOriginal, optRegion);
     
-    if(optMode==OM_DilationBoundary)
+    if(optMode==OptimizationMode::OM_DilationBoundary)
     {
         DigitalSet isolatedDS = isolatedPoints(original,optRegion);
         trustFRG+=isolatedDS;
@@ -222,10 +221,16 @@ OptimizationDigitalRegions ODRFactory::createODR(OptimizationMode optMode,
         trustBKG = swap;
     }
 
-    return OptimizationDigitalRegions(domain,
+    return ODRModel(domain,
                                       original,
                                       optRegion,
                                       trustFRG,
                                       trustBKG,
                                       applicationRegion);
+}
+
+DIPaCUS::Misc::DigitalBallIntersection ODRPixels::intersectionComputer(unsigned int radius,
+                                                                       const DigitalSet &toIntersect) const
+{
+    return DIPaCUS::Misc::DigitalBallIntersection(radius,toIntersect);
 }

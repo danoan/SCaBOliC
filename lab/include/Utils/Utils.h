@@ -8,7 +8,7 @@
 
 #include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
 
-#include <SCaBOliC/Core/ODRFactory.h>
+#include <SCaBOliC/Core/ODRPixels.h>
 #include <SCaBOliC/Core/display.h>
 
 #include <SCaBOliC/Energy/model/Solution.h>
@@ -25,7 +25,7 @@ namespace SCaBOliC
             typedef Energy::Solution Solution;
 
             typedef Optimization::QPBOSolverType QPBOSolverType;
-            typedef SCaBOliC::Core::ODRFactory::ApplicationMode ApplicationMode;
+            typedef SCaBOliC::Core::ODRModel::ApplicationMode ApplicationMode;
 
             std::string resolveQPBOSolverTypeName(QPBOSolverType solverType);
 

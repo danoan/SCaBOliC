@@ -6,7 +6,7 @@ namespace SCaBOliC
     {
         namespace Display
         {
-            void DisplayODR(const OptimizationDigitalRegions& ODR,std::string outputPath)
+            void DisplayODR(const ODRModel& ODR,std::string outputPath)
             {
                 DGtal::Board2D board;
                 board << DGtal::SetMode(ODR.domain.className(),"Paving")
@@ -35,7 +35,7 @@ namespace SCaBOliC
 
             }
 
-            void DisplayModifiedBoundary(const OptimizationDigitalRegions& ODR,
+            void DisplayModifiedBoundary(const ODRModel& ODR,
                                          const DigitalSet& solutionSet,
                                          std::string outputPath)
             {
