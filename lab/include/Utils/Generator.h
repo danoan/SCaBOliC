@@ -14,7 +14,7 @@ namespace SCaBOliC
             class Generator
             {
             public:
-
+                typedef unsigned long Index;
 
             private:
                 enum QO{Expand,Increment,Done,Invalid};
@@ -23,37 +23,44 @@ namespace SCaBOliC
                 {
                     QC(){};
 
-                    QC(int level,int value,QO op):level(level),value(value)
+                    QC(Index level,Index value,QO op):level(level),value(value)
                     {
                         if(level>totalIndexes) op=Invalid;
                         else this->op = op;
                     }
 
-                    int level;
-                    int value;
+                    Index level;
+                    Index value;
                     QO op;
                 };
 
             public:
-                Generator(const int* pIndexLimits):currIndex(0),
-                                                   currLim(0)
+                Generator(const Index* pIndexLimits)
                 {
-                    indexLimits = (int*) malloc(sizeof(int)*totalIndexes);
-                    copySequence(indexLimits,pIndexLimits);
+                    indexLimits = (Index*) malloc(sizeof(Index)*totalIndexes);
+                    previousSequence = (Index*) malloc(sizeof(Index)*totalIndexes);
 
-                    previousSequence = (int*) malloc(sizeof(int)*totalIndexes);
-                    memset(previousSequence,0,sizeof(int)*totalIndexes);
+                    restart(pIndexLimits);
+                };
+
+                void restart(const Index* pIndexLimits)
+                {
+                    currIndex = 0;
+                    currLim = 0;
+
+                    copySequence(indexLimits,pIndexLimits);
+                    memset(previousSequence,0,sizeof(Index)*totalIndexes);
 
                     stack.push(QC(0,0,QO::Expand));
                     stack.push(QC(0,0,QO::Done));
-                };
+                }
 
                 Generator(const Generator&){throw std::runtime_error("Operation not allowed!");}
                 Generator& operator=(const Generator&){throw std::runtime_error("Operation not allowed!");}
                 ~Generator(){free(previousSequence); free(indexLimits);}
 
 
-                bool next(int* sequence)
+                bool next(Index* sequence)
                 {
                     QC qc;
                     do
@@ -95,19 +102,19 @@ namespace SCaBOliC
                 }
 
             private:
-                inline void copySequence(int* cp, const int* old)
+                inline void copySequence(Index* cp, const Index* old)
                 {
-                    for(int i=0;i<totalIndexes;++i) cp[i]=old[i];
+                    for(Index i=0;i<totalIndexes;++i) cp[i]=old[i];
                 }
 
             private:
-                int* indexLimits;
+                Index* indexLimits;
 
                 std::stack<QC> stack;
 
-                int* previousSequence;
-                int currIndex;
-                int currLim;
+                Index* previousSequence;
+                Index currIndex;
+                Index currLim;
             };
         }
     }

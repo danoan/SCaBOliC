@@ -11,6 +11,7 @@ namespace SCaBOliC
         {
             struct ImageInput
             {
+                ImageInput(){};
                 ImageInput(std::string imagePath,std::string imageName):imagePath(imagePath),imageName(imageName){}
 
                 std::string imagePath;

@@ -18,6 +18,8 @@ namespace SCaBOliC
                 board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Yellow, DGtal::Color::Yellow));
                 board << ODR.trustBKG;
 
+                board << DGtal::SetMode(ODR.original.className(),"Paving");
+
                 board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Blue, DGtal::Color::Blue));
                 board << ODR.trustFRG;
 

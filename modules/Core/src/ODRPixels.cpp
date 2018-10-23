@@ -133,17 +133,8 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));
 
-    Domain applicationDomain(original.domain().lowerBound(),
-                             original.domain().upperBound());
-
-
-
-    DigitalSet originalInLargerDomain (domain);
-    originalInLargerDomain.insert(original.begin(),original.end());
-
-
     DigitalSet optRegion(domain);
-    DigitalSet applicationRegion(applicationDomain);
+    DigitalSet applicationRegion(domain);
 
 
     switch (optMode) {
@@ -161,11 +152,6 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary: {
             DigitalSet temp = amOriginalBoundary(optRegion);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_FullDomain: {
-            DigitalSet temp = amFullDomain(applicationDomain);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }

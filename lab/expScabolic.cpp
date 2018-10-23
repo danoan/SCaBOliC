@@ -1,8 +1,10 @@
 #include <string>
 #include <Experiment/ExpFlowFromImage.h>
-#include <Experiment/ExpFlowFromDigitizer.h>
+#include <Utils/Generator.h>
+#include <Experiment/ExpInput.h>
 #include "Experiment/ExpApplicationType.h"
 #include "Experiment/ExpQPBOSolverType.h"
+#include "Experiment/ExpInput.h"
 
 namespace SCaBOliC
 {
@@ -17,112 +19,116 @@ namespace SCaBOliC
     }
 }
 
-namespace SCaBOliC
-{
-    namespace Lab
-    {
-        namespace Experiment
-        {
-            namespace ExpInput
-            {
-                typedef Lab::Model::ImageInput ImageInput;
-
-                std::string square = Lab::Test::imageFolder + "/single_square.pgm";
-                ImageInput squareInput(square,"Square");
-
-                std::string squarex9 = Lab::Test::imageFolder + "/single_squarex9.pgm";
-                ImageInput squarex9Input(squarex9,"Square X9");
-            }
-        }
-    }
-}
-
 using namespace SCaBOliC::Lab::Experiment;
 
-void expApplication()
+void expApplication(const ExpInput::ExpInputSet& inputSet)
 {
     typedef ExpApplicationType::QPBOSolverType QPBOSolverType;
 
-    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expApplication";
+    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expApplication";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-application.txt",std::ios_base::out);
 
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Simple,ofs,expOutputFolder);
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Probe,ofs,expOutputFolder);
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::Improve,ofs,expOutputFolder);
-    ExpApplicationType(ExpInput::squareInput,QPBOSolverType::ImproveProbe,ofs,expOutputFolder);
-
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Simple,ofs,expOutputFolder);
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Probe,ofs,expOutputFolder);
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::Improve,ofs,expOutputFolder);
-    ExpApplicationType(ExpInput::squarex9Input,QPBOSolverType::ImproveProbe,ofs,expOutputFolder);
+    for(auto it = inputSet.begin();it!=inputSet.end();++it)
+    {
+        ExpApplicationType(*it,QPBOSolverType::Simple,ofs,expOutputFolder);
+        ExpApplicationType(*it,QPBOSolverType::Probe,ofs,expOutputFolder);
+        ExpApplicationType(*it,QPBOSolverType::Improve,ofs,expOutputFolder);
+        ExpApplicationType(*it,QPBOSolverType::ImproveProbe,ofs,expOutputFolder);
+    }
 
     ofs.flush();
     ofs.close();
 }
 
-void expSolver()
+void expSolver(const ExpInput::ExpInputSet& inputSet)
 {
     typedef ExpQPBOSolverType::ApplicationMode ApplicationMode;
 
-    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expSolver";
+    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expSolver";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-solver.txt",std::ios_base::out);
 
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_FullDomain,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squareInput,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
-
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_FullDomain,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
-    ExpQPBOSolverType(ExpInput::squarex9Input,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
+    for(auto it = inputSet.begin();it!=inputSet.end();++it)
+    {
+        ExpQPBOSolverType(*it,ApplicationMode::AM_AroundBoundary,ofs,expOutputFolder);
+        ExpQPBOSolverType(*it,ApplicationMode::AM_OptimizationBoundary,ofs,expOutputFolder);
+        ExpQPBOSolverType(*it,ApplicationMode::AM_InternRange,ofs,expOutputFolder);
+    }
 
     ofs.flush();
     ofs.close();
 }
 
-void expFlowFromImage()
+void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation& pv)
 {
     typedef ExpFlowFromImage::QPBOSolverType QPBOSolverType;
     typedef ExpFlowFromImage::ApplicationMode ApplicationMode;
     typedef ExpFlowFromImage::OptimizationMode OptimizationMode;
 
-    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlow";
+    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlow";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-flow.txt",std::ios_base::out);
 
-    ExpFlowFromImage(ExpInput::squarex9Input,
-                     QPBOSolverType::Simple,
-                     ApplicationMode::AM_AroundBoundary,
-                     1,
-                     ofs,
-                     expOutputFolder,
-                     true);
-    ofs.flush();
+    ExpInput::ParameterVariation::ParameterVariationInstance pvi;
+    for(auto it = inputSet.begin();it!=inputSet.end();++it)
+    {
+        while(pv.next(pvi))
+        {
+            ExpFlowFromImage(*it,
+                             pvi.solverType,
+                             pvi.applicationMode,
+                             20,
+                             ofs,
+                             expOutputFolder,
+                             true);
+        }
+        pv.restart();
+    }
 
+    ofs.flush();
     ofs.close();
 }
 
-void expFlowFromDigitizer()
-{
-    std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlowDigitizer";
-    boost::filesystem::create_directories(expOutputFolder);
 
-    std::ofstream ofs(expOutputFolder + "/exp-flow-digitizer.txt",std::ios_base::out);
-
-    ExpFlowFromDigitizer(expOutputFolder,ofs);
-}
+const std::string ExpInput::DigitizerInput::imageOutputFolder = Test::imageFolder;
 
 int main()
 {
-    expApplication();
-    expSolver();
-    expFlowFromImage();
-    expFlowFromDigitizer();
+    typedef ExpFlowFromImage::QPBOSolverType QPBOSolverType;
+    typedef ExpFlowFromImage::ApplicationMode ApplicationMode;
+    typedef ExpFlowFromImage::OptimizationMode OptimizationMode;
+
+    ExpInput::SolverStrategyVector ssv;
+    ExpInput::OptModeVector omv;
+    ExpInput::AppModeVector amv;
+
+    ssv.push_back(QPBOSolverType::Probe);
+    ssv.push_back(QPBOSolverType::ImproveProbe);
+
+//    omv.push_back(OptimizationMode::OM_OriginalBoundary);
+//    omv.push_back(OptimizationMode::OM_DilationBoundary);
+
+    amv.push_back(ApplicationMode::AM_OptimizationBoundary);
+    amv.push_back(ApplicationMode::AM_AroundBoundary);
+
+
+    ExpInput::ParameterVariation pv(ssv,omv,amv);
+
+    typedef ExpInput::DigitizerInput MyDigitizer;
+
+    ExpInput::ExpInputSet inputSet;
+    inputSet.push_back( MyDigitizer::ball() );
+    inputSet.push_back( MyDigitizer::triangle() );
+    inputSet.push_back( MyDigitizer::square() );
+    inputSet.push_back( MyDigitizer::flower() );
+
+    //expApplication(inputSet);
+    //expSolver(inputSet);
+    expFlow(inputSet,pv);
+
     return 0;
 }

@@ -9,11 +9,6 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                                        std::string outputFolder, 
                                        bool exportRegions)
 {
-    TEOInput inputFull(imageInput.imagePath,
-                         solverType,
-                         TEOInput::OptimizationMode::OM_OriginalBoundary,
-                         TEOInput::ApplicationMode::AM_FullDomain);
-
     TEOInput inputAround(imageInput.imagePath,
                         solverType,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
@@ -30,15 +25,13 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                               TEOInput::ApplicationMode::AM_InternRange);
 
     ODRFactory odrFactory;
-    Test::TestEnergyOptimization teoFull(inputFull,odrFactory,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoAround(inputAround,odrFactory,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoOriginal(inputOriginal,odrFactory,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoIntRange(inputInternRange,odrFactory,outputFolder,exportRegions);
 
 
 
-    std::vector<TableEntry> entries = { TableEntry(teoFull.data,"Full"),
-                                        TableEntry(teoAround.data,"Around"),
+    std::vector<TableEntry> entries = { TableEntry(teoAround.data,"Around"),
                                         TableEntry(teoOriginal.data,"Original"),
                                         TableEntry(teoIntRange.data,"Int Range") };
 

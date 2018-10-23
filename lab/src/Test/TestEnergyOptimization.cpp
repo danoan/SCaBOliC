@@ -5,15 +5,10 @@ using namespace SCaBOliC::Lab::Test;
 TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestInput& testInput)
 {
     Image2D image = DGtal::GenericReader<Image2D>::import(testInput.imagePath);
-    Domain domain = image.domain();
-
-    DigitalSet ds( Domain(domain.lowerBound()-Point(0,0),
-                          domain.upperBound()+Point(0,0) )
-    );
-
+    DigitalSet ds( image.domain() );
     DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
 
-    return ds;
+    return DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(ds);
 }
 
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
@@ -21,16 +16,15 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
                                                const std::string& outputFolder, 
                                                bool exportRegions):odrFactory(odrFactory)
 {
-
+    unsigned int radius = 3;
     DigitalSet ds = deriveDS(testInput);
-
 
     boost::filesystem::path p(testInput.imagePath);
     std::string imageOutputFolder = outputFolder + "/" + p.stem().generic_string();
     cv::Mat cvImg = cv::imread(testInput.imagePath);
 
 
-    ISQInputData input = prepareInput(ds,3,testInput,cvImg);
+    ISQInputData input = prepareInput(ds,radius,testInput,cvImg);
 
     Solution solution = solve(input,testInput.solverType,testInput.om);
     std::string prefix = resolvePrefix(testInput);
@@ -100,9 +94,7 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
     std::string solverTypeStr = Lab::Utils::resolveQPBOSolverTypeName(testInput.solverType);
 
-    if(testInput.am==TestInput::ApplicationMode::AM_FullDomain)
-        solverTypeStr+="-AM_Full";
-    else if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
+    if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
         solverTypeStr+="-AM_Around";
     else if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
         solverTypeStr+="-AM_OptRegion";

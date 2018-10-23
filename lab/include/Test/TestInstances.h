@@ -29,14 +29,14 @@ namespace SCaBOliC
                 UserInput next(bool& success);
 
             private:
-                static int indexLims[3];
+                static MyGenerator::Index indexLims[3];
                 static QPBOSolverType vectorOfSolver[4];
                 static OptimizationMode vectorOfOM[2];
                 static ApplicationMode vectorOfAM[4];
 
                 MyGenerator gen;
                 std::string imagePath;
-                int currSequence[3];
+                MyGenerator::Index currSequence[3];
             };
         }
     }

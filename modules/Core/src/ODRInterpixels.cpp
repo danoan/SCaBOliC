@@ -18,7 +18,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::omOriginalBoundary(const DigitalSet& 
     DigitalSet originalBoundary(original.domain());
 
     DigitalSet eroded(original.domain());
-    DIPaCUS::Morphology::Erode(eroded,original,erosionSE,2);
+    DIPaCUS::Morphology::Erode(eroded,original,erosionSE,1);
 
     DIPaCUS::SetOperations::SetDifference(originalBoundary,original,eroded);
 
@@ -33,7 +33,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::omDilationBoundary(const DigitalSet& 
     DIPaCUS::Morphology::Dilate(dilated,
                                 original,
                                 dilationSE,
-                                2);
+                                1);
 
     EightNeighborhood en(dilatedBoundary,dilated);
 
@@ -87,7 +87,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::amInternRange(const DigitalSet& origi
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet eroded (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::Erode(eroded,originalPlusOptRegion,erosionSE,2*(length+1));
+    DIPaCUS::Morphology::Erode(eroded,originalPlusOptRegion,erosionSE,(length+1));
 
     DigitalSet internRegion(originalPlusOptRegion.domain());
     DIPaCUS::SetOperations::SetDifference(internRegion,originalPlusOptRegion,eroded);
@@ -102,7 +102,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::amExternRange(const DigitalSet& origi
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet dilated (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::Dilate(dilated,originalPlusOptRegion,dilationSE,2*length);
+    DIPaCUS::Morphology::Dilate(dilated,originalPlusOptRegion,dilationSE,length);
 
     DigitalSet externRegion(originalPlusOptRegion.domain());
     DIPaCUS::SetOperations::SetDifference(externRegion,dilated,originalPlusOptRegion);
@@ -117,7 +117,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::isolatedPoints(const DigitalSet& orig
     DIPaCUS::Morphology::Dilate(dilated,
                                 original,
                                 dilationSE,
-                                2);
+                                1);
 
     DigitalSet tempDS(original.domain());
     DigitalSet isolatedDS(original.domain());
@@ -129,47 +129,55 @@ ODRInterpixels::DigitalSet ODRInterpixels::isolatedPoints(const DigitalSet& orig
 
 ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
 {
-    typedef DGtal::Z2i::Curve Curve;
-    typedef DGtal::Z2i::KSpace KSpace;
+    const Domain& domain = ds.domain();
 
-    Domain extendedDomain( ds.domain().lowerBound() + DigitalSet::Point(-2,-2),
-                           ds.domain().upperBound() + DigitalSet::Point(2,2));
-
-    Image2D sImage(extendedDomain);
-    Curve sCurve;
+    Image2D sImage(domain);
     DIPaCUS::Representation::DigitalSetToImage(sImage,ds);
-    DIPaCUS::Misc::ComputeBoundaryCurve(sImage,sCurve,1);
 
-    Curve::CodesRange codeRange = sCurve.getCodesRange();
-    std::string ss;
-    for(auto it=codeRange.begin();it!=codeRange.end();++it)
+    Domain doubleDomain( domain.lowerBound()*2,domain.upperBound()*2 );
+    DigitalSet kds(doubleDomain);
+
+    for(auto it=ds.begin();it!=ds.end();++it)
     {
-        ss+= *it;
-        ss+= *it;
+        kds.insert( (*it)*2 + Point(1,1) );
     }
 
-    KSpace kspace;
-    Curve::SCell isc = kspace.sIndirectIncident(*sCurve.begin(),kspace.sOrthDir(*sCurve.begin()) );
-    Curve::SCell::Point ip = isc.preCell().coordinates;
+    DigitalSet filledKDS(kds.domain());
+    filledKDS.insert(kds.begin(),kds.end());
 
-    typedef DGtal::FreemanChain<int> FreemanChain;
-    FreemanChain fc(ss,ip(0),ip(1));
-    int x1,y1,x2,y2;
-    fc.computeBoundingBox(x1,y1,x2,y2);
-    x1-=50; y1-=50;
-    x2+=50; y2+=50;
 
-    Domain kCurveDomain( DigitalSet::Point(x1,y1),DigitalSet::Point(x2,y2) );
+    Point filterIP[4] = {Point(2,0),Point(0,2),Point(-2,0),Point(0,-2)};
+    Point filterP[8] = {Point(1,0),Point(0,1),Point(-1,0),Point(0,-1),
+                        Point(1,1),Point(-1,1),Point(-1,-1),Point(1,-1)};
 
-    Curve kCurve;
-    std::vector<Curve::Point> vectorOfPoints;
-    FreemanChain::getContourPoints(fc,vectorOfPoints);
+    std::stack<Point> s;
+    std::unordered_set<Point> visited;
 
-    kCurve.initFromVector(vectorOfPoints);
-    DigitalSet kds(kCurveDomain);
-    DIPaCUS::Misc::CompactSetFromClosedCurve<Curve::ConstIterator>(kds,kCurve.begin(),kCurve.end(),true);
+    s.push(*filledKDS.begin());
 
-    return kds;
+    while(!s.empty())
+    {
+        Point curr = s.top();
+        s.pop();
+
+        if(visited.find(curr)!=visited.end()) continue;
+        visited.insert(curr);
+
+        for(int j=0;j<8;++j)
+            filledKDS.insert(curr+filterP[j]);
+
+        for(int i=0;i<4;++i)
+        {
+            Point np = curr + filterIP[i];
+            if(kds(np))
+            {
+                s.push(np);
+            }
+        }
+    }
+
+
+    return filledKDS;
 }
 
 ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds) const
@@ -196,33 +204,27 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds) const
     return filtered;
 }
 
+#include "DGtal/io/boards/Board2D.h"
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
-                                    ApplicationMode appMode,unsigned int radius,
+                                    ApplicationMode appMode,
+                                    unsigned int radius,
                                     const DigitalSet& original) const
 {
-    typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
-
-    DigitalSet doubleOriginal = doubleDS(original);
-
-    Domain domain(doubleOriginal.domain().lowerBound() - 4*Point(radius,radius),
-                  doubleOriginal.domain().upperBound() + 4*Point(radius,radius));
-
-    Domain applicationDomain(doubleOriginal.domain().lowerBound(),
-                             doubleOriginal.domain().upperBound());
-
-
+    Point ballBorder = 4*Point(radius,radius);
+    Domain domain(original.domain().lowerBound() - ballBorder,
+                  original.domain().upperBound() + ballBorder);
 
     DigitalSet optRegion(domain);
-    DigitalSet applicationRegion(applicationDomain);
+    DigitalSet applicationRegion(domain);
 
 
     switch (optMode) {
         case OptimizationMode::OM_OriginalBoundary: {
-            optRegion = omOriginalBoundary(doubleOriginal);
+            optRegion = omOriginalBoundary(original);
             break;
         }
         case OptimizationMode::OM_DilationBoundary: {
-            optRegion = omDilationBoundary(doubleOriginal);
+            optRegion = omDilationBoundary(original);
             break;
         }
     }
@@ -234,36 +236,32 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
-        case ApplicationMode::AM_FullDomain: {
-            DigitalSet temp = amFullDomain(applicationDomain);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
         case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(doubleOriginal,optRegion,radius);
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_InverseAroundBoundary: {
-            DigitalSet temp = amAroundBoundary(doubleOriginal,optRegion,radius);
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(doubleOriginal,optRegion,2);
+            DigitalSet temp = amInternRange(original,optRegion,1);
             applicationRegion.insert(temp.begin(),temp.end());
             //for(auto it=optRegion.begin();it!=optRegion.end();++it) applicationRegion.erase(*it);
             break;
         }
         case ApplicationMode::AM_ExternRange:{
-            DigitalSet temp = amExternRange(doubleOriginal,optRegion,radius);
+            DigitalSet temp = amExternRange(original,optRegion,radius);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
     }
 
-    DigitalSet extendedOriginal(doubleOriginal.domain());
-    extendedOriginal.insert(doubleOriginal.begin(),doubleOriginal.end());
+
+    DigitalSet extendedOriginal(original.domain());
+    extendedOriginal.insert(original.begin(),original.end());
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet trustFRG(domain);
@@ -271,7 +269,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     if(optMode==OptimizationMode::OM_DilationBoundary)
     {
-        DigitalSet isolatedDS = isolatedPoints(doubleOriginal,optRegion);
+        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
         trustFRG+=isolatedDS;
     }
 
@@ -291,14 +289,27 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         trustBKG = swap;
     }
 
-    return ODRModel(domain,
+
+    DGtal::Board2D board;
+    board << applicationRegion;
+    board.saveEPS("application.eps");
+
+    DigitalSet _optRegion = doubleDS(optRegion);
+    DigitalSet _applicationRegion = doubleDS(applicationRegion);
+    DigitalSet _trustFRG = doubleDS(trustFRG);
+    DigitalSet _trustBKG(_trustFRG.domain());
+    _trustBKG.assignFromComplement(_trustFRG);
+
+
+
+    return ODRModel(_optRegion.domain(),
                     original,
-                    filterPointels(optRegion),
-                    filterPointels(trustFRG),
-                    filterPointels(trustBKG),
-                    filterPixels(applicationRegion)
-    );
+                    filterPointels(_optRegion),
+                    filterPointels(_trustFRG),
+                    filterPointels(_trustBKG),
+                    filterPixels(_applicationRegion) );
 }
+
 
 ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& ds) const
 {
@@ -373,5 +384,5 @@ void ODRInterpixels::solutionSet(DigitalSet& outputDS,
 DIPaCUS::Misc::DigitalBallIntersection ODRInterpixels::intersectionComputer(unsigned int radius,
                                                                             const DigitalSet& toIntersect) const
 {
-    return DIPaCUS::Misc::DigitalBallIntersection(radius*2,toIntersect);
+    return DIPaCUS::Misc::DigitalBallIntersection(2*radius,toIntersect);
 }

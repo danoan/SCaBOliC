@@ -16,7 +16,7 @@ TestInstances::ApplicationMode TestInstances::vectorOfAM[4] = {TestInstances::Ap
                                                                TestInstances::ApplicationMode::AM_OptimizationBoundary,
                                                               };
 
-int TestInstances::indexLims[3] = {3,1,3};
+TestInstances::MyGenerator::Index TestInstances::indexLims[3] = {3,1,3};
 //int TestInstances::indexLims[3] = {1,1,1};
 
 TestInstances::TestInstances(std::string imagePath):imagePath(imagePath),

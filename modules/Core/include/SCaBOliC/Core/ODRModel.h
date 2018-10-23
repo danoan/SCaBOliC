@@ -26,7 +26,6 @@ namespace SCaBOliC
 
             enum ApplicationMode{
                 AM_OptimizationBoundary,
-                AM_FullDomain,
                 AM_AroundBoundary,
                 AM_InverseAroundBoundary,
                 AM_InternRange,
