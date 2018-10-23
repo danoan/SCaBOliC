@@ -65,10 +65,18 @@ namespace SCaBOliC
                                           const cv::Mat& cvImg);
 
                 Solution solve(const ISQInputData& input,
+                               DigitalSet& mb,
                                QPBOSolverType solverType,
                                TestInput::OptimizationMode om);
 
                 std::string resolvePrefix(const TestInput& testInput);
+
+
+                void modifiedBoundary(DigitalSet& modifiedBoundary,
+                                      const DigitalSet& initialDS,
+                                      const DigitalSet& optRegion,
+                                      const int* varValue,
+                                      const std::unordered_map<Point, unsigned int>& pointToVar);
 
             private:
                 Lab::Utils::MockDistribution frgDistribution;

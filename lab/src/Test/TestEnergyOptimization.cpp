@@ -26,13 +26,14 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
 
     ISQInputData input = prepareInput(ds,radius,testInput,cvImg);
 
-    Solution solution = solve(input,testInput.solverType,testInput.om);
+    DigitalSet mBoundary(input.optimizationRegions.domain);
+    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om);
     std::string prefix = resolvePrefix(testInput);
 
     data = new TestOutput(input,solution,prefix);
 
     
-    if(exportRegions) Lab::Utils::display(input,solution,outputFolder + "/regions",prefix);
+    if(exportRegions) Lab::Utils::display(input,solution,mBoundary,outputFolder + "/regions",prefix);
 }
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const DigitalSet& ds,
@@ -55,7 +56,24 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                          0.5);
 }
 
+void TestEnergyOptimization::modifiedBoundary(DigitalSet& modifiedBoundary,
+                                              const DigitalSet& initialDS,
+                                              const DigitalSet& optRegion,
+                                              const int* varValue,
+                                              const std::unordered_map<Point, unsigned int>& pointToVar)
+{
+    modifiedBoundary.insert(initialDS.begin(),initialDS.end());
+    for (DigitalSet::ConstIterator it = optRegion.begin();
+         it != optRegion.end(); ++it)
+    {
+        if (varValue[ pointToVar.at(*it) ] == 1) {
+            modifiedBoundary.insert( (*it) );
+        }
+    }
+}
+
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
+                                                               DigitalSet& mb,
                                                                QPBOSolverType solverType,
                                                                TestInput::OptimizationMode om)
 {
@@ -83,6 +101,12 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
                            input.optimizationRegions,
                            labelsVector.data(),
                            energy.vm().pim);
+
+    modifiedBoundary(mb,
+                     input.optimizationRegions.trustFRG,
+                     input.optimizationRegions.optRegion,
+                     labelsVector.data(),
+                     energy.vm().pim);
 
 
     return solution;

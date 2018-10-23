@@ -53,8 +53,23 @@ namespace SCaBOliC
                 return out;
             }
 
+            std::string nDigitsString(int num, int digits)
+            {
+                std::string s = "";
+                int numSize = num/10 + 1;
+                int lZero = digits - numSize;
+                while(lZero>0)
+                {
+                    s+=std::to_string(0);
+                    --lZero;
+                }
+                s+=std::to_string(num);
+                return s;
+            }
+
             void display(const ISQInputData& input,
                          const Solution& solution,
+                         const DGtal::Z2i::DigitalSet& modifiedBoundary,
                          std::string outputFolder,
                          std::string prefix)
             {
@@ -62,9 +77,8 @@ namespace SCaBOliC
                 boost::filesystem::create_directories(p2);
 
 
-
                 SCaBOliC::Core::Display::DisplayModifiedBoundary(input.optimizationRegions,
-                                                                 solution.outputDS,
+                                                                 modifiedBoundary,
                                                                  outputFolder + "/" + prefix + "-modified-boundary.eps");
 
                 SCaBOliC::Core::Display::DisplayODR(input.optimizationRegions,

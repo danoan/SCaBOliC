@@ -35,8 +35,11 @@ namespace SCaBOliC
 
             std::string fixedStrLength(int l, double v);
 
+            std::string nDigitsString(int num, int digits);
+
             void display(const ISQInputData& input,
                          const Solution& solution,
+                         const DGtal::Z2i::DigitalSet& modifiedBoundary,
                          std::string outputFolder,
                          std::string prefix);
         }

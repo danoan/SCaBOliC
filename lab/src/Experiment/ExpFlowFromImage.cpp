@@ -19,7 +19,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
 
     boost::filesystem::create_directories(flowFolder);
     boost::filesystem::copy_file(imageInput.imagePath,
-                                 flowFolder + "/0.pgm",
+                                 flowFolder + "/00.pgm",
                                  boost::filesystem::copy_option::overwrite_if_exists);
 
     OptimizationMode om = OptimizationMode::OM_OriginalBoundary;
@@ -47,7 +47,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
         Image2D image( DGtal::Z2i::Domain(lb,ub) );
         DIPaCUS::Representation::DigitalSetToImage(image, solution.outputDS);
 
-        std::string imageToSavePath = flowFolder + "/" + std::to_string(i) + ".pgm";
+        std::string imageToSavePath = flowFolder + "/" + Lab::Utils::nDigitsString(i, 2) + ".pgm";
         DGtal::GenericWriter<Image2D>::exportFile(imageToSavePath, image);
 
         imageInput.imagePath = imageToSavePath;
