@@ -31,6 +31,11 @@ namespace SCaBOliC
                 AM_InternRange,
                 AM_ExternRange};
 
+            enum ApplicationCenter{
+                AC_POINTEL,
+                AC_PIXEL
+            };
+
 
         public:
             ODRModel(const Domain& domain,

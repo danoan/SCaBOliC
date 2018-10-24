@@ -12,9 +12,8 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
 }
 
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
-                                               const ODRInterface& odrFactory,
-                                               const std::string& outputFolder, 
-                                               bool exportRegions):odrFactory(odrFactory)
+                                               const std::string& outputFolder,
+                                               bool exportRegions)
 {
     unsigned int radius = 3;
     DigitalSet ds = deriveDS(testInput);
@@ -33,7 +32,7 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
     data = new TestOutput(input,solution,prefix);
 
     
-    if(exportRegions) Lab::Utils::display(input,solution,mBoundary,outputFolder + "/regions",prefix);
+    if(exportRegions) Lab::Utils::display(input,solution,mBoundary,imageOutputFolder,prefix);
 }
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const DigitalSet& ds,
@@ -41,10 +40,13 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                                                                           const TestInput& testInput,
                                                                           const cv::Mat& cvImg)
 {
+    ISQEnergy::ODRFactory odrFactory;
+
     ODRModel odr = odrFactory.createODR(testInput.om,
-                                   testInput.am,
-                                   estimatingBallRadius,
-                                   ds);
+                                        testInput.am,
+                                        testInput.ac,
+                                        estimatingBallRadius,
+                                        ds);
 
     return ISQInputData (odr,
                          cvImg,
@@ -94,6 +96,8 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         energy.solve<QPBOImproveSolver>(solution);
     else if(solverType==QPBOSolverType::ImproveProbe)
         energy.solve<QPBOIP>(solution);
+
+    ISQEnergy::ODRFactory odrFactory;
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
     odrFactory.solutionSet(solution.outputDS,

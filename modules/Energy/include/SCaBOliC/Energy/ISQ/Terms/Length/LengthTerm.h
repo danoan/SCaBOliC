@@ -12,14 +12,15 @@ namespace SCaBOliC
     {
         namespace ISQ
         {
-            class LengthTerm:public EnergyTerm
+            template<typename TODRFactory>
+            class LengthTerm:public EnergyTerm<TODRFactory>
             {
 
             public:
                 typedef double Scalar;
                 typedef unsigned int Index;
 
-                typedef EnergyTerm Self;
+                typedef EnergyTerm<TODRFactory> Self;
 
 
             public:
@@ -54,5 +55,7 @@ namespace SCaBOliC
         }
     }
 }
+
+#include "LengthTerm.hpp"
 
 #endif //SCABOLIC_LENGTHTERM_H

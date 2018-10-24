@@ -8,7 +8,6 @@
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
 
 #include <SCaBOliC/Core/display.h>
-#include <SCaBOliC/Core/ODRInterface.h>
 #include <SCaBOliC/Core/ODRModel.h>
 
 #include <SCaBOliC/Energy/ISQ/InputData.h>
@@ -43,7 +42,7 @@ namespace SCaBOliC
 
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;
-                typedef Energy::ISQEnergy ISQEnergy;
+                typedef Energy::ISQEnergy<SCaBOliC::Core::ODRPixels> ISQEnergy;
 
                 typedef Lab::Model::UserInput TestInput;
                 typedef Lab::Model::OptOutput TestOutput;
@@ -54,7 +53,6 @@ namespace SCaBOliC
                 ~TestEnergyOptimization(){delete data;}
 
                 TestEnergyOptimization(const TestInput& testInput,
-                                       const ODRInterface& odrFactory,
                                        const std::string& outputFolder,
                                        bool exportRegions=false);
             private:
@@ -81,8 +79,6 @@ namespace SCaBOliC
             private:
                 Lab::Utils::MockDistribution frgDistribution;
                 Lab::Utils::MockDistribution bkgDistribution;
-
-                const ODRInterface& odrFactory;
 
             public:
                 TestOutput* data;

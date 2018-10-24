@@ -8,7 +8,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     MockDistribution frgDistribution;
     MockDistribution bkgDistribution;
 
-    ODRFactory odrFactory;
+    MyISQEnergy::ODRFactory odrFactory;
 
 
     Image2D image = DGtal::GenericReader<Image2D>::import(ui.imagePath);
@@ -23,6 +23,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     cv::Mat cvImg = cv::imread(ui.imagePath);
     ODRModel odr = odrFactory.createODR(ui.om,
                                         ui.am,
+                                        ui.ac,
                                         3,
                                         ds);
 
@@ -34,7 +35,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
                         0,
                         1);
 
-    ISQEnergy energy(input);
+    MyISQEnergy energy(input);
     Solution solution(input.optimizationRegions.domain);
     solution.init(energy.numVars());
     solution.labelsVector.setZero();

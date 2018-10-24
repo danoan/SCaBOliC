@@ -18,16 +18,20 @@ namespace SCaBOliC
 
                 typedef Core::ODRModel::OptimizationMode OptimizationMode;
                 typedef Core::ODRModel::ApplicationMode ApplicationMode;
+                typedef Core::ODRModel::ApplicationCenter ApplicationCenter;
+
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
             public:
                 UserInput(std::string imagePath,
                           QPBOSolverType solverType,
                           OptimizationMode om,
-                          ApplicationMode am):imagePath(imagePath),
-                                              solverType(solverType),
-                                              om(om),
-                                              am(am){}
+                          ApplicationMode am,
+                          ApplicationCenter ac):imagePath(imagePath),
+                                                solverType(solverType),
+                                                om(om),
+                                                am(am),
+                                                ac(ac){}
 
             public:
                 std::string imagePath;
@@ -35,6 +39,7 @@ namespace SCaBOliC
                 QPBOSolverType solverType;
                 OptimizationMode om;
                 ApplicationMode am;
+                ApplicationCenter ac;
             };
         }
     }

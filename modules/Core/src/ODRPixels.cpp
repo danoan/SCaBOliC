@@ -125,10 +125,12 @@ ODRPixels::DigitalSet ODRPixels::isolatedPoints(const DigitalSet& original, cons
 }
 
 ODRModel ODRPixels::createODR (OptimizationMode optMode,
-                               ApplicationMode appMode,unsigned int radius,
+                               ApplicationMode appMode,
+                               ApplicationCenter appCenter,
+                               unsigned int radius,
                                const DigitalSet& original) const
 {
-    typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
+    assert(appCenter==ApplicationCenter::AC_PIXEL);
 
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));

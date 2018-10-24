@@ -40,24 +40,12 @@ ODRInterpixels::DigitalSet ODRInterpixels::omDilationBoundary(const DigitalSet& 
     return dilatedBoundary;
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::omFullDomain(const Domain& originalDomain)
-{
-    DigitalSet fullDomain(originalDomain);
-    fullDomain.insert(originalDomain.begin(),originalDomain.end());
-
-    return fullDomain;
-}
 
 ODRInterpixels::DigitalSet ODRInterpixels::amOriginalBoundary(const DigitalSet& original)
 {
     return omOriginalBoundary(original);
 }
 
-
-ODRInterpixels::DigitalSet ODRInterpixels::amFullDomain(const Domain& applicationDomain)
-{
-    return omFullDomain(applicationDomain);
-}
 
 ODRInterpixels::DigitalSet ODRInterpixels::amAroundBoundary(const DigitalSet& original,
                                                   const DigitalSet& optRegion,
@@ -180,7 +168,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     return filledKDS;
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds) const
+ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds)
 {
     DigitalSet filtered(ds.domain());
     for(auto it=ds.begin();it!=ds.end();++it)
@@ -192,7 +180,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds) const
     return filtered;
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds) const
+ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds)
 {
     DigitalSet filtered(ds.domain());
     for(auto it=ds.begin();it!=ds.end();++it)
@@ -204,9 +192,9 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds) const
     return filtered;
 }
 
-#include "DGtal/io/boards/Board2D.h"
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
+                                    ApplicationCenter appCenter,
                                     unsigned int radius,
                                     const DigitalSet& original) const
 {
@@ -290,24 +278,34 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     }
 
 
-    DGtal::Board2D board;
-    board << applicationRegion;
-    board.saveEPS("application.eps");
-
     DigitalSet _optRegion = doubleDS(optRegion);
-    DigitalSet _applicationRegion = doubleDS(applicationRegion);
     DigitalSet _trustFRG = doubleDS(trustFRG);
     DigitalSet _trustBKG(_trustFRG.domain());
+    DigitalSet _applicationRegion = doubleDS(applicationRegion);
+
     _trustBKG.assignFromComplement(_trustFRG);
 
+    DigitalSet (*appFilterFn)(DigitalSet&);
 
-
+    switch(appCenter)
+    {
+        case ApplicationCenter::AC_PIXEL:
+        {
+            appFilterFn = filterPixels;
+            break;
+        }
+        case ApplicationCenter::AC_POINTEL:
+        {
+            appFilterFn = filterPointels;
+            break;
+        }
+    }
     return ODRModel(_optRegion.domain(),
                     original,
                     filterPointels(_optRegion),
                     filterPointels(_trustFRG),
                     filterPointels(_trustBKG),
-                    filterPixels(_applicationRegion) );
+                    appFilterFn(_applicationRegion) );
 }
 
 

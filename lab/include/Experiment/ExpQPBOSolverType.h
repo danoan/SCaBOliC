@@ -24,8 +24,6 @@ namespace SCaBOliC
                 typedef Lab::Model::OptOutput TEOOutput;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
-                typedef SCaBOliC::Energy::EnergyTerm::ODRFactory ODRFactory;
-
                 typedef TEOInput::ApplicationMode ApplicationMode;
 
             private:

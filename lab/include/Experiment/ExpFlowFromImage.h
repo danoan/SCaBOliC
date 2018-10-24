@@ -26,9 +26,9 @@ namespace SCaBOliC
                 typedef Lab::Model::ImageInput ImageInput;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
-                typedef SCaBOliC::Energy::EnergyTerm::ODRFactory ODRFactory;
 
                 typedef TEOInput::ApplicationMode ApplicationMode;
+                typedef TEOInput::ApplicationCenter ApplicationCenter;
                 typedef TEOInput::OptimizationMode OptimizationMode;
 
             private:

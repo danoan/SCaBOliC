@@ -22,7 +22,7 @@ TestInstances::MyGenerator::Index TestInstances::indexLims[3] = {3,1,3};
 TestInstances::TestInstances(std::string imagePath):imagePath(imagePath),
                                                     gen( TestInstances::indexLims )
 {
-    memset(currSequence,0,sizeof(int)*3);
+    memset(currSequence,0,sizeof(MyGenerator::Index)*3);
 }
 
 TestInstances::UserInput TestInstances::next(bool& success)
@@ -34,13 +34,15 @@ TestInstances::UserInput TestInstances::next(bool& success)
         return UserInput (imagePath,
                           vectorOfSolver[currSequence[0]],
                           vectorOfOM[currSequence[1]],
-                          vectorOfAM[currSequence[2]]);
+                          vectorOfAM[currSequence[2]],
+                          TestInstances::ApplicationCenter::AC_PIXEL);
     } else
     {
         return UserInput (imagePath,
                           vectorOfSolver[0],
                           vectorOfOM[0],
-                          vectorOfAM[0]);
+                          vectorOfAM[0],
+                          TestInstances::ApplicationCenter::AC_PIXEL);
     }
 
 }

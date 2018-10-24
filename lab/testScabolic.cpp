@@ -41,10 +41,9 @@ void runInstances(Model::ImageInput imageInput)
     bool success;
     Test::TestInstances::UserInput input = TI.next(success);
 
-    SCaBOliC::Energy::EnergyTerm::ODRFactory odrFactory;
     while(success)
     {
-        Test::TestEnergyOptimization teo(input,odrFactory,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
+        Test::TestEnergyOptimization teo(input,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
         input = TI.next(success);
     }
 }
@@ -58,7 +57,8 @@ int main()
     Test::TestEnergyEvaluation::UserInput ui(Test::TestInput::squarex9Input.imagePath,
                                              QPBOSolverType::Probe,
                                              Model::UserInput::OptimizationMode::OM_OriginalBoundary,
-                                             Model::UserInput::ApplicationMode::AM_AroundBoundary);
+                                             Model::UserInput::ApplicationMode::AM_AroundBoundary,
+                                             Model::UserInput::ApplicationCenter::AC_PIXEL);
     Test::TestEnergyEvaluation tev(ui);
 
     return 0;

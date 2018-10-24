@@ -16,8 +16,9 @@ namespace SCaBOliC
     namespace Energy
     {
         namespace ISQ
-            {
-            class SquaredCurvatureTerm:public EnergyTerm
+        {
+            template<typename TODRFactory>
+            class SquaredCurvatureTerm:public EnergyTerm<TODRFactory>
             {
 
             public:
@@ -58,4 +59,7 @@ namespace SCaBOliC
         }
     }
 }
+
+#include "SquaredCurvatureTerm.hpp"
+
 #endif //QBMISCURVATUREREGULARIZATION_NAIVE_SQUAREDCURVATURE_H

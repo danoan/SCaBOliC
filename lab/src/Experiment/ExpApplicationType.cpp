@@ -12,22 +12,24 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
     TEOInput inputAround(imageInput.imagePath,
                         solverType,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
-                        TEOInput::ApplicationMode::AM_AroundBoundary);
+                        TEOInput::ApplicationMode::AM_AroundBoundary,
+                         TEOInput::ApplicationCenter::AC_PIXEL);
 
     TEOInput inputOriginal(imageInput.imagePath,
                            solverType,
                            TEOInput::OptimizationMode::OM_OriginalBoundary,
-                           TEOInput::ApplicationMode::AM_OptimizationBoundary);
+                           TEOInput::ApplicationMode::AM_OptimizationBoundary,
+                           TEOInput::ApplicationCenter::AC_PIXEL);
 
     TEOInput inputInternRange(imageInput.imagePath,
                               solverType,
                               TEOInput::OptimizationMode::OM_OriginalBoundary,
-                              TEOInput::ApplicationMode::AM_InternRange);
+                              TEOInput::ApplicationMode::AM_InternRange,
+                              TEOInput::ApplicationCenter::AC_PIXEL);
 
-    ODRFactory odrFactory;
-    Test::TestEnergyOptimization teoAround(inputAround,odrFactory,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoOriginal(inputOriginal,odrFactory,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoIntRange(inputInternRange,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoAround(inputAround,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoOriginal(inputOriginal,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoIntRange(inputInternRange,outputFolder,exportRegions);
 
 
 

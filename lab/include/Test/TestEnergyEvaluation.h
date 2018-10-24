@@ -33,8 +33,7 @@ namespace SCaBOliC
                 typedef Lab::Model::ImageInput ImageInput;
                 typedef Lab::Model::OptOutput OptOutput;
 
-                typedef SCaBOliC::Energy::EnergyTerm::ODRFactory ODRFactory;
-                typedef SCaBOliC::Core::ODRInterface ODRInterface;
+                typedef ISQEnergy<SCaBOliC::Core::ODRPixels> MyISQEnergy;
                 typedef SCaBOliC::Core::ODRModel ODRModel;
 
                 typedef Lab::Utils::MockDistribution MockDistribution;

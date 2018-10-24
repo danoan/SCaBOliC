@@ -2,7 +2,8 @@
 
 using namespace SCaBOliC::Energy;
 
-EnergyTerm& EnergyTerm::operator+(const EnergyTerm& other)
+template<typename TODRFactory>
+EnergyTerm<TODRFactory>& EnergyTerm<TODRFactory>::operator+(const Self& other)
 {
     od.localUTM += other.od.localUTM;
     od.localPTM += other.od.localPTM;
@@ -10,7 +11,8 @@ EnergyTerm& EnergyTerm::operator+(const EnergyTerm& other)
     return *this;
 }
 
-void EnergyTerm::crescentOrder(Index& i1,Index& i2)
+template<typename TODRFactory>
+void EnergyTerm<TODRFactory>::crescentOrder(Index& i1,Index& i2)
 {
     Index temp = i1;
     if (i2 < i1)

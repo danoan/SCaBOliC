@@ -17,7 +17,7 @@ namespace SCaBOliC
                 typedef unsigned long Index;
 
             private:
-                enum QO{Expand,Increment,Done,Invalid};
+                enum QO{Expand,Increment,Done,First,Invalid};
 
                 struct QC
                 {
@@ -52,7 +52,7 @@ namespace SCaBOliC
                     memset(previousSequence,0,sizeof(Index)*totalIndexes);
 
                     stack.push(QC(0,0,QO::Expand));
-                    stack.push(QC(0,0,QO::Done));
+                    stack.push(QC(0,0,QO::First));
                 }
 
                 Generator(const Generator&){throw std::runtime_error("Operation not allowed!");}
@@ -92,6 +92,14 @@ namespace SCaBOliC
                                 {
                                     sequence[qc.level] = 0;
                                 }
+
+                                break;
+                            }
+                            case QO::First:
+                            {
+                                for(Index i=0;i<totalIndexes;++i) sequence[i] = 0;
+                                stack.push(QC(0,0,QO::Done));
+                                break;
                             }
                         }
 

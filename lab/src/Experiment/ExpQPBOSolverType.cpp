@@ -12,28 +12,31 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
     TEOInput inputSimple(imageInput.imagePath,
                          QPBOSolverType::Simple,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
-                         am);
+                         am,
+                         TEOInput::ApplicationCenter::AC_PIXEL);
 
     TEOInput inputProbe(imageInput.imagePath,
                          QPBOSolverType::Probe,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
-                         am);
+                         am,
+                        TEOInput::ApplicationCenter::AC_PIXEL);
 
     TEOInput inputImprove(imageInput.imagePath,
                          QPBOSolverType::Improve,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
-                         am);
+                         am,
+                          TEOInput::ApplicationCenter::AC_PIXEL);
 
     TEOInput inputImproveProbe(imageInput.imagePath,
                                QPBOSolverType::ImproveProbe,
                                TEOInput::OptimizationMode::OM_OriginalBoundary,
-                               am);
+                               am,
+                               TEOInput::ApplicationCenter::AC_PIXEL);
 
-    ODRFactory odrFactory;
-    Test::TestEnergyOptimization teoSimple(inputSimple,odrFactory,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoProbe(inputProbe,odrFactory,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImprove(inputImprove,odrFactory,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,odrFactory,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImprove(inputImprove,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,outputFolder,exportRegions);
 
 
 

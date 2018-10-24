@@ -17,10 +17,12 @@ namespace SCaBOliC
 
             typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
+            typedef ODRModel::ApplicationCenter ApplicationCenter;
 
         public:
             virtual ODRModel createODR(OptimizationMode optMode,
                                        ApplicationMode appMode,
+                                       ApplicationCenter appCenter,
                                        unsigned int radius,
                                        const DigitalSet& original) const=0;
 

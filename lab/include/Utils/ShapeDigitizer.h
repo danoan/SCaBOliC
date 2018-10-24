@@ -43,9 +43,10 @@ namespace SCaBOliC
                     DigitalSet ds(gd.getDomain());
                     Shapes::digitalShaper(ds,gd);
 
-                    Image2D image(ds.domain());
-                    DIPaCUS::Representation::DigitalSetToImage(image,ds);
+                    DigitalSet centeredDS = DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(ds);
 
+                    Image2D image(centeredDS.domain());
+                    DIPaCUS::Representation::DigitalSetToImage(image,centeredDS);
 
                     std::string firstImagePath = outputFolder + "/" + name + ".pgm";
                     DGtal::GenericWriter<Image2D>::exportFile(firstImagePath,image);

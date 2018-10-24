@@ -68,7 +68,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
     typedef ExpFlowFromImage::ApplicationMode ApplicationMode;
     typedef ExpFlowFromImage::OptimizationMode OptimizationMode;
 
-    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlow-teste";
+    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlow";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-flow.txt",std::ios_base::out);
@@ -81,7 +81,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
             ExpFlowFromImage(*it,
                              pvi.solverType,
                              pvi.applicationMode,
-                             10,
+                             5,
                              ofs,
                              expOutputFolder,
                              true);
@@ -107,12 +107,12 @@ int main()
     ExpInput::AppModeVector amv;
 
     ssv.push_back(QPBOSolverType::Probe);
-//    ssv.push_back(QPBOSolverType::ImproveProbe);
+    ssv.push_back(QPBOSolverType::ImproveProbe);
 
 //    omv.push_back(OptimizationMode::OM_OriginalBoundary);
 //    omv.push_back(OptimizationMode::OM_DilationBoundary);
 
-//    amv.push_back(ApplicationMode::AM_OptimizationBoundary);
+    amv.push_back(ApplicationMode::AM_OptimizationBoundary);
     amv.push_back(ApplicationMode::AM_AroundBoundary);
 
 

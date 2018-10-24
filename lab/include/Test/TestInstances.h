@@ -18,6 +18,7 @@ namespace SCaBOliC
                 typedef SCaBOliC::Optimization::QPBOSolverType QPBOSolverType;
                 typedef SCaBOliC::Core::ODRModel::OptimizationMode OptimizationMode;
                 typedef SCaBOliC::Core::ODRModel::ApplicationMode ApplicationMode;
+                typedef SCaBOliC::Core::ODRModel::ApplicationCenter ApplicationCenter;
 
                 typedef SCaBOliC::Lab::Model::UserInput UserInput;
 

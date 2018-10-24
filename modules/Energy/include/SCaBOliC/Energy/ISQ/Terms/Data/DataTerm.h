@@ -13,14 +13,15 @@ namespace SCaBOliC
     {
         namespace ISQ
         {
-            class DataTerm:public EnergyTerm
+            template<typename TODRFactory>
+            class DataTerm:public EnergyTerm<TODRFactory>
             {
 
             public:
                 typedef double Scalar;
                 typedef unsigned int Index;
 
-                typedef EnergyTerm Self;
+                typedef EnergyTerm<TODRFactory> Self;
 
                 typedef InputData::cvColorImage cvColorImage;
                 typedef InputData::cvColorType cvColorType;
@@ -59,4 +60,7 @@ namespace SCaBOliC
         }
     }
 }
+
+#include "DataTerm.hpp"
+
 #endif //QBMISCURVATUREREGULARIZATION_DATATERM_H

@@ -2,13 +2,15 @@
 
 using namespace SCaBOliC::Energy::ISQ;
 
-SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id):vm(id.optimizationRegions)
+template<typename TODRFactory>
+SquaredCurvatureTerm<TODRFactory>::SquaredCurvatureTerm(const InputData &id):vm(id.optimizationRegions)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
 }
 
-void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
+template<typename TODRFactory>
+void SquaredCurvatureTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
                                                   const VariableMap& vm,
                                                   OptimizationData& od)
 {
@@ -23,7 +25,8 @@ void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
-void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
+template<typename TODRFactory>
+void SquaredCurvatureTerm<TODRFactory>::configureOptimizationData(const InputData& id,
                                                  const VariableMap& vm,
                                                  OptimizationData& od)
 {
@@ -49,7 +52,8 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
     od.localPTM*=this->weight*this->normalizationFactor;
 }
 
-void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
+template<typename TODRFactory>
+void SquaredCurvatureTerm<TODRFactory>::setCoeffs(OptimizationData& od,
                                  double& maxCtrb,
                                  const InputData& id,
                                  const CoefficientsComputer& cc,
@@ -58,7 +62,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
     DigitalSet temp(ODR.domain);
-    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = odrFactory.intersectionComputer(id.radius,
+    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->odrFactory.intersectionComputer(id.radius,
                                                                                              ODR.optRegion);
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
@@ -90,7 +94,8 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
 
 }
 
-void SquaredCurvatureTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
+template<typename TODRFactory>
+void SquaredCurvatureTerm<TODRFactory>::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
                                 double& maxPTM,
                                 Index i1,
                                 Index i2,

@@ -2,12 +2,11 @@ cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-energy)
 
 add_library(scabolic-energy SHARED
-        src/Energy/ISQ/base/EnergyTerm.cpp
-        src/Energy/ISQ/Terms/Data/DataTerm.cpp
-        src/Energy/ISQ/Terms/Data/LengthTerm.cpp
+        include/SCaBOliC/Energy/base/EnergyTerm.hpp
+        include/SCaBOliC/Energy/ISQ/Terms/Data/DataTerm.hpp
+        include/SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.hpp
         src/Energy/ISQ/Terms/SquaredCurvature/CoefficientComputer.cpp
-        src/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.cpp
-        src/Energy/ISQ/ISQEnergy.cpp
+        include/SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.hpp
         src/Energy/ISQ/VariableMap.cpp)
 
 add_dependencies(scabolic-energy scabolic-core scabolic-optimization scabolic-utils)

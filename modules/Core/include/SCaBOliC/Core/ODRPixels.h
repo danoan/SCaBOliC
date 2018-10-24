@@ -28,6 +28,7 @@ namespace SCaBOliC
             
             typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
+            typedef ODRModel::ApplicationCenter ApplicationCenter;
 
 
         private:
@@ -68,6 +69,7 @@ namespace SCaBOliC
 
             ODRModel createODR(OptimizationMode optMode,
                                ApplicationMode appMode,
+                               ApplicationCenter appCenter,
                                unsigned int radius,
                                const DigitalSet& original) const;
 

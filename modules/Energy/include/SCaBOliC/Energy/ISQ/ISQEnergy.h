@@ -14,19 +14,24 @@
 #include <SCaBOliC/Optimization/solver/simple/QPBOSimpleSolver.h>
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
 #include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
-#include <SCaBOliC/Energy/ISQ/Terms/Data/LengthTerm.h>
+#include <SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.h>
 
 
 namespace SCaBOliC
 {
     namespace Energy
     {
+        template<typename TODRFactory>
         class ISQEnergy
         {
         public:
             typedef ISQ::InputData InputData;
             typedef ISQ::VariableMap VariableMap;
             typedef SCaBOliC::Energy::Solution Solution;
+
+            typedef EnergyTerm<TODRFactory> MyEnergyTerm;
+
+            typedef TODRFactory ODRFactory;
 
         private:
             typedef SCaBOliC::Energy::OptimizationData::UnaryTermsMatrix UnaryTermsMatrix;
@@ -52,18 +57,18 @@ namespace SCaBOliC
 
         private:
             double value(const LabelsVector& labelsVector,
-                         const EnergyTerm& et,
+                         const MyEnergyTerm& et,
                          double sumFactor,
                          double multiplyFactor ) const;
 
         private:
             int nvars;
 
-            ISQ::DataTerm dt;
-            ISQ::LengthTerm lt;
-            ISQ::SquaredCurvatureTerm sqt;
+            ISQ::DataTerm<ODRFactory> dt;
+            ISQ::LengthTerm<ODRFactory> lt;
+            ISQ::SquaredCurvatureTerm<ODRFactory> sqt;
 
-            EnergyTerm energy;
+            MyEnergyTerm energy;
         };
     }
 }

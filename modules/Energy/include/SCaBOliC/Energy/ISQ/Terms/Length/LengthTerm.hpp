@@ -1,16 +1,18 @@
-#include "SCaBOliC/Energy/ISQ/Terms/Data/LengthTerm.h"
+#include "LengthTerm.h"
 
 using namespace SCaBOliC::Energy::ISQ;
 
 
-LengthTerm::LengthTerm(const InputData &id):vm(id.optimizationRegions)
+template<typename TODRFactory>
+LengthTerm<TODRFactory>::LengthTerm(const InputData &id):vm(id.optimizationRegions)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
 }
 
 
-void LengthTerm::initializeOptimizationData(const InputData& id,
+template<typename TODRFactory>
+void LengthTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
                                           const VariableMap& vm,
                                           OptimizationData& od)
 {
@@ -25,7 +27,8 @@ void LengthTerm::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
-void LengthTerm::configureOptimizationData(const InputData& id,
+template<typename TODRFactory>
+void LengthTerm<TODRFactory>::configureOptimizationData(const InputData& id,
                                          const VariableMap& vm,
                                          OptimizationData& od)
 {
@@ -46,7 +49,8 @@ void LengthTerm::configureOptimizationData(const InputData& id,
 
 }
 
-void LengthTerm::setCoeffs(OptimizationData& od,
+template<typename TODRFactory>
+void LengthTerm<TODRFactory>::setCoeffs(OptimizationData& od,
                          double& maxCtrb,
                          const InputData& id,
                          const VariableMap& vm)
@@ -94,7 +98,8 @@ void LengthTerm::setCoeffs(OptimizationData& od,
 
 }
 
-void LengthTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
+template<typename TODRFactory>
+void LengthTerm<TODRFactory>::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
                         double& maxPTM,
                         Index i1,
                         Index i2,
