@@ -32,7 +32,7 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
     data = new TestOutput(input,solution,prefix);
 
     
-    if(exportRegions) Lab::Utils::display(input,solution,mBoundary,imageOutputFolder,prefix);
+    if(exportRegions) Lab::Utils::display(input,solution,mBoundary,outputFolder,prefix);
 }
 
 TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const DigitalSet& ds,
