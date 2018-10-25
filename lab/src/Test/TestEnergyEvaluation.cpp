@@ -24,6 +24,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     ODRModel odr = odrFactory.createODR(ui.om,
                                         ui.am,
                                         ui.ac,
+                                        ui.cm,
                                         3,
                                         ds);
 

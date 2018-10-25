@@ -36,6 +36,11 @@ namespace SCaBOliC
                 AC_PIXEL
             };
 
+            enum CountingMode{
+                CM_POINTEL,
+                CM_PIXEL
+            };
+
 
         public:
             ODRModel(const Domain& domain,

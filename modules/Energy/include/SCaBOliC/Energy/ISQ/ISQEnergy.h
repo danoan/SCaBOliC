@@ -41,8 +41,23 @@ namespace SCaBOliC
         public:
             ISQEnergy(const InputData& id);
 
-            template<template <class,class,class> class TQPBOSolver>
-            void solve(Solution& solution);
+            template<template <typename,typename,typename> class TQPBOSolver>
+            void solve(Solution& solution)
+            {
+                assert(solution.isValid());
+
+                typedef TQPBOSolver<UnaryTermsMatrix,
+                PairwiseTermsMatrix,
+                LabelsVector>  MyQPBOSolver;
+
+                MyQPBOSolver(solution.energyValue,
+                             solution.energyValuePriorInversion,
+                             solution.unlabeled,
+                             energy.od.localUTM,
+                             energy.od.localPTM,
+                             solution.labelsVector,
+                             10);
+            }
 
             int numVars() const{return nvars;}
             const VariableMap& vm() const{return dt.vm;}

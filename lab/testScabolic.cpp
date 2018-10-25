@@ -58,7 +58,8 @@ int main()
                                              QPBOSolverType::Probe,
                                              Model::UserInput::OptimizationMode::OM_OriginalBoundary,
                                              Model::UserInput::ApplicationMode::AM_AroundBoundary,
-                                             Model::UserInput::ApplicationCenter::AC_PIXEL);
+                                             Model::UserInput::ApplicationCenter::AC_PIXEL,
+                                             Model::UserInput::CountingMode::CM_PIXEL);
     Test::TestEnergyEvaluation tev(ui);
 
     return 0;

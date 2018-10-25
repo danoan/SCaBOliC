@@ -2,25 +2,6 @@
 
 using namespace SCaBOliC::Energy;
 
-template<typename TODRFactory>
-template<template <class,class,class> class TQPBOSolver>
-void ISQEnergy<TODRFactory>::solve(Solution& solution)
-{
-    assert(solution.isValid());
-
-    typedef TQPBOSolver<UnaryTermsMatrix,
-            PairwiseTermsMatrix,
-            LabelsVector>  MyQPBOSolver;
-
-    MyQPBOSolver(solution.energyValue,
-                 solution.energyValuePriorInversion,
-                 solution.unlabeled,
-                 energy.od.localUTM,
-                 energy.od.localPTM,
-                 solution.labelsVector,
-                 10);
-}
-
 
 template<typename TODRFactory>
 ISQEnergy<TODRFactory>::ISQEnergy(const InputData& id):dt(id),sqt(id),lt(id)

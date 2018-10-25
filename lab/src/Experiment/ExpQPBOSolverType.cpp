@@ -13,25 +13,29 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                          QPBOSolverType::Simple,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
-                         TEOInput::ApplicationCenter::AC_PIXEL);
+                         TEOInput::ApplicationCenter::AC_PIXEL,
+                         TEOInput::CountingMode::CM_PIXEL);
 
     TEOInput inputProbe(imageInput.imagePath,
                          QPBOSolverType::Probe,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
-                        TEOInput::ApplicationCenter::AC_PIXEL);
+                        TEOInput::ApplicationCenter::AC_PIXEL,
+                        TEOInput::CountingMode::CM_PIXEL);
 
     TEOInput inputImprove(imageInput.imagePath,
                          QPBOSolverType::Improve,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
-                          TEOInput::ApplicationCenter::AC_PIXEL);
+                          TEOInput::ApplicationCenter::AC_PIXEL,
+                          TEOInput::CountingMode::CM_PIXEL);
 
     TEOInput inputImproveProbe(imageInput.imagePath,
                                QPBOSolverType::ImproveProbe,
                                TEOInput::OptimizationMode::OM_OriginalBoundary,
                                am,
-                               TEOInput::ApplicationCenter::AC_PIXEL);
+                               TEOInput::ApplicationCenter::AC_PIXEL,
+                               TEOInput::CountingMode::CM_PIXEL);
 
     Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);

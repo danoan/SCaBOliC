@@ -13,19 +13,22 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                         solverType,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                         TEOInput::ApplicationMode::AM_AroundBoundary,
-                         TEOInput::ApplicationCenter::AC_PIXEL);
+                         TEOInput::ApplicationCenter::AC_PIXEL,
+                         TEOInput::CountingMode::CM_PIXEL);
 
     TEOInput inputOriginal(imageInput.imagePath,
                            solverType,
                            TEOInput::OptimizationMode::OM_OriginalBoundary,
                            TEOInput::ApplicationMode::AM_OptimizationBoundary,
-                           TEOInput::ApplicationCenter::AC_PIXEL);
+                           TEOInput::ApplicationCenter::AC_PIXEL,
+                           TEOInput::CountingMode::CM_PIXEL);
 
     TEOInput inputInternRange(imageInput.imagePath,
                               solverType,
                               TEOInput::OptimizationMode::OM_OriginalBoundary,
                               TEOInput::ApplicationMode::AM_InternRange,
-                              TEOInput::ApplicationCenter::AC_PIXEL);
+                              TEOInput::ApplicationCenter::AC_PIXEL,
+                              TEOInput::CountingMode::CM_PIXEL);
 
     Test::TestEnergyOptimization teoAround(inputAround,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoOriginal(inputOriginal,outputFolder,exportRegions);

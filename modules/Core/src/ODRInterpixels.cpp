@@ -195,6 +195,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds)
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
                                     ApplicationCenter appCenter,
+                                    CountingMode cntMode,
                                     unsigned int radius,
                                     const DigitalSet& original) const
 {
@@ -285,27 +286,46 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     _trustBKG.assignFromComplement(_trustFRG);
 
-    DigitalSet (*appFilterFn)(DigitalSet&);
+    DigitalSet (*appCntFilterApplication)(DigitalSet&);
+    DigitalSet (*appCntFilterOthers)(DigitalSet&);
 
     switch(appCenter)
     {
         case ApplicationCenter::AC_PIXEL:
         {
-            appFilterFn = filterPixels;
+            appCntFilterApplication = filterPixels;
             break;
         }
         case ApplicationCenter::AC_POINTEL:
         {
-            appFilterFn = filterPointels;
+            appCntFilterApplication = filterPointels;
             break;
         }
     }
+
+    switch(cntMode)
+    {
+        case CountingMode::CM_PIXEL:
+        {
+            appCntFilterOthers = filterPixels;
+            break;
+        }
+        case CountingMode::CM_POINTEL:
+        {
+            appCntFilterOthers = filterPointels;
+            break;
+        }
+
+    }
+
+
+
     return ODRModel(_optRegion.domain(),
                     original,
-                    filterPointels(_optRegion),
-                    filterPointels(_trustFRG),
-                    filterPointels(_trustBKG),
-                    appFilterFn(_applicationRegion) );
+                    appCntFilterOthers(_optRegion),
+                    appCntFilterOthers(_trustFRG),
+                    appCntFilterOthers(_trustBKG),
+                    appCntFilterApplication(_applicationRegion) );
 }
 
 

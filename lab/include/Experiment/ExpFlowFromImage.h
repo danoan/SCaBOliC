@@ -30,6 +30,7 @@ namespace SCaBOliC
                 typedef TEOInput::ApplicationMode ApplicationMode;
                 typedef TEOInput::ApplicationCenter ApplicationCenter;
                 typedef TEOInput::OptimizationMode OptimizationMode;
+                typedef TEOInput::CountingMode CountingMode;
 
             private:
                 struct TableEntry

@@ -127,10 +127,12 @@ ODRPixels::DigitalSet ODRPixels::isolatedPoints(const DigitalSet& original, cons
 ODRModel ODRPixels::createODR (OptimizationMode optMode,
                                ApplicationMode appMode,
                                ApplicationCenter appCenter,
+                               CountingMode cntMode,
                                unsigned int radius,
                                const DigitalSet& original) const
 {
     assert(appCenter==ApplicationCenter::AC_PIXEL);
+    assert(cntMode==CountingMode::CM_PIXEL);
 
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));

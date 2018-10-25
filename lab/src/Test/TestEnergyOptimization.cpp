@@ -45,6 +45,7 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
     ODRModel odr = odrFactory.createODR(testInput.om,
                                         testInput.am,
                                         testInput.ac,
+                                        testInput.cm,
                                         estimatingBallRadius,
                                         ds);
 

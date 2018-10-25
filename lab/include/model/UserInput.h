@@ -19,6 +19,7 @@ namespace SCaBOliC
                 typedef Core::ODRModel::OptimizationMode OptimizationMode;
                 typedef Core::ODRModel::ApplicationMode ApplicationMode;
                 typedef Core::ODRModel::ApplicationCenter ApplicationCenter;
+                typedef Core::ODRModel::CountingMode CountingMode;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
@@ -27,11 +28,13 @@ namespace SCaBOliC
                           QPBOSolverType solverType,
                           OptimizationMode om,
                           ApplicationMode am,
-                          ApplicationCenter ac):imagePath(imagePath),
-                                                solverType(solverType),
-                                                om(om),
-                                                am(am),
-                                                ac(ac){}
+                          ApplicationCenter ac,
+                          CountingMode cm):imagePath(imagePath),
+                                           solverType(solverType),
+                                           om(om),
+                                           am(am),
+                                           ac(ac),
+                                           cm(cm){}
 
             public:
                 std::string imagePath;
@@ -40,6 +43,7 @@ namespace SCaBOliC
                 OptimizationMode om;
                 ApplicationMode am;
                 ApplicationCenter ac;
+                CountingMode cm;
             };
         }
     }

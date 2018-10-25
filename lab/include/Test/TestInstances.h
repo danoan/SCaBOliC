@@ -19,6 +19,7 @@ namespace SCaBOliC
                 typedef SCaBOliC::Core::ODRModel::OptimizationMode OptimizationMode;
                 typedef SCaBOliC::Core::ODRModel::ApplicationMode ApplicationMode;
                 typedef SCaBOliC::Core::ODRModel::ApplicationCenter ApplicationCenter;
+                typedef SCaBOliC::Core::ODRModel::CountingMode CountingMode;
 
                 typedef SCaBOliC::Lab::Model::UserInput UserInput;
 

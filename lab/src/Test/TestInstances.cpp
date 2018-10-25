@@ -35,14 +35,16 @@ TestInstances::UserInput TestInstances::next(bool& success)
                           vectorOfSolver[currSequence[0]],
                           vectorOfOM[currSequence[1]],
                           vectorOfAM[currSequence[2]],
-                          TestInstances::ApplicationCenter::AC_PIXEL);
+                          TestInstances::ApplicationCenter::AC_PIXEL,
+                          TestInstances::CountingMode::CM_PIXEL);
     } else
     {
         return UserInput (imagePath,
                           vectorOfSolver[0],
                           vectorOfOM[0],
                           vectorOfAM[0],
-                          TestInstances::ApplicationCenter::AC_PIXEL);
+                          TestInstances::ApplicationCenter::AC_PIXEL,
+                          TestInstances::CountingMode::CM_PIXEL);
     }
 
 }
