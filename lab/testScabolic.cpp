@@ -55,7 +55,7 @@ int main()
     runInstances(Test::TestInput::squarex9Input);
 
     Test::TestEnergyEvaluation::UserInput ui(Test::TestInput::squarex9Input.imagePath,
-                                             QPBOSolverType::Probe,
+                                             Model::UserInput::QPBOSolverType::Probe,
                                              Model::UserInput::OptimizationMode::OM_OriginalBoundary,
                                              Model::UserInput::ApplicationMode::AM_AroundBoundary,
                                              Model::UserInput::ApplicationCenter::AC_PIXEL,

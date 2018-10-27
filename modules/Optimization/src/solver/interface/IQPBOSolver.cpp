@@ -2,9 +2,8 @@
 
 using namespace SCaBOliC::Optimization;
 
-template <typename Unary, typename Graph, typename Labels>
-IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
-                                             const Graph &G)
+IQPBOSolver::IQPBOSolver(const Unary &U,
+                         const Graph &G)
 {
     numVariables = U.cols();
     mapping = (int*) malloc(sizeof(int)*this->numVariables);
@@ -20,8 +19,8 @@ IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
 
     for( int j=0;j<numVariables;++j )
     {
-        for (typename Graph::InnerIterator it(
-                G, static_cast<typename Graph::Index>(j)); it; ++it)
+        for (Graph::InnerIterator it(
+                G, static_cast<Graph::Index>(j)); it; ++it)
         {
             Index i1 = it.row();
             Index i2 = it.col();
@@ -39,8 +38,7 @@ IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
 
 }
 
-template <typename Unary, typename Graph, typename Labels>
-void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,
+void IQPBOSolver::fillLabels(int& unlabelled,
                                                  Labels& labels)
 {
     Labels originalLabels = labels;
@@ -65,8 +63,7 @@ void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,
     
 }
 
-template <typename Unary, typename Graph, typename Labels>
-void IQPBOSolver<Unary,Graph,Labels>::invertLabels(Labels& labels) 
+void IQPBOSolver::invertLabels(Labels& labels)
 {
     //Invert Solution
     for (int i = 0; i < labels.rows(); ++i)
@@ -75,8 +72,7 @@ void IQPBOSolver<Unary,Graph,Labels>::invertLabels(Labels& labels)
     }
 }
 
-template <typename Unary, typename Graph, typename Labels>
-double IQPBOSolver<Unary,Graph,Labels>::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
+double IQPBOSolver::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
 {
     double energyValue=0;
     double EU=0;

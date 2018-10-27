@@ -81,7 +81,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
             ExpFlowFromImage(*it,
                              pvi.solverType,
                              pvi.applicationMode,
-                             20,
+                             6,
                              ofs,
                              expOutputFolder,
                              true);

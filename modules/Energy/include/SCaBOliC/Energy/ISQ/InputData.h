@@ -23,6 +23,8 @@ namespace SCaBOliC
                 typedef IProbabilityDistribution<Scalar> MyProbabilityDistribution;
 
                 typedef DGtal::Z2i::Domain Domain;
+                typedef DGtal::Z2i::Point Point;
+
                 typedef cv::Mat cvColorImage;
                 typedef cv::Vec3b cvColorType;
 
@@ -34,14 +36,16 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& bgDistr,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
-                          double lengthTermWeight=1.0):optimizationRegions(ODR),
-                                                       image(image),
-                                                   radius(radius),
-                                                   fgDistr(fgDistr),
-                                                   bgDistr(bgDistr),
-                                                   dataTermWeight(dataTermWeight),
-                                                   sqTermWeight(sqTermWeight),
-                                                       lengthTermWeight(lengthTermWeight){}
+                          double lengthTermWeight=1.0,
+                          Point translation=Point(0,0)):optimizationRegions(ODR),
+                                                        image(image),
+                                                        radius(radius),
+                                                        fgDistr(fgDistr),
+                                                        bgDistr(bgDistr),
+                                                        dataTermWeight(dataTermWeight),
+                                                        sqTermWeight(sqTermWeight),
+                                                        lengthTermWeight(lengthTermWeight),
+                                                        translation(translation){}
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
@@ -54,6 +58,7 @@ namespace SCaBOliC
                 const MyProbabilityDistribution& bgDistr;
 
                 const cvColorImage& image;
+                const Point translation;
 
             };
         }

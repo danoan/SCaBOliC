@@ -33,7 +33,7 @@ ISQEvaluation<TCurvatureAdaptor,TTangentAdaptor>::ISQEvaluation(double &value,
                 true);
 
     Image2D img(ds.domain());
-    DIPaCUS::Representation::DigitalSetToImage(img,ds);
+    DIPaCUS::Representation::digitalSetToImage(img,ds);
 
     Curve boundary;
     DIPaCUS::Misc::ComputeBoundaryCurve(img,boundary,100);

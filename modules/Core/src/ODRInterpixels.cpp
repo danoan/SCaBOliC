@@ -3,8 +3,8 @@
 using namespace SCaBOliC::Core;
 
 
-DIPaCUS::Morphology::StructuringElement ODRInterpixels::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
-DIPaCUS::Morphology::StructuringElement ODRInterpixels::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
+ODRInterpixels::StructuringElement::Type ODRInterpixels::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
+ODRInterpixels::StructuringElement::Type ODRInterpixels::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
 
 
 ODRInterpixels::Point ODRInterpixels::neighborhoodFilter[5] = {ODRInterpixels::Point(0,2),
@@ -18,7 +18,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::omOriginalBoundary(const DigitalSet& 
     DigitalSet originalBoundary(original.domain());
 
     DigitalSet eroded(original.domain());
-    DIPaCUS::Morphology::Erode(eroded,original,erosionSE,1);
+    DIPaCUS::Morphology::erode(eroded,original,StructuringElement(erosionSE,1));
 
     DIPaCUS::SetOperations::SetDifference(originalBoundary,original,eroded);
 
@@ -30,10 +30,9 @@ ODRInterpixels::DigitalSet ODRInterpixels::omDilationBoundary(const DigitalSet& 
     DigitalSet dilated(original.domain());
     DigitalSet dilatedBoundary(original.domain());
 
-    DIPaCUS::Morphology::Dilate(dilated,
+    DIPaCUS::Morphology::dilate(dilated,
                                 original,
-                                dilationSE,
-                                1);
+                                StructuringElement(dilationSE,1));
 
     EightNeighborhood en(dilatedBoundary,dilated);
 
@@ -75,7 +74,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::amInternRange(const DigitalSet& origi
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet eroded (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::Erode(eroded,originalPlusOptRegion,erosionSE,(length+1));
+    DIPaCUS::Morphology::erode(eroded,originalPlusOptRegion, StructuringElement(erosionSE,(length+1)) );
 
     DigitalSet internRegion(originalPlusOptRegion.domain());
     DIPaCUS::SetOperations::SetDifference(internRegion,originalPlusOptRegion,eroded);
@@ -90,7 +89,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::amExternRange(const DigitalSet& origi
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet dilated (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::Dilate(dilated,originalPlusOptRegion,dilationSE,length);
+    DIPaCUS::Morphology::dilate(dilated,originalPlusOptRegion,StructuringElement(dilationSE,length));
 
     DigitalSet externRegion(originalPlusOptRegion.domain());
     DIPaCUS::SetOperations::SetDifference(externRegion,dilated,originalPlusOptRegion);
@@ -102,10 +101,9 @@ ODRInterpixels::DigitalSet ODRInterpixels::isolatedPoints(const DigitalSet& orig
 {
     DigitalSet dilated(original.domain());
 
-    DIPaCUS::Morphology::Dilate(dilated,
+    DIPaCUS::Morphology::dilate(dilated,
                                 original,
-                                dilationSE,
-                                1);
+                                StructuringElement(dilationSE,1));
 
     DigitalSet tempDS(original.domain());
     DigitalSet isolatedDS(original.domain());
@@ -120,7 +118,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     const Domain& domain = ds.domain();
 
     Image2D sImage(domain);
-    DIPaCUS::Representation::DigitalSetToImage(sImage,ds);
+    DIPaCUS::Representation::digitalSetToImage(sImage,ds);
 
     Domain doubleDomain( domain.lowerBound()*2,domain.upperBound()*2 );
     DigitalSet kds(doubleDomain);

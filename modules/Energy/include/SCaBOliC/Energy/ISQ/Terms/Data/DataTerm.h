@@ -26,6 +26,8 @@ namespace SCaBOliC
                 typedef InputData::cvColorImage cvColorImage;
                 typedef InputData::cvColorType cvColorType;
 
+                typedef DGtal::Z2i::Point Point;
+
             public:
                 DataTerm(const InputData& id);
                 int numVars(){return vm.numVars;}
@@ -55,6 +57,7 @@ namespace SCaBOliC
 
             private:
                 const cvColorImage& image;
+                const Point& translation;
             };
 
         }

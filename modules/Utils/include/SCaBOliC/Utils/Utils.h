@@ -25,7 +25,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
 
         private:
-            typedef DIPaCUS::Representation::ImageAsDigitalSet::Image2D Image2D;
+            typedef DIPaCUS::Representation::Image2D Image2D;
             typedef TCurvatureAdaptor MyCurvatureAdaptor;
 
 

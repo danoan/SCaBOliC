@@ -18,7 +18,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
                           domain.upperBound()+Point(0,0) )
     );
 
-    DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
+    DIPaCUS::Representation::imageAsDigitalSet(ds,image);
 
     cv::Mat cvImg = cv::imread(ui.imagePath);
     ODRModel odr = odrFactory.createODR(ui.om,
@@ -48,7 +48,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     else if(ui.solverType==QPBOSolverType::Improve)
         energy.solve<QPBOImproveSolver>(solution);
     else if(ui.solverType==QPBOSolverType::ImproveProbe)
-        energy.solve<QPBOIP>(solution);
+        energy.solve<QPBOIPSolver>(solution);
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
 

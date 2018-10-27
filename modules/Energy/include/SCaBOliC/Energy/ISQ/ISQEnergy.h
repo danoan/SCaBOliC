@@ -2,7 +2,6 @@
 #define SCABOLIC_ISQ_H
 
 #include <SCaBOliC/Energy/base/EnergyTerm.h>
-
 #include <SCaBOliC/Energy/model/Solution.h>
 #include <SCaBOliC/Energy/model/OptimizationData.h>
 
@@ -41,16 +40,12 @@ namespace SCaBOliC
         public:
             ISQEnergy(const InputData& id);
 
-            template<template <typename,typename,typename> class TQPBOSolver>
+            template< typename TQPBOSolver>
             void solve(Solution& solution)
             {
                 assert(solution.isValid());
 
-                typedef TQPBOSolver<UnaryTermsMatrix,
-                PairwiseTermsMatrix,
-                LabelsVector>  MyQPBOSolver;
-
-                MyQPBOSolver(solution.energyValue,
+                TQPBOSolver(solution.energyValue,
                              solution.energyValuePriorInversion,
                              solution.unlabeled,
                              energy.od.localUTM,

@@ -4,7 +4,8 @@ using namespace SCaBOliC::Energy::ISQ;
 
 template<typename TODRFactory>
 DataTerm<TODRFactory>::DataTerm(const InputData &id):vm(id.optimizationRegions),
-                                        image(id.image)
+                                                     image(id.image),
+                                                     translation(id.translation)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
@@ -82,7 +83,7 @@ void DataTerm<TODRFactory>::setCoeffs(OptimizationData& od,
             if(neigh(0)<0 || neigh(1)<0) continue;
             if(neigh(0)>image.cols || neigh(1)>image.rows) continue;
 
-            vn = image.at<cvColorType>(neigh(1),neigh(0));
+            vn = image.at<cvColorType>(neigh(1)+translation(1),neigh(0)+translation(0));
 
             heterogenity += exp( (v-vn).dot(v-vn) );
         }

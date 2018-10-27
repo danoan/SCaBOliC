@@ -10,7 +10,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                                    const std::string& outputFolder,
                                    bool exportRegions)
 {
-    typedef DIPaCUS::Representation::DigitalSetToImage::Image2D Image2D;
+    typedef DIPaCUS::Representation::Image2D Image2D;
 
     std::string flowFolder = outputFolder
                              + "/" + Lab::Utils::resolveQPBOSolverTypeName(solverType)
@@ -43,7 +43,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
         lb+=DGtal::Z2i::Point(-10,-10);
         ub+=DGtal::Z2i::Point(10,10);
         Image2D image( DGtal::Z2i::Domain(lb,ub) );
-        DIPaCUS::Representation::DigitalSetToImage(image, solution.outputDS);
+        DIPaCUS::Representation::digitalSetToImage(image, solution.outputDS);
 
         std::string imageToSavePath = flowFolder + "/" + Lab::Utils::nDigitsString(i, 2) + ".pgm";
         DGtal::GenericWriter<Image2D>::exportFile(imageToSavePath, image);

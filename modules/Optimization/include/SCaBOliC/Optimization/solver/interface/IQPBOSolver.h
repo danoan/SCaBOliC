@@ -6,19 +6,22 @@
 
 #include "SCaBOliC/Optimization/qpbo/qpbo_alpha_expand.h"
 #include "SCaBOliC/Optimization/qpbo/QPBO.h"
+#include "eigen3/Eigen/Sparse"
 
 namespace SCaBOliC
 {
     namespace Optimization
     {
-        template <typename Unary,
-                typename Graph,
-                typename Labels>
         class IQPBOSolver
         {
         public:
-            typedef typename Unary::Scalar Scalar;
-            typedef typename Unary::Index Index;
+            typedef double Scalar;
+            typedef unsigned int Index;
+
+            typedef Eigen::Matrix<Scalar,2,Eigen::Dynamic> Unary;
+            typedef Eigen::SparseMatrix<Scalar, Eigen::ColMajor> Graph;
+            typedef Eigen::VectorXi Labels;
+
         public:
             IQPBOSolver(const Unary& U,
                        const Graph& G);
@@ -45,7 +48,5 @@ namespace SCaBOliC
         };
     }
 }
-
-#include "IQPBOSolver.hpp"
 
 #endif //SCABOLIC_IQPBOSOLVER_H

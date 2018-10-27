@@ -4,8 +4,11 @@
 #include "boost/filesystem.hpp"
 
 #include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
+
 #include <SCaBOliC/Optimization/solver/improveProbe/QPBOIP.h>
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
+#include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
+#include <SCaBOliC/Optimization/solver/simple/QPBOSimpleSolver.h>
 
 #include <SCaBOliC/Core/display.h>
 #include <SCaBOliC/Core/ODRModel.h>
@@ -39,6 +42,10 @@ namespace SCaBOliC
                 typedef Core::ODRModel ODRModel;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
+                typedef Optimization::QPBOSimpleSolver QPBOSimpleSolver;
+                typedef Optimization::QPBOImproveSolver QPBOImproveSolver;
+                typedef Optimization::QPBOProbeSolver QPBOProbeSolver;
+                typedef Optimization::QPBOIP QPBOIPSolver;
 
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;

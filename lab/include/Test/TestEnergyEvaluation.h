@@ -3,6 +3,12 @@
 
 #include <DIPaCUS/base/Representation.h>
 
+#include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
+#include <SCaBOliC/Optimization/solver/improveProbe/QPBOIP.h>
+#include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
+#include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
+#include <SCaBOliC/Optimization/solver/simple/QPBOSimpleSolver.h>
+
 #include <SCaBOliC/Core/ODRPixels.h>
 #include <SCaBOliC/Core/ODRInterface.h>
 #include <SCaBOliC/Core/ODRModel.h>
@@ -24,14 +30,21 @@ namespace SCaBOliC
             class TestEnergyEvaluation
             {
             public:
-                typedef DIPaCUS::Representation::ImageAsDigitalSet::Image2D Image2D;
-                typedef DIPaCUS::Representation::ImageAsDigitalSet::DigitalSet DigitalSet;
-                typedef DIPaCUS::Representation::ImageAsDigitalSet::Domain Domain;
-                typedef DIPaCUS::Representation::ImageAsDigitalSet::Point Point;
+                typedef DIPaCUS::Representation::Image2D Image2D;
+                typedef DIPaCUS::Representation::DigitalSet DigitalSet;
+
+                typedef DGtal::Z2i::Domain Domain;
+                typedef DGtal::Z2i::Point Point;
 
                 typedef Lab::Model::UserInput UserInput;
                 typedef Lab::Model::ImageInput ImageInput;
                 typedef Lab::Model::OptOutput OptOutput;
+
+                typedef Optimization::QPBOSolverType QPBOSolverType;
+                typedef Optimization::QPBOSimpleSolver QPBOSimpleSolver;
+                typedef Optimization::QPBOImproveSolver QPBOImproveSolver;
+                typedef Optimization::QPBOProbeSolver QPBOProbeSolver;
+                typedef Optimization::QPBOIP QPBOIPSolver;
 
                 typedef ISQEnergy<SCaBOliC::Core::ODRPixels> MyISQEnergy;
                 typedef SCaBOliC::Core::ODRModel ODRModel;

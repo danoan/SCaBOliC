@@ -22,6 +22,8 @@ namespace SCaBOliC
             typedef ODRModel::ApplicationCenter ApplicationCenter;
             typedef ODRModel::CountingMode CountingMode;
 
+        private:
+            typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
         private:
 
@@ -66,7 +68,7 @@ namespace SCaBOliC
                                                                         const DigitalSet& toIntersect) const;
 
         private:
-            static DIPaCUS::Morphology::StructuringElement dilationSE,erosionSE;
+            static StructuringElement::Type dilationSE,erosionSE;
             static Point neighborhoodFilter[5];
         };
     }

@@ -6,7 +6,7 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
 {
     Image2D image = DGtal::GenericReader<Image2D>::import(testInput.imagePath);
     DigitalSet ds( image.domain() );
-    DIPaCUS::Representation::ImageAsDigitalSet(ds,image);
+    DIPaCUS::Representation::imageAsDigitalSet(ds,image);
 
     return DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(ds);
 }
@@ -96,7 +96,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     else if(solverType==QPBOSolverType::Improve)
         energy.solve<QPBOImproveSolver>(solution);
     else if(solverType==QPBOSolverType::ImproveProbe)
-        energy.solve<QPBOIP>(solution);
+        energy.solve<QPBOIPSolver>(solution);
 
     ISQEnergy::ODRFactory odrFactory;
 

@@ -23,7 +23,7 @@ namespace SCaBOliC
                 typedef DGtal::Shapes<Domain> Shapes;
                 typedef DGtal::GaussDigitizer<Space,TShape> GaussDigitizer;
 
-                typedef DIPaCUS::Representation::DigitalSetToImage::Image2D Image2D;
+                typedef DIPaCUS::Representation::Image2D Image2D;
                 typedef SCaBOliC::Lab::Model::ImageInput ImageInput;
                 
             public:
@@ -46,7 +46,7 @@ namespace SCaBOliC
                     DigitalSet centeredDS = DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(ds);
 
                     Image2D image(centeredDS.domain());
-                    DIPaCUS::Representation::DigitalSetToImage(image,centeredDS);
+                    DIPaCUS::Representation::digitalSetToImage(image,centeredDS);
 
                     std::string firstImagePath = outputFolder + "/" + name + ".pgm";
                     DGtal::GenericWriter<Image2D>::exportFile(firstImagePath,image);
