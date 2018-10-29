@@ -120,17 +120,18 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     Image2D sImage(domain);
     DIPaCUS::Representation::digitalSetToImage(sImage,ds);
 
-    Domain doubleDomain( domain.lowerBound()*2,domain.upperBound()*2 );
+    Domain doubleDomain( domain.lowerBound()*2 - Point(1,1),domain.upperBound()*2 + Point(1,1) );
     DigitalSet kds(doubleDomain);
+
 
     for(auto it=ds.begin();it!=ds.end();++it)
     {
         kds.insert( (*it)*2 + Point(1,1) );
     }
 
+
     DigitalSet filledKDS(kds.domain());
     filledKDS.insert(kds.begin(),kds.end());
-
 
     Point filterIP[4] = {Point(2,0),Point(0,2),Point(-2,0),Point(0,-2)};
     Point filterP[8] = {Point(1,0),Point(0,1),Point(-1,0),Point(0,-1),
@@ -150,11 +151,24 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
         visited.insert(curr);
 
         for(int j=0;j<8;++j)
-            filledKDS.insert(curr+filterP[j]);
+        {
+            Point np = curr+filterP[j];
+            if(np(0) < filledKDS.domain().lowerBound()(0) || np(1) < filledKDS.domain().lowerBound()(1)) continue;
+            if(np(0) > filledKDS.domain().upperBound()(0) || np(1) > filledKDS.domain().upperBound()(1)) continue;
+
+            filledKDS.insert(np);
+
+        }
+
+
 
         for(int i=0;i<4;++i)
         {
             Point np = curr + filterIP[i];
+
+            if(np(0) < kds.domain().lowerBound()(0) || np(1) < kds.domain().lowerBound()(1)) continue;
+            if(np(0) > kds.domain().upperBound()(0) || np(1) > kds.domain().upperBound()(1)) continue;
+
             if(kds(np))
             {
                 s.push(np);
