@@ -68,7 +68,8 @@ namespace SCaBOliC
                 Solution solve(const ISQInputData& input,
                                DigitalSet& mb,
                                QPBOSolverType solverType,
-                               TestInput::OptimizationMode om);
+                               TestInput::OptimizationMode om,
+                               TestInput::ApplicationMode am);
 
                 std::string resolvePrefix(const TestInput& testInput);
 

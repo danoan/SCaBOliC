@@ -13,6 +13,16 @@ namespace SCaBOliC
 {
     namespace Lab
     {
+        extern std::string projectDir;
+        extern std::string outputFolder;
+        extern std::string imageFolder;
+    }
+}
+
+namespace SCaBOliC
+{
+    namespace Lab
+    {
         namespace Experiment
         {
             namespace ExpInput
@@ -124,8 +134,13 @@ namespace SCaBOliC
                 public:
                     static ImageInput ball(double h=1.0){ Ball s(0,0,r); return toImage(s,h,"ball"); }
                     static ImageInput flower(double h=1.0){ Flower s(0,0,r,20,2,1); return toImage(s,h,"flower"); }
+                    static ImageInput flag(double h=1.0)
+                    {
+                        ImageInput ii(imageFolder + "/flag.pgm","flag");
+                        return ii;
+                    }
                     static ImageInput triangle(double h=1.0){ NGon s(0,0,r,3,1); return toImage(s,h,"triangle"); }
-                    static ImageInput square(double h=1.0){ NGon s(0,0,r,4,1); return toImage(s,h,"square"); }
+                    static ImageInput square(double h=1.0){ NGon s(0,0,r,4,3.1415/4.0); return toImage(s,h,"square"); }
                     static ImageInput pentagon(double h=1.0){ NGon s(0,0,r,5,1); return toImage(s,h,"pentagon"); }
                     static ImageInput heptagon(double h=1.0){ NGon s(0,0,r,5,1); return toImage(s,h,"heptagon"); }
                     static ImageInput ellipse(double h=1.0){ Ellipse s(0,0,r,r-10,0); return toImage(s,h,"ellipse"); }

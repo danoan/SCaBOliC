@@ -10,12 +10,9 @@ namespace SCaBOliC
 {
     namespace Lab
     {
-        namespace Test
-        {
-            std::string projectDir = PROJECT_DIR;
-            std::string outputFolder = projectDir + "/output/expScabolic";
-            std::string imageFolder = projectDir + "/images";
-        }
+        std::string projectDir = PROJECT_DIR;
+        std::string outputFolder = projectDir + "/output/expScabolic";
+        std::string imageFolder = projectDir + "/images";
     }
 }
 
@@ -25,7 +22,7 @@ void expApplication(const ExpInput::ExpInputSet& inputSet)
 {
     typedef ExpApplicationType::QPBOSolverType QPBOSolverType;
 
-    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expApplication";
+    const std::string expOutputFolder = SCaBOliC::Lab::outputFolder + "/expApplication";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-application.txt",std::ios_base::out);
@@ -46,7 +43,7 @@ void expSolver(const ExpInput::ExpInputSet& inputSet)
 {
     typedef ExpQPBOSolverType::ApplicationMode ApplicationMode;
 
-    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expSolver";
+    const std::string expOutputFolder = SCaBOliC::Lab::outputFolder + "/expSolver";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-solver.txt",std::ios_base::out);
@@ -68,7 +65,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
     typedef ExpFlowFromImage::ApplicationMode ApplicationMode;
     typedef ExpFlowFromImage::OptimizationMode OptimizationMode;
 
-    const std::string expOutputFolder = SCaBOliC::Lab::Test::outputFolder + "/expFlow";
+    const std::string expOutputFolder = SCaBOliC::Lab::outputFolder + "/expFlow";
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-flow.txt",std::ios_base::out);
@@ -94,7 +91,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
 }
 
 
-const std::string ExpInput::DigitizerInput::imageOutputFolder = Test::imageFolder;
+const std::string ExpInput::DigitizerInput::imageOutputFolder = imageFolder;
 
 int main()
 {
@@ -124,7 +121,8 @@ int main()
     inputSet.push_back( MyDigitizer::ball() );
     inputSet.push_back( MyDigitizer::triangle() );
     inputSet.push_back( MyDigitizer::square() );
-    inputSet.push_back( MyDigitizer::flower() );
+    inputSet.push_back( MyDigitizer::flag() );
+
 
     expApplication(inputSet);
     expSolver(inputSet);

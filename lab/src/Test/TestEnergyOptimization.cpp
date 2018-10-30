@@ -26,12 +26,12 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
     ISQInputData input = prepareInput(ds,radius,testInput,cvImg);
 
     DigitalSet mBoundary(input.optimizationRegions.domain);
-    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om);
+    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om,testInput.am);
     std::string prefix = resolvePrefix(testInput);
 
     data = new TestOutput(input,solution,prefix);
 
-    
+
     if(exportRegions) Lab::Utils::display(input,solution,mBoundary,outputFolder,prefix);
 }
 
@@ -78,7 +78,8 @@ void TestEnergyOptimization::modifiedBoundary(DigitalSet& modifiedBoundary,
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
                                                                DigitalSet& mb,
                                                                QPBOSolverType solverType,
-                                                               TestInput::OptimizationMode om)
+                                                               TestInput::OptimizationMode om,
+                                                               TestInput::ApplicationMode am)
 {
     Solution solution(input.optimizationRegions.domain);
     ISQEnergy energy(input);
@@ -101,11 +102,47 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     ISQEnergy::ODRFactory odrFactory;
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
-    odrFactory.solutionSet(solution.outputDS,
-                           input.optimizationRegions.trustFRG,
-                           input.optimizationRegions,
-                           labelsVector.data(),
-                           energy.vm().pim);
+
+
+
+
+
+    {
+        const ISQInputData& energyInput = input;
+
+        DigitalSet initialDS(energyInput.optimizationRegions.domain);
+        DigitalSet tempOutDS(energyInput.optimizationRegions.domain);
+
+        const DigitalSet& optRegion = energyInput.optimizationRegions.optRegion;
+
+        if(am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
+        {
+            //Invert Solution
+            for (int i = 0; i < labelsVector.rows(); ++i)
+            {
+                labelsVector.coeffRef(i) = 1-labelsVector.coeff(i);
+            }
+            initialDS.insert(energyInput.optimizationRegions.trustBKG.begin(),
+                             energyInput.optimizationRegions.trustBKG.end());
+        }else
+        {
+            initialDS.insert(energyInput.optimizationRegions.trustFRG.begin(),
+                             energyInput.optimizationRegions.trustFRG.end());
+        }
+
+
+        odrFactory.solutionSet(tempOutDS,
+                               initialDS,
+                               input.optimizationRegions,
+                               labelsVector.data(),
+                               energy.vm().pim);
+
+        solution.outputDS.clear();
+        solution.outputDS.insert(tempOutDS.begin(),tempOutDS.end());
+    }
+
+
+
 
     modifiedBoundary(mb,
                      input.optimizationRegions.trustFRG,

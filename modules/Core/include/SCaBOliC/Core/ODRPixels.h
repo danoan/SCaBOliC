@@ -31,6 +31,7 @@ namespace SCaBOliC
             typedef ODRModel::ApplicationCenter ApplicationCenter;
             typedef ODRModel::CountingMode CountingMode;
 
+
         private:
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
