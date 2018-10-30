@@ -64,31 +64,33 @@ void DataTerm<TODRFactory>::setCoeffs(OptimizationData& od,
     maxCtrb=0;
     for(auto it = ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
     {
-        col = (*it)[0];
-        row = (*it)[1];
+        col = (*it)[0] +translation(0);
+        row = (*it)[1] +translation(1);
 
         xi = vm.pim.at(*it);
 
-        //Use of -log(1-x) instead of -log(x) because I invert the solution.
-        od.localUTM(0,xi) = -log( 1-id.fgDistr(row,col) );
-        od.localUTM(1,xi) = -log( 1-id.bgDistr(row,col) );
+        //Recall solution is inverted at the end.
+        od.localUTM(0,xi) = -log( 1 - id.fgDistr(row,col) );
+        od.localUTM(1,xi) = -log( 1 - id.bgDistr(row,col) );
 
         cvColorType v = image.at<cvColorType>(row,col);
         cvColorType vn;
-        double heterogenity=0;
-        
+        double homogeneity=0;
+
         for(auto itp = this->odrFactory.neighBegin(); itp!=this->odrFactory.neighEnd();++itp)
         {
             Point neigh = *it + *itp;
             if(neigh(0)<0 || neigh(1)<0) continue;
             if(neigh(0)>image.cols || neigh(1)>image.rows) continue;
+            if(!ODR.trustFRG(neigh)) continue;
 
             vn = image.at<cvColorType>(neigh(1)+translation(1),neigh(0)+translation(0));
 
-            heterogenity += exp( (v-vn).dot(v-vn) );
+            homogeneity += exp( - (0.1 +(v-vn).dot(v-vn)/195075.0) );
         }
+
         //Again, think opposite way
-        od.localUTM(0,xi)+=heterogenity;
+        od.localUTM(1,xi)+= homogeneity;
 
         maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;
         maxCtrb = fabs(od.localUTM(0,xi))>maxCtrb?fabs(od.localUTM(0,xi)):maxCtrb;

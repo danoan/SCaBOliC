@@ -31,7 +31,6 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
 
     data = new TestOutput(input,solution,prefix);
 
-
     if(exportRegions) Lab::Utils::display(input,solution,mBoundary,outputFolder,prefix);
 }
 
@@ -54,9 +53,9 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                          estimatingBallRadius,
                          frgDistribution,
                          bkgDistribution,
+                         2,
                          0,
-                         1,
-                         0.5);
+                         0);
 }
 
 void TestEnergyOptimization::modifiedBoundary(DigitalSet& modifiedBoundary,
@@ -102,9 +101,6 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     ISQEnergy::ODRFactory odrFactory;
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
-
-
-
 
 
     {

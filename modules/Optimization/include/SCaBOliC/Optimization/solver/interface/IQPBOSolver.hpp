@@ -85,6 +85,7 @@ double IQPBOSolver<Unary,Graph,Labels>::computeEnergy(const Unary &U, const Grap
     for(int i=0;i<this->numVariables;++i)
     {
         EU += U.coeff(1,i)*labels[i];
+        EU += U.coeff(0,i)*(1-labels[i]);
         for(int j=0;j<this->numVariables;++j)
         {
             EP += G.coeff(i,j)*labels[i]*labels[j];

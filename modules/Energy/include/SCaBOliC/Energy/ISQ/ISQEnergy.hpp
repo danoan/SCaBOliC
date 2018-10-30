@@ -9,7 +9,8 @@ ISQEnergy<TODRFactory>::ISQEnergy(const InputData& id):dt(id),sqt(id),lt(id)
     assert(dt.numVars()==sqt.numVars());
     this->nvars = dt.numVars();
 
-    energy = sqt+dt+lt;
+    energy = sqt;
+    energy = energy+dt+lt;
 }
 
 template<typename TODRFactory>
@@ -72,10 +73,16 @@ double ISQEnergy<TODRFactory>::value(const LabelsVector& labelsVector,
                                      double sumFactor,
                                      double multiplyFactor ) const
 {
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> extendedVector;
+    typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> DynMatrix;
+    DynMatrix extendedVector;
     extendedVector = labelsVector.template cast<double>();
 
-    double uv = (et.od.localUTM.bottomRows(1)*extendedVector).coeff(0,0);
+    DynMatrix allOnes = extendedVector;
+    allOnes = allOnes.setOnes();
+
+    double uv = (et.od.localUTM.row(0)*( allOnes-extendedVector) ).coeff(0,0);
+    uv += (et.od.localUTM.row(1)*(extendedVector)).coeff(0,0);
+
     double pv = (extendedVector.transpose()*et.od.localPTM*extendedVector).coeff(0,0);
 
     return ((uv+pv))*multiplyFactor + sumFactor;
