@@ -7,15 +7,13 @@ namespace SCaBOliC
 {
     namespace Optimization
     {
-        class QPBOImproveSolver: public IQPBOSolver
+        template<typename Unary,typename Graph,typename Labels>
+        class QPBOImproveSolver: public IQPBOSolver<Unary,Graph,Labels>
         {
         public:
-            typedef IQPBOSolver::Scalar Scalar;
-            typedef IQPBOSolver::Index Index;
+            typedef typename Unary::Scalar Scalar;
+            typedef typename Unary::Index Index;
 
-            typedef IQPBOSolver::Unary Unary;
-            typedef IQPBOSolver::Graph Graph;
-            typedef IQPBOSolver::Labels Labels;
         public:
             QPBOImproveSolver(Scalar& energyValue,
                               Scalar& energyValuePriorInversion,
@@ -35,5 +33,7 @@ namespace SCaBOliC
         };
     }
 }
+
+#include "QPBOImproveSolver.hpp"
 
 #endif //SCABOLIC_QPBOIMPROVESOLVER_H

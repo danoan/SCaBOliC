@@ -42,10 +42,6 @@ namespace SCaBOliC
                 typedef Core::ODRModel ODRModel;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
-                typedef Optimization::QPBOSimpleSolver QPBOSimpleSolver;
-                typedef Optimization::QPBOImproveSolver QPBOImproveSolver;
-                typedef Optimization::QPBOProbeSolver QPBOProbeSolver;
-                typedef Optimization::QPBOIP QPBOIPSolver;
 
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;

@@ -5,12 +5,7 @@ add_library(scabolic-optimization SHARED
         src/qpbo/QPBO.cpp
         src/qpbo/QPBO_extra.cpp
         src/qpbo/QPBO_maxflow.cpp
-        src/qpbo/QPBO_postprocessing.cpp
-        src/solver/interface/IQPBOSolver.cpp
-        src/solver/improve/QPBOImproveSolver.cpp
-        src/solver/improveProbe/QPBOIP.cpp
-        src/solver/probe/QPBOProbeSolver.cpp
-        src/solver/simple/QPBOSimpleSolver.cpp)
+        src/qpbo/QPBO_postprocessing.cpp)
 
 target_include_directories(scabolic-optimization PRIVATE
         include)

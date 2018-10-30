@@ -41,10 +41,6 @@ namespace SCaBOliC
                 typedef Lab::Model::OptOutput OptOutput;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
-                typedef Optimization::QPBOSimpleSolver QPBOSimpleSolver;
-                typedef Optimization::QPBOImproveSolver QPBOImproveSolver;
-                typedef Optimization::QPBOProbeSolver QPBOProbeSolver;
-                typedef Optimization::QPBOIP QPBOIPSolver;
 
                 typedef ISQEnergy<SCaBOliC::Core::ODRPixels> MyISQEnergy;
                 typedef SCaBOliC::Core::ODRModel ODRModel;

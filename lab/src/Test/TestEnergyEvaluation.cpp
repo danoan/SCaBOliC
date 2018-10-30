@@ -42,13 +42,13 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     solution.labelsVector.setZero();
 
     if(ui.solverType==QPBOSolverType::Simple)
-        energy.solve<QPBOSimpleSolver>(solution);
+        energy.solve<Optimization::QPBOSimpleSolver>(solution);
     else if(ui.solverType==QPBOSolverType::Probe)
-        energy.solve<QPBOProbeSolver>(solution);
+        energy.solve<Optimization::QPBOProbeSolver>(solution);
     else if(ui.solverType==QPBOSolverType::Improve)
-        energy.solve<QPBOImproveSolver>(solution);
+        energy.solve<Optimization::QPBOImproveSolver>(solution);
     else if(ui.solverType==QPBOSolverType::ImproveProbe)
-        energy.solve<QPBOIPSolver>(solution);
+        energy.solve<Optimization::QPBOIP>(solution);
 
     Solution::LabelsVector& labelsVector = solution.labelsVector;
 

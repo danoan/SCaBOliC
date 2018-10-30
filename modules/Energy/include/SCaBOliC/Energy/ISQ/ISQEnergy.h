@@ -40,12 +40,16 @@ namespace SCaBOliC
         public:
             ISQEnergy(const InputData& id);
 
-            template< typename TQPBOSolver>
+            template< template <typename,typename,typename> class TQPBOSolver>
             void solve(Solution& solution)
             {
                 assert(solution.isValid());
 
-                TQPBOSolver(solution.energyValue,
+                typedef TQPBOSolver<UnaryTermsMatrix,
+                PairwiseTermsMatrix,
+                LabelsVector> MyQPBOSolver;
+
+                MyQPBOSolver (solution.energyValue,
                              solution.energyValuePriorInversion,
                              solution.unlabeled,
                              energy.od.localUTM,

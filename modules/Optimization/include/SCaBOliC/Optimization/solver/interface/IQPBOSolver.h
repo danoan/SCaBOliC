@@ -12,15 +12,12 @@ namespace SCaBOliC
 {
     namespace Optimization
     {
+        template<typename Unary,typename Graph,typename Labels>
         class IQPBOSolver
         {
         public:
-            typedef double Scalar;
-            typedef unsigned int Index;
-
-            typedef Eigen::Matrix<Scalar,2,Eigen::Dynamic> Unary;
-            typedef Eigen::SparseMatrix<Scalar, Eigen::ColMajor> Graph;
-            typedef Eigen::VectorXi Labels;
+            typedef typename Unary::Scalar Scalar;
+            typedef typename Unary::Index Index;
 
         public:
             IQPBOSolver(const Unary& U,
@@ -48,5 +45,7 @@ namespace SCaBOliC
         };
     }
 }
+
+#include "IQPBOSolver.hpp"
 
 #endif //SCABOLIC_IQPBOSOLVER_H

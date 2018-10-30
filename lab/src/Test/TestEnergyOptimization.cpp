@@ -90,13 +90,13 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         solution.labelsVector.setOnes();
 
     if(solverType==QPBOSolverType::Simple)
-        energy.solve<QPBOSimpleSolver>(solution);
+        energy.solve<Optimization::QPBOSimpleSolver>(solution);
     else if(solverType==QPBOSolverType::Probe)
-        energy.solve<QPBOProbeSolver>(solution);
+        energy.solve<Optimization::QPBOProbeSolver>(solution);
     else if(solverType==QPBOSolverType::Improve)
-        energy.solve<QPBOImproveSolver>(solution);
+        energy.solve<Optimization::QPBOImproveSolver>(solution);
     else if(solverType==QPBOSolverType::ImproveProbe)
-        energy.solve<QPBOIPSolver>(solution);
+        energy.solve<Optimization::QPBOIP>(solution);
 
     ISQEnergy::ODRFactory odrFactory;
 
