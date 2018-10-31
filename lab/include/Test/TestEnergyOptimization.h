@@ -45,7 +45,7 @@ namespace SCaBOliC
 
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;
-                typedef Energy::ISQEnergy<SCaBOliC::Core::ODRPixels> ISQEnergy;
+                typedef Energy::ISQEnergy<SCaBOliC::Core::ODRInterpixels> ISQEnergy;
 
                 typedef Lab::Model::UserInput TestInput;
                 typedef Lab::Model::OptOutput TestOutput;

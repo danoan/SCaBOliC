@@ -346,43 +346,45 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& 
 
     struct StackElement
     {
-        StackElement(Point pixelMode,Point interpixelMode):pixelMode(pixelMode),
-                                                           interpixelMode(interpixelMode){}
-        Point pixelMode;
-        Point interpixelMode;
+        StackElement(Point interpixel):interpixel(interpixel){}
+        Point interpixel;
     };
 
-    Point filterPixelMode[4] = {Point(0,1),Point(1,0),Point(0,-1),Point(-1,0)};
     Point filterInterpixelMode[4] = {Point(0,2),Point(2,0),Point(0,-2),Point(-2,0)};
 
     DigitalSet pixelDS(ds.domain());
     std::set<Point> visited;
     std::stack<StackElement> s;
 
-    Point sp = *ds.begin();
-    s.push(StackElement(sp,sp));
+    DigitalSet::ConstIterator it = ds.begin();
+    Point sp;
+    do{
+        ++it;
+        sp =  *it;
+    }while(sp(0)%2>0 || sp(1)%2>0);
 
+    s.push(StackElement(sp));
     while(!s.empty())
     {
         StackElement se = s.top();
         s.pop();
 
-        if(visited.find(se.interpixelMode)!=visited.end()) continue;
-        visited.insert(se.interpixelMode);
+        if(visited.find(se.interpixel)!=visited.end()) continue;
+        visited.insert(se.interpixel);
 
-        pixelDS.insert(se.pixelMode);
+        if(se.interpixel(0)%2==0 && se.interpixel(1)%2==0)
+            pixelDS.insert(se.interpixel/2);
 
         for(int i=0;i<4;++i)
         {
-            Point npIP = se.interpixelMode + filterInterpixelMode[i];
-            Point npP = se.pixelMode + filterPixelMode[i];
+            Point npIP = se.interpixel + filterInterpixelMode[i];
 
             if(npIP(0) < ds.domain().lowerBound()(0) || npIP(1) < ds.domain().lowerBound()(1)) continue;
             if(npIP(0) > ds.domain().upperBound()(0) || npIP(1) > ds.domain().upperBound()(1)) continue;
 
             if(ds(npIP))
             {
-                s.push(StackElement(npP,npIP));
+                s.push(StackElement(npIP));
             }
         }
     }

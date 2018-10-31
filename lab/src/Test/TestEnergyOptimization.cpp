@@ -53,8 +53,8 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                          estimatingBallRadius,
                          frgDistribution,
                          bkgDistribution,
-                         2,
                          0,
+                         1.0,
                          0);
 }
 

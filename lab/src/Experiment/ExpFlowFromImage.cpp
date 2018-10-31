@@ -31,7 +31,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                        om,
                        am,
                        ApplicationCenter::AC_PIXEL,
-                       CountingMode::CM_PIXEL);
+                       CountingMode::CM_POINTEL);
 
         Test::TestEnergyOptimization teo(input,flowFolder,exportRegions);
         const TEOOutput::Solution& solution = teo.data->solution;
