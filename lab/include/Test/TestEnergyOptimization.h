@@ -69,7 +69,8 @@ namespace SCaBOliC
                                DigitalSet& mb,
                                QPBOSolverType solverType,
                                TestInput::OptimizationMode om,
-                               TestInput::ApplicationMode am);
+                               TestInput::ApplicationMode am,
+                               TestInput::CountingMode);
 
                 std::string resolvePrefix(const TestInput& testInput);
 

@@ -32,7 +32,8 @@ namespace SCaBOliC
                                      const DigitalSet& initialDS,
                                      const ODRModel& odrModel,
                                      const int* varValue,
-                                     const std::unordered_map<Point, unsigned int>& pointToVar) const = 0;
+                                     const std::unordered_map<Point, unsigned int>& pointToVar,
+                                     CountingMode cm) const = 0;
 
             virtual DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
                                                                                 const DigitalSet& toIntersect) const = 0;

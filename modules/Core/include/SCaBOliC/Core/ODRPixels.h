@@ -25,7 +25,7 @@ namespace SCaBOliC
 
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
             typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
-            
+
             typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
             typedef ODRModel::ApplicationCenter ApplicationCenter;
@@ -59,7 +59,8 @@ namespace SCaBOliC
                              const DigitalSet& initialDS,
                              const ODRModel& odrModel,
                              const int* varValue,
-                             const std::unordered_map<Point, unsigned int>& pointToVar) const
+                             const std::unordered_map<Point, unsigned int>& pointToVar,
+                             CountingMode cm) const
             {
                 const DigitalSet& optRegion = odrModel.optRegion;
                 outputDS.insert(initialDS.begin(),initialDS.end());

@@ -45,14 +45,15 @@ namespace SCaBOliC
             static DigitalSet filterPointels(DigitalSet& ds);
             static DigitalSet filterPixels(DigitalSet& ds);
 
-            DigitalSet convertToPixelMode(const DigitalSet& ds) const;
+            DigitalSet convertToPixelMode(const DigitalSet& ds, CountingMode cm) const;
 
         public:
             void solutionSet(DigitalSet& outputDS,
                              const DigitalSet& initialDS,
                              const ODRModel& odrModel,
                              const int* varValue,
-                             const std::unordered_map<Point, unsigned int>& pointToVar) const;
+                             const std::unordered_map<Point, unsigned int>& pointToVar,
+                             CountingMode cm) const;
 
             ODRModel createODR(OptimizationMode optMode,
                                ApplicationMode appMode,

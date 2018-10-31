@@ -55,8 +55,8 @@ ODRPixels::DigitalSet ODRPixels::amFullDomain(const Domain& applicationDomain)
 }
 
 ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DigitalSet& original,
-                                                    const DigitalSet& optRegion,
-                                                    int length)
+                                                  const DigitalSet& optRegion,
+                                                  int length)
 {
     DigitalSet internRegion = amInternRange(original,optRegion,length);
     DigitalSet externRegion = amExternRange(original,optRegion,length);
@@ -112,14 +112,14 @@ ODRPixels::DigitalSet ODRPixels::isolatedPoints(const DigitalSet& original, cons
     DIPaCUS::Morphology::dilate(dilated,
                                 original,
                                 StructuringElement(dilationSE,1));
-    
+
     DigitalSet tempDS(original.domain());
     DigitalSet isolatedDS(original.domain());
     DIPaCUS::SetOperations::SetDifference(tempDS,dilated,original);
     DIPaCUS::SetOperations::SetDifference(isolatedDS,tempDS,optRegion);
-    
+
     return isolatedDS;
-    
+
 }
 
 ODRModel ODRPixels::createODR (OptimizationMode optMode,
@@ -179,14 +179,14 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
             break;
         }
     }
-    
+
     DigitalSet extendedOriginal(original.domain());
     extendedOriginal.insert(original.begin(),original.end());
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::SetDifference(trustFRG, extendedOriginal, optRegion);
-    
+
     if(optMode==OptimizationMode::OM_DilationBoundary)
     {
         DigitalSet isolatedDS = isolatedPoints(original,optRegion);
@@ -210,11 +210,11 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     }
 
     return ODRModel(domain,
-                                      original,
-                                      optRegion,
-                                      trustFRG,
-                                      trustBKG,
-                                      applicationRegion);
+                    original,
+                    optRegion,
+                    trustFRG,
+                    trustBKG,
+                    applicationRegion);
 }
 
 DIPaCUS::Misc::DigitalBallIntersection ODRPixels::intersectionComputer(unsigned int radius,

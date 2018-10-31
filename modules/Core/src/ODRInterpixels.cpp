@@ -1,4 +1,5 @@
 #include "SCaBOliC/Core/ODRInterpixels.h"
+#include "DGtal/io/boards/Board2D.h"
 
 using namespace SCaBOliC::Core;
 
@@ -47,8 +48,8 @@ ODRInterpixels::DigitalSet ODRInterpixels::amOriginalBoundary(const DigitalSet& 
 
 
 ODRInterpixels::DigitalSet ODRInterpixels::amAroundBoundary(const DigitalSet& original,
-                                                  const DigitalSet& optRegion,
-                                                  int length)
+                                                            const DigitalSet& optRegion,
+                                                            int length)
 {
     DigitalSet internRegion = amInternRange(original,optRegion,length);
     DigitalSet externRegion = amExternRange(original,optRegion,length);
@@ -218,7 +219,6 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     DigitalSet optRegion(domain);
     DigitalSet applicationRegion(domain);
 
-
     switch (optMode) {
         case OptimizationMode::OM_OriginalBoundary: {
             optRegion = omOriginalBoundary(original);
@@ -341,7 +341,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 }
 
 
-ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& ds) const
+ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& ds, CountingMode cm) const
 {
 
     struct StackElement
@@ -356,12 +356,17 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& 
     std::set<Point> visited;
     std::stack<StackElement> s;
 
+    std::function<bool(Point)> isNotPointel = [](Point p){ return p(0)%2!=0 || p(1)%2!=0; };
+    std::function<bool(Point)> isNotPixel  = [](Point p){ return p(0)%2!=1 || p(1)%2!=1; };
+
+    std::function<bool(Point)> decideSeed = cm==CountingMode::CM_POINTEL?isNotPointel:isNotPixel;
+
     DigitalSet::ConstIterator it = ds.begin();
     Point sp;
     do{
         ++it;
         sp =  *it;
-    }while(sp(0)%2>0 || sp(1)%2>0);
+    }while(decideSeed(sp));
 
     s.push(StackElement(sp));
     while(!s.empty())
@@ -372,7 +377,9 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& 
         if(visited.find(se.interpixel)!=visited.end()) continue;
         visited.insert(se.interpixel);
 
-        if(se.interpixel(0)%2==0 && se.interpixel(1)%2==0)
+        if(cm==CountingMode::CM_PIXEL)
+            pixelDS.insert( (se.interpixel - Point(1,1) )/2);
+        else
             pixelDS.insert(se.interpixel/2);
 
         for(int i=0;i<4;++i)
@@ -396,7 +403,8 @@ void ODRInterpixels::solutionSet(DigitalSet& outputDS,
                                  const DigitalSet& initialDS,
                                  const ODRModel& odrModel,
                                  const int* varValue,
-                                 const std::unordered_map<Point, unsigned int>& pointToVar) const
+                                 const std::unordered_map<Point, unsigned int>& pointToVar,
+                                 CountingMode cm) const
 {
     const DigitalSet& optRegion = odrModel.optRegion;
 
@@ -410,7 +418,7 @@ void ODRInterpixels::solutionSet(DigitalSet& outputDS,
         }
     }
 
-    outputDS = convertToPixelMode(tempDS);
+    outputDS = convertToPixelMode(tempDS,cm);
 }
 
 DIPaCUS::Misc::DigitalBallIntersection ODRInterpixels::intersectionComputer(unsigned int radius,

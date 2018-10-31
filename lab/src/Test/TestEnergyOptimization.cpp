@@ -26,7 +26,7 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
     ISQInputData input = prepareInput(ds,radius,testInput,cvImg);
 
     DigitalSet mBoundary(input.optimizationRegions.domain);
-    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om,testInput.am);
+    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om,testInput.am,testInput.cm);
     std::string prefix = resolvePrefix(testInput);
 
     data = new TestOutput(input,solution,prefix);
@@ -78,7 +78,8 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
                                                                DigitalSet& mb,
                                                                QPBOSolverType solverType,
                                                                TestInput::OptimizationMode om,
-                                                               TestInput::ApplicationMode am)
+                                                               TestInput::ApplicationMode am,
+                                                               TestInput::CountingMode cm)
 {
     Solution solution(input.optimizationRegions.domain);
     ISQEnergy energy(input);
@@ -131,7 +132,8 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
                                initialDS,
                                input.optimizationRegions,
                                labelsVector.data(),
-                               energy.vm().pim);
+                               energy.vm().pim,
+                               cm);
 
         solution.outputDS.clear();
         solution.outputDS.insert(tempOutDS.begin(),tempOutDS.end());
