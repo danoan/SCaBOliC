@@ -214,7 +214,8 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
                     optRegion,
                     trustFRG,
                     trustBKG,
-                    applicationRegion);
+                    applicationRegion,
+                    [](Point p){ return p; });
 }
 
 DIPaCUS::Misc::DigitalBallIntersection ODRPixels::intersectionComputer(unsigned int radius,

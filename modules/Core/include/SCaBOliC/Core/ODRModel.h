@@ -19,6 +19,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
 
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
+            typedef std::function<Point(Point)> ToImageCoordinates;
 
             enum OptimizationMode{
                 OM_OriginalBoundary,
@@ -44,29 +45,33 @@ namespace SCaBOliC
 
         public:
             ODRModel(const Domain& domain,
-                      const DigitalSet& original,
-                      const DigitalSet& optRegion,
-                      const DigitalSet& trustFRG,
-                      const DigitalSet& trustBKG,
-                      const DigitalSet& applicationRegion):domain(domain),
-                                                           original(original),
-                                                           optRegion(optRegion),
-                                                           trustFRG(trustFRG),
-                                                           trustBKG(trustBKG),
-                                                           applicationRegion(applicationRegion){}
+                     const DigitalSet& original,
+                     const DigitalSet& optRegion,
+                     const DigitalSet& trustFRG,
+                     const DigitalSet& trustBKG,
+                     const DigitalSet& applicationRegion,
+                     const ToImageCoordinates toImageCoordinates):domain(domain),
+                                               original(original),
+                                               optRegion(optRegion),
+                                               trustFRG(trustFRG),
+                                               trustBKG(trustBKG),
+                                               applicationRegion(applicationRegion),
+                                               toImageCoordinates(toImageCoordinates){}
 
 
 
 
 
         public:
-            Domain domain;
+            const Domain domain;
 
-            DigitalSet original;
-            DigitalSet optRegion;
-            DigitalSet trustFRG;
-            DigitalSet trustBKG;
-            DigitalSet applicationRegion;
+            const DigitalSet original;
+            const DigitalSet optRegion;
+            const DigitalSet trustFRG;
+            const DigitalSet trustBKG;
+            const DigitalSet applicationRegion;
+
+            const ToImageCoordinates toImageCoordinates;
         };
 
     }

@@ -14,6 +14,8 @@ ODRInterpixels::Point ODRInterpixels::neighborhoodFilter[5] = {ODRInterpixels::P
                                                                ODRInterpixels::Point(0,-2),
                                                                ODRInterpixels::Point(0,0)};
 
+bool ODRInterpixels::evenIteration = true;
+
 ODRInterpixels::DigitalSet ODRInterpixels::omOriginalBoundary(const DigitalSet& original)
 {
     DigitalSet originalBoundary(original.domain());
@@ -121,6 +123,10 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     Image2D sImage(domain);
     DIPaCUS::Representation::digitalSetToImage(sImage,ds);
 
+    Point transformingPoint;
+    if(evenIteration) transformingPoint = Point(1,1);
+    else transformingPoint = Point(-1,-1);
+
     Domain doubleDomain( domain.lowerBound()*2 - Point(1,1),domain.upperBound()*2 + Point(1,1) );
     DigitalSet kds(doubleDomain);
 
@@ -130,8 +136,8 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
 
     for(auto it=ds.begin();it!=ds.end();++it)
     {
-        kds.insert( (*it)*2 + Point(1,1) );
-        s.push( (*it)*2 + Point(1,1) );
+        kds.insert( (*it)*2 + transformingPoint );
+        s.push( (*it)*2 + transformingPoint );
     }
 
 
@@ -211,6 +217,8 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     unsigned int radius,
                                     const DigitalSet& original) const
 {
+    evenIteration = !evenIteration;
+
     Point ballBorder = 4*Point(radius,radius);
     Domain domain(original.domain().lowerBound() - ballBorder,
                   original.domain().upperBound() + ballBorder);
@@ -315,16 +323,23 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         }
     }
 
+    ODRModel::ToImageCoordinates toImgCoordinates;
+
     switch(cntMode)
     {
         case CountingMode::CM_PIXEL:
         {
             appCntFilterOthers = filterPixels;
+            if(evenIteration)
+                toImgCoordinates = [](Point p)->Point{return (p-Point(1,1))/2 ;};
+            else
+                toImgCoordinates = [](Point p)->Point{return (p+Point(1,1))/2 ;};
             break;
         }
         case CountingMode::CM_POINTEL:
         {
             appCntFilterOthers = filterPointels;
+            toImgCoordinates = [](Point p)->Point{return p/2;};
             break;
         }
 
@@ -337,7 +352,9 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                     appCntFilterOthers(_optRegion),
                     appCntFilterOthers(_trustFRG),
                     appCntFilterOthers(_trustBKG),
-                    appCntFilterApplication(_applicationRegion) );
+                    appCntFilterApplication(_applicationRegion),
+                    toImgCoordinates
+    );
 }
 
 

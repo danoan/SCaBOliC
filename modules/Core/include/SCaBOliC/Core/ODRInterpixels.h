@@ -71,6 +71,7 @@ namespace SCaBOliC
         private:
             static StructuringElement::Type dilationSE,erosionSE;
             static Point neighborhoodFilter[5];
+            static bool evenIteration;
         };
     }
 }
