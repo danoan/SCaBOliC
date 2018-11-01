@@ -7,10 +7,13 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            int radius,
                                            ODRInterface& odrFactory):R(radius)
 {
-    W = 0;
-    C = (PI * R * R) / 2.0;
-    F = 9.0 / pow(R, 6.0);
+    DigitalSet tempBall( Domain( 2*Point(-radius,-radius), 2*Point(radius,radius) ) );
+    DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,Point(0,0),radius);
 
+    W = 0;
+    //C = (PI * R * R) / 2.0;
+    C = tempBall.size() / 2.0;
+    F = 9.0 / pow(R, 6.0);
 
     DIPaCUS::Misc::DigitalBallIntersection DBI = odrFactory.intersectionComputer(radius, trustForegroundRegion);
     Domain domain = trustForegroundRegion.domain();
