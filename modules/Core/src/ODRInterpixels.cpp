@@ -125,9 +125,13 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     DigitalSet kds(doubleDomain);
 
 
+    std::stack<Point> s;
+    std::unordered_set<Point> visited;
+
     for(auto it=ds.begin();it!=ds.end();++it)
     {
         kds.insert( (*it)*2 + Point(1,1) );
+        s.push( (*it)*2 + Point(1,1) );
     }
 
 
@@ -137,11 +141,6 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     Point filterIP[4] = {Point(2,0),Point(0,2),Point(-2,0),Point(0,-2)};
     Point filterP[8] = {Point(1,0),Point(0,1),Point(-1,0),Point(0,-1),
                         Point(1,1),Point(-1,1),Point(-1,-1),Point(1,-1)};
-
-    std::stack<Point> s;
-    std::unordered_set<Point> visited;
-
-    s.push(*filledKDS.begin());
 
     while(!s.empty())
     {
@@ -295,6 +294,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     DigitalSet _trustFRG = doubleDS(trustFRG);
     DigitalSet _trustBKG(_trustFRG.domain());
     DigitalSet _applicationRegion = doubleDS(applicationRegion);
+
 
     _trustBKG.assignFromComplement(_trustFRG);
 
