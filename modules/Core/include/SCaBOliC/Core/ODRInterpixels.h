@@ -15,7 +15,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
 
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate<DigitalSet>> EightNeighborhood;
+            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate> EightNeighborhood;
 
             typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;

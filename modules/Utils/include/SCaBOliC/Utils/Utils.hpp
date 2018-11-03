@@ -25,7 +25,7 @@ template<class TCurvatureAdaptor,class TTangentAdaptor>
 ISQEvaluation<TCurvatureAdaptor,TTangentAdaptor>::ISQEvaluation(double &value,
                                                                 const DigitalSet &originalDS)
 {
-    DigitalSet ds = DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(originalDS);
+    DigitalSet ds = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(originalDS);
 
     KSpace KImage;
     KImage.init(ds.domain().lowerBound(),

@@ -23,7 +23,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::omOriginalBoundary(const DigitalSet& 
     DigitalSet eroded(original.domain());
     DIPaCUS::Morphology::erode(eroded,original,StructuringElement(erosionSE,1));
 
-    DIPaCUS::SetOperations::SetDifference(originalBoundary,original,eroded);
+    DIPaCUS::SetOperations::setDifference(originalBoundary,original,eroded);
 
     return originalBoundary;
 }
@@ -80,7 +80,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::amInternRange(const DigitalSet& origi
     DIPaCUS::Morphology::erode(eroded,originalPlusOptRegion, StructuringElement(erosionSE,(length+1)) );
 
     DigitalSet internRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::SetDifference(internRegion,originalPlusOptRegion,eroded);
+    DIPaCUS::SetOperations::setDifference(internRegion,originalPlusOptRegion,eroded);
 
     return internRegion;
 }
@@ -95,7 +95,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::amExternRange(const DigitalSet& origi
     DIPaCUS::Morphology::dilate(dilated,originalPlusOptRegion,StructuringElement(dilationSE,length));
 
     DigitalSet externRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::SetDifference(externRegion,dilated,originalPlusOptRegion);
+    DIPaCUS::SetOperations::setDifference(externRegion,dilated,originalPlusOptRegion);
 
     return externRegion;
 }
@@ -110,8 +110,8 @@ ODRInterpixels::DigitalSet ODRInterpixels::isolatedPoints(const DigitalSet& orig
 
     DigitalSet tempDS(original.domain());
     DigitalSet isolatedDS(original.domain());
-    DIPaCUS::SetOperations::SetDifference(tempDS,dilated,original);
-    DIPaCUS::SetOperations::SetDifference(isolatedDS,tempDS,optRegion);
+    DIPaCUS::SetOperations::setDifference(tempDS,dilated,original);
+    DIPaCUS::SetOperations::setDifference(isolatedDS,tempDS,optRegion);
 
     return isolatedDS;
 }
@@ -273,7 +273,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet trustFRG(domain);
-    DIPaCUS::SetOperations::SetDifference(trustFRG, extendedOriginal, optRegion);
+    DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
 
     if(optMode==OptimizationMode::OM_DilationBoundary)
     {

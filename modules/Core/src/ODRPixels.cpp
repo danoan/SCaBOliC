@@ -85,7 +85,7 @@ ODRPixels::DigitalSet ODRPixels::amInternRange(const DigitalSet& original, const
     DIPaCUS::Morphology::erode(eroded,originalPlusOptRegion,StructuringElement(erosionSE,length+1));
 
     DigitalSet internRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::SetDifference(internRegion,originalPlusOptRegion,eroded);
+    DIPaCUS::SetOperations::setDifference(internRegion,originalPlusOptRegion,eroded);
 
     return internRegion;
 }
@@ -100,7 +100,7 @@ ODRPixels::DigitalSet ODRPixels::amExternRange(const DigitalSet& original, const
     DIPaCUS::Morphology::dilate(dilated,originalPlusOptRegion,StructuringElement(dilationSE,length));
 
     DigitalSet externRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::SetDifference(externRegion,dilated,originalPlusOptRegion);
+    DIPaCUS::SetOperations::setDifference(externRegion,dilated,originalPlusOptRegion);
 
     return externRegion;
 }
@@ -115,8 +115,8 @@ ODRPixels::DigitalSet ODRPixels::isolatedPoints(const DigitalSet& original, cons
 
     DigitalSet tempDS(original.domain());
     DigitalSet isolatedDS(original.domain());
-    DIPaCUS::SetOperations::SetDifference(tempDS,dilated,original);
-    DIPaCUS::SetOperations::SetDifference(isolatedDS,tempDS,optRegion);
+    DIPaCUS::SetOperations::setDifference(tempDS,dilated,original);
+    DIPaCUS::SetOperations::setDifference(isolatedDS,tempDS,optRegion);
 
     return isolatedDS;
 
@@ -185,7 +185,7 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
 
     DigitalSet trustFRG(domain);
-    DIPaCUS::SetOperations::SetDifference(trustFRG, extendedOriginal, optRegion);
+    DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
 
     if(optMode==OptimizationMode::OM_DilationBoundary)
     {

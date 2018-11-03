@@ -43,7 +43,7 @@ namespace SCaBOliC
                     DigitalSet ds(gd.getDomain());
                     Shapes::digitalShaper(ds,gd);
 
-                    DigitalSet centeredDS = DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(ds);
+                    DigitalSet centeredDS = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(ds);
 
                     Image2D image(centeredDS.domain());
                     DIPaCUS::Representation::digitalSetToImage(image,centeredDS);

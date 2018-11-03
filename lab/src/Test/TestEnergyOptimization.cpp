@@ -8,7 +8,7 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
     DigitalSet ds( image.domain() );
     DIPaCUS::Representation::imageAsDigitalSet(ds,image);
 
-    return DIPaCUS::Transform::BottomLeftBoundingBoxAtOrigin(ds);
+    return DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(ds);
 }
 
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
