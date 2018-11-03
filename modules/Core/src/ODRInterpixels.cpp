@@ -300,11 +300,8 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     DigitalSet _optRegion = doubleDS(optRegion);
     DigitalSet _trustFRG = doubleDS(trustFRG);
-    DigitalSet _trustBKG(_trustFRG.domain());
+    DigitalSet _trustBKG = doubleDS(trustBKG);
     DigitalSet _applicationRegion = doubleDS(applicationRegion);
-
-
-    _trustBKG.assignFromComplement(_trustFRG);
 
     DigitalSet (*appCntFilterApplication)(DigitalSet&);
     DigitalSet (*appCntFilterOthers)(DigitalSet&);
