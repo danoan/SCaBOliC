@@ -392,7 +392,10 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToPixelMode(const DigitalSet& 
         visited.insert(se.interpixel);
 
         if(cm==CountingMode::CM_PIXEL)
-            pixelDS.insert( (se.interpixel - Point(1,1) )/2);
+            if(evenIteration)
+                pixelDS.insert( (se.interpixel - Point(1,1) )/2);
+            else
+                pixelDS.insert( (se.interpixel + Point(1,1) )/2);
         else
             pixelDS.insert(se.interpixel/2);
 

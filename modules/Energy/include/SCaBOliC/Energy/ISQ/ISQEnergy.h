@@ -75,7 +75,7 @@ namespace SCaBOliC
                          double sumFactor,
                          double multiplyFactor ) const;
 
-        private:
+        public:
             int nvars;
 
             ISQ::DataTerm<ODRFactory> dt;
