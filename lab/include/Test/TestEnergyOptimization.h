@@ -38,7 +38,6 @@ namespace SCaBOliC
                 typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
 
-                typedef Core::ODRInterface ODRInterface;
                 typedef Core::ODRModel ODRModel;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
@@ -66,11 +65,9 @@ namespace SCaBOliC
                                           const cv::Mat& cvImg);
 
                 Solution solve(const ISQInputData& input,
+                               const TestInput& testInput,
                                DigitalSet& mb,
-                               QPBOSolverType solverType,
-                               TestInput::OptimizationMode om,
-                               TestInput::ApplicationMode am,
-                               TestInput::CountingMode);
+                               QPBOSolverType solverType);
 
                 std::string resolvePrefix(const TestInput& testInput);
 

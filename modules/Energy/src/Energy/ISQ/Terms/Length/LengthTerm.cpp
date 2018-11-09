@@ -1,20 +1,20 @@
-#include "LengthTerm.h"
+#include "SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.h"
 
 using namespace SCaBOliC::Energy::ISQ;
 
 
-template<typename TODRFactory>
-LengthTerm<TODRFactory>::LengthTerm(const InputData &id):vm(id.optimizationRegions)
+LengthTerm::LengthTerm(const InputData &id,
+                       const SpaceHandleInterface* spaceHandle):vm(id.optimizationRegions),
+                                                                spaceHandle(spaceHandle)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
 }
 
 
-template<typename TODRFactory>
-void LengthTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
-                                          const VariableMap& vm,
-                                          OptimizationData& od)
+void LengthTerm::initializeOptimizationData(const InputData& id,
+                                            const VariableMap& vm,
+                                            OptimizationData& od)
 {
     od.numVars = vm.numVars;
 
@@ -27,10 +27,9 @@ void LengthTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
-template<typename TODRFactory>
-void LengthTerm<TODRFactory>::configureOptimizationData(const InputData& id,
-                                         const VariableMap& vm,
-                                         OptimizationData& od)
+void LengthTerm::configureOptimizationData(const InputData& id,
+                                           const VariableMap& vm,
+                                           OptimizationData& od)
 {
     this->constantFactor = 1;
     this->constantTerm = 0;
@@ -49,11 +48,11 @@ void LengthTerm<TODRFactory>::configureOptimizationData(const InputData& id,
 
 }
 
-template<typename TODRFactory>
-void LengthTerm<TODRFactory>::setCoeffs(OptimizationData& od,
-                         double& maxCtrb,
-                         const InputData& id,
-                         const VariableMap& vm)
+
+void LengthTerm::setCoeffs(OptimizationData& od,
+                           double& maxCtrb,
+                           const InputData& id,
+                           const VariableMap& vm)
 {
     typedef InputData::OptimizationDigitalRegions::Point Point;
 
@@ -70,7 +69,7 @@ void LengthTerm<TODRFactory>::setCoeffs(OptimizationData& od,
 
         xi = vm.pim.at(*it);
 
-        for(auto itp=this->odrFactory.neighBegin();itp!=this->odrFactory.neighEnd();++itp)
+        for(auto itp=this->spaceHandle->neighBegin();itp!=this->spaceHandle->neighEnd();++itp)
         {
             neigh = *it + *itp;
             if(ODR.trustFRG(neigh))
@@ -98,12 +97,11 @@ void LengthTerm<TODRFactory>::setCoeffs(OptimizationData& od,
 
 }
 
-template<typename TODRFactory>
-void LengthTerm<TODRFactory>::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
-                        double& maxPTM,
-                        Index i1,
-                        Index i2,
-                        Scalar v)
+void LengthTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
+                          double& maxPTM,
+                          Index i1,
+                          Index i2,
+                          Scalar v)
 {
     this->crescentOrder(i1,i2);
     PTM.coeffRef(i1,i2) += v;

@@ -5,7 +5,7 @@ using namespace SCaBOliC::Energy::ISQ;
 CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            const DigitalSet &trustForegroundRegion,
                                            int radius,
-                                           ODRInterface& odrFactory):R(radius)
+                                           const SpaceHandleInterface* spaceHandle):R(radius)
 {
     DigitalSet tempBall( Domain( 2*Point(-radius,-radius), 2*Point(radius,radius) ) );
     DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,Point(0,0),radius);
@@ -15,7 +15,7 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     C = tempBall.size() / 2.0;
     F = 9.0 / pow(R, 6.0);
 
-    DIPaCUS::Misc::DigitalBallIntersection DBI = odrFactory.intersectionComputer(radius, trustForegroundRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(radius, trustForegroundRegion);
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);
     for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it) {

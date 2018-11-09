@@ -6,25 +6,27 @@
 #include <SCaBOliC/Energy/ISQ/InputData.h>
 #include <SCaBOliC/Energy/ISQ/VariableMap.h>
 
+#include "SCaBOliC/Core/SpaceHandleInterface.h"
+
 namespace SCaBOliC
 {
     namespace Energy
     {
         namespace ISQ
         {
-            template<typename TODRFactory>
-            class LengthTerm:public EnergyTerm<TODRFactory>
+            class LengthTerm:public EnergyTerm
             {
 
             public:
                 typedef double Scalar;
                 typedef unsigned int Index;
 
-                typedef EnergyTerm<TODRFactory> Self;
-
+                typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
             public:
-                LengthTerm(const InputData& id);
+                LengthTerm(const InputData& id,
+                           const SpaceHandleInterface* spaceHandle);
+
                 int numVars(){return vm.numVars;}
 
             private:
@@ -49,13 +51,11 @@ namespace SCaBOliC
 
             public:
                 VariableMap vm;
-
+                const SpaceHandleInterface* spaceHandle;
             };
 
         }
     }
 }
-
-#include "LengthTerm.hpp"
 
 #endif //SCABOLIC_LENGTHTERM_H

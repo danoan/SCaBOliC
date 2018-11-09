@@ -2,19 +2,20 @@
 
 using namespace SCaBOliC::Energy::ISQ;
 
-template<typename TODRFactory>
-DataTerm<TODRFactory>::DataTerm(const InputData &id):vm(id.optimizationRegions),
-                                                     image(id.image),
-                                                     translation(id.translation)
+DataTerm::DataTerm(const InputData &id,
+                   const SpaceHandleInterface* spaceHandle):vm(id.optimizationRegions),
+                                                            image(id.image),
+                                                            translation(id.translation),
+                                                            spaceHandle(spaceHandle)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
 }
 
-template<typename TODRFactory>
-void DataTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
-                                                       const VariableMap& vm,
-                                                       OptimizationData& od)
+
+void DataTerm::initializeOptimizationData(const InputData& id,
+                                          const VariableMap& vm,
+                                          OptimizationData& od)
 {
     od.numVars = vm.numVars;
 
@@ -27,10 +28,9 @@ void DataTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
-template<typename TODRFactory>
-void DataTerm<TODRFactory>::configureOptimizationData(const InputData& id,
-                                                      const VariableMap& vm,
-                                                      OptimizationData& od)
+void DataTerm::configureOptimizationData(const InputData& id,
+                                         const VariableMap& vm,
+                                         OptimizationData& od)
 {
     this->constantFactor = 1;
     this->constantTerm = 0;
@@ -49,29 +49,17 @@ void DataTerm<TODRFactory>::configureOptimizationData(const InputData& id,
 
 }
 
-template<typename TODRFactory>
-void DataTerm<TODRFactory>::setCoeffs(OptimizationData& od,
-                                      double& maxCtrb,
-                                      const InputData& id,
-                                      const VariableMap& vm)
+
+void DataTerm::setCoeffs(OptimizationData& od,
+                         double& maxCtrb,
+                         const InputData& id,
+                         const VariableMap& vm)
 {
     const InputData::OptimizationDigitalRegions ODR = id.optimizationRegions;
     int col,row;
     Index xi;
 
     typedef DGtal::Z2i::Point Point;
-
-//    cv::Mat imgMap = cv::Mat::zeros( image.size(),image.type() );
-//    for(auto it = ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
-//    {
-//        col = ODR.toImageCoordinates( (*it) )[0] + translation(0);
-//        row = (image.rows-1) - (ODR.toImageCoordinates( (*it) )[1] + translation(1));
-//
-//        imgMap.at<cvColorType>(row,col) = image.at<cvColorType>(row,col);
-//    }
-//
-//    cv::imwrite("imgMap.jpg",imgMap);
-
 
     maxCtrb=0;
     for(auto it = ODR.optRegion.begin();it!=ODR.optRegion.end();++it)
@@ -89,7 +77,7 @@ void DataTerm<TODRFactory>::setCoeffs(OptimizationData& od,
         cvColorType vn;
         double homogeneity=0;
 
-        for(auto itp = this->odrFactory.neighBegin(); itp!=this->odrFactory.neighEnd();++itp)
+        for(auto itp = this->spaceHandle->neighBegin(); itp!=this->spaceHandle->neighEnd();++itp)
         {
             Point neigh = ODR.toImageCoordinates(*it) + ODR.toImageCoordinates(*itp);
             if(neigh(0)<0 || neigh(1)<0) continue;
@@ -110,12 +98,11 @@ void DataTerm<TODRFactory>::setCoeffs(OptimizationData& od,
 
 }
 
-template<typename TODRFactory>
-void DataTerm<TODRFactory>::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
-                                     double& maxPTM,
-                                     Index i1,
-                                     Index i2,
-                                     Scalar v)
+void DataTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
+                        double& maxPTM,
+                        Index i1,
+                        Index i2,
+                        Scalar v)
 {
     this->crescentOrder(i1,i2);
     PTM.coeffRef(i1,i2) += v;

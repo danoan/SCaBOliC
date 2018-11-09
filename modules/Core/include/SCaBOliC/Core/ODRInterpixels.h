@@ -2,6 +2,8 @@
 #define SCABOLIC_ODRINTERPIXELS_H
 
 #include "ODRInterface.h"
+#include "ODRUtils.h"
+#include "InterpixelSpaceHandle.h"
 
 namespace SCaBOliC
 {
@@ -14,9 +16,6 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Domain Domain;
             typedef DGtal::Z2i::Point Point;
 
-            typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate> EightNeighborhood;
-
             typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
             typedef ODRModel::ApplicationCenter ApplicationCenter;
@@ -26,52 +25,35 @@ namespace SCaBOliC
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
         private:
-
-            static DigitalSet omOriginalBoundary(const DigitalSet& original);
-            static DigitalSet omDilationBoundary(const DigitalSet& original);
-
-
-            static DigitalSet amOriginalBoundary(const DigitalSet& original);
-            static DigitalSet amAroundBoundary(const DigitalSet& original,
-                                               const DigitalSet& optRegion,
-                                               int length);
-            static DigitalSet amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length);
-            static DigitalSet amExternRange(const DigitalSet& original,const DigitalSet& optRegion,  int length);
-
-            static DigitalSet isolatedPoints(const DigitalSet& original, const DigitalSet& optRegion);
-
             static DigitalSet doubleDS(const DigitalSet& ds);
 
             static DigitalSet filterPointels(DigitalSet& ds);
             static DigitalSet filterPixels(DigitalSet& ds);
 
-            DigitalSet convertToPixelMode(const DigitalSet& ds, CountingMode cm) const;
-
         public:
-            void solutionSet(DigitalSet& outputDS,
-                             const DigitalSet& initialDS,
-                             const ODRModel& odrModel,
-                             const int* varValue,
-                             const std::unordered_map<Point, unsigned int>& pointToVar,
-                             CountingMode cm) const;
+
+            ODRInterpixels(const ApplicationCenter appCenter,
+                           const CountingMode cntMode,
+                           const int levels);
+
 
             ODRModel createODR(OptimizationMode optMode,
                                ApplicationMode appMode,
-                               ApplicationCenter appCenter,
-                               CountingMode cntMode,
                                unsigned int radius,
                                const DigitalSet& original) const;
 
-            Point* neighBegin() const{ return neighborhoodFilter; }
-            Point* neighEnd() const{ return neighborhoodFilter+4; }
-
-            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
-                                                                        const DigitalSet& toIntersect) const;
+            const SpaceHandleInterface* handle() const;
 
         private:
             static StructuringElement::Type dilationSE,erosionSE;
             static Point neighborhoodFilter[5];
             static bool evenIteration;
+
+            ApplicationCenter ac;
+            CountingMode cm;
+            int levels;
+
+            std::vector<InterpixelSpaceHandle> handles;
         };
     }
 }

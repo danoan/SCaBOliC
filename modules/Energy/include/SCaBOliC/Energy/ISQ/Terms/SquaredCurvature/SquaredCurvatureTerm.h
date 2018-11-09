@@ -7,6 +7,7 @@
 #include "DIPaCUS/derivates/Misc.h"
 
 #include "SCaBOliC/Energy/ISQ/VariableMap.h"
+#include "SCaBOliC/Core/SpaceHandleInterface.h"
 
 #include "CoefficientsComputer.h"
 
@@ -17,8 +18,7 @@ namespace SCaBOliC
     {
         namespace ISQ
         {
-            template<typename TODRFactory>
-            class SquaredCurvatureTerm:public EnergyTerm<TODRFactory>
+            class SquaredCurvatureTerm:public EnergyTerm
             {
 
             public:
@@ -27,8 +27,12 @@ namespace SCaBOliC
 
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
 
+                typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
+
             public:
-                SquaredCurvatureTerm(const InputData& id);
+                SquaredCurvatureTerm(const InputData& id,
+                                     const SpaceHandleInterface* spaceHandle);
+
                 int numVars(){return vm.numVars;}
 
             private:
@@ -54,12 +58,10 @@ namespace SCaBOliC
 
             public:
                 VariableMap vm;
-
+                const SpaceHandleInterface* spaceHandle;
             };
         }
     }
 }
-
-#include "SquaredCurvatureTerm.hpp"
 
 #endif //QBMISCURVATUREREGULARIZATION_NAIVE_SQUAREDCURVATURE_H

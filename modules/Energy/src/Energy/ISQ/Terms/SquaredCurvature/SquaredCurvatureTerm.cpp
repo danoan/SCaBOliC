@@ -2,17 +2,18 @@
 
 using namespace SCaBOliC::Energy::ISQ;
 
-template<typename TODRFactory>
-SquaredCurvatureTerm<TODRFactory>::SquaredCurvatureTerm(const InputData &id):vm(id.optimizationRegions)
+SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
+                                           const SpaceHandleInterface* spaceHandle):vm(id.optimizationRegions),
+                                                                                    spaceHandle(spaceHandle)
 {
     initializeOptimizationData(id,this->vm,this->od);
     configureOptimizationData(id,this->vm,this->od);
 }
 
-template<typename TODRFactory>
-void SquaredCurvatureTerm<TODRFactory>::initializeOptimizationData(const InputData& id,
-                                                  const VariableMap& vm,
-                                                  OptimizationData& od)
+
+void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
+                                                      const VariableMap& vm,
+                                                      OptimizationData& od)
 {
     od.numVars = vm.numVars;
 
@@ -25,15 +26,15 @@ void SquaredCurvatureTerm<TODRFactory>::initializeOptimizationData(const InputDa
     od.localPTM.setZero();
 }
 
-template<typename TODRFactory>
-void SquaredCurvatureTerm<TODRFactory>::configureOptimizationData(const InputData& id,
-                                                 const VariableMap& vm,
-                                                 OptimizationData& od)
+
+void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
+                                                     const VariableMap& vm,
+                                                     OptimizationData& od)
 {
     CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
                             id.optimizationRegions.trustFRG,
                             id.radius,
-                            this->odrFactory);
+                            this->spaceHandle);
 
     this->constantFactor = cc.factor();
     this->constantTerm = cc.constantTerm();
@@ -52,18 +53,17 @@ void SquaredCurvatureTerm<TODRFactory>::configureOptimizationData(const InputDat
     od.localPTM*=this->weight*this->normalizationFactor;
 }
 
-template<typename TODRFactory>
-void SquaredCurvatureTerm<TODRFactory>::setCoeffs(OptimizationData& od,
-                                 double& maxCtrb,
-                                 const InputData& id,
-                                 const CoefficientsComputer& cc,
-                                 const VariableMap& vm)
+void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
+                                     double& maxCtrb,
+                                     const InputData& id,
+                                     const CoefficientsComputer& cc,
+                                     const VariableMap& vm)
 {
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
     DigitalSet temp(ODR.domain);
-    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->odrFactory.intersectionComputer(id.radius,
-                                                                                             ODR.optRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->spaceHandle->intersectionComputer(id.radius,
+                                                                                                     ODR.optRegion);
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
@@ -94,12 +94,11 @@ void SquaredCurvatureTerm<TODRFactory>::setCoeffs(OptimizationData& od,
 
 }
 
-template<typename TODRFactory>
-void SquaredCurvatureTerm<TODRFactory>::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
-                                double& maxPTM,
-                                Index i1,
-                                Index i2,
-                                Scalar v)
+void SquaredCurvatureTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
+                                    double& maxPTM,
+                                    Index i1,
+                                    Index i2,
+                                    Scalar v)
 {
     this->crescentOrder(i1,i2);
     PTM.coeffRef(i1,i2) += v;

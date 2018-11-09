@@ -26,7 +26,11 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
     ISQInputData input = prepareInput(ds,radius,testInput,cvImg);
 
     DigitalSet mBoundary(input.optimizationRegions.domain);
-    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om,testInput.am,testInput.cm);
+    Solution solution = solve(input,
+                              testInput,
+                              mBoundary,
+                              testInput.solverType);
+
     std::string prefix = resolvePrefix(testInput);
 
     data = new TestOutput(input,solution,prefix);
@@ -39,12 +43,12 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                                                                           const TestInput& testInput,
                                                                           const cv::Mat& cvImg)
 {
-    ISQEnergy::ODRFactory odrFactory;
+    ISQEnergy::ODRFactory odrFactory(testInput.ac,
+                                     testInput.cm,
+                                     estimatingBallRadius);
 
     ODRModel odr = odrFactory.createODR(testInput.om,
                                         testInput.am,
-                                        testInput.ac,
-                                        testInput.cm,
                                         estimatingBallRadius,
                                         ds);
 
@@ -75,17 +79,15 @@ void TestEnergyOptimization::modifiedBoundary(DigitalSet& modifiedBoundary,
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
+                                                               const TestInput& testInput,
                                                                DigitalSet& mb,
-                                                               QPBOSolverType solverType,
-                                                               TestInput::OptimizationMode om,
-                                                               TestInput::ApplicationMode am,
-                                                               TestInput::CountingMode cm)
+                                                               QPBOSolverType solverType)
 {
     Solution solution(input.optimizationRegions.domain);
     ISQEnergy energy(input);
     solution.init(energy.numVars());
 
-    if(om==TestInput::OptimizationMode::OM_OriginalBoundary)
+    if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
         solution.labelsVector.setZero();
     else
         solution.labelsVector.setOnes();
@@ -99,8 +101,6 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     else if(solverType==QPBOSolverType::ImproveProbe)
         energy.solve<Optimization::QPBOIP>(solution);
 
-    ISQEnergy::ODRFactory odrFactory;
-
     Solution::LabelsVector& labelsVector = solution.labelsVector;
 
 
@@ -112,7 +112,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
 
         const DigitalSet& optRegion = energyInput.optimizationRegions.optRegion;
 
-        if(am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
+        if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
         {
             //Invert Solution
             for (int i = 0; i < labelsVector.rows(); ++i)
@@ -128,12 +128,15 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         }
 
 
+        ISQEnergy::ODRFactory odrFactory(testInput.ac,
+                                         testInput.cm,
+                                         input.radius);
+
         odrFactory.solutionSet(tempOutDS,
                                initialDS,
                                input.optimizationRegions,
                                labelsVector.data(),
-                               energy.vm().pim,
-                               cm);
+                               energy.vm().pim);
 
         solution.outputDS.clear();
         solution.outputDS.insert(tempOutDS.begin(),tempOutDS.end());

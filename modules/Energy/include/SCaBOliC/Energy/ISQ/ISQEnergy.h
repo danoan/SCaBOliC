@@ -15,12 +15,12 @@
 #include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
 #include <SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.h>
 
+#include "SCaBOliC/Core/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
     namespace Energy
     {
-        template<typename TODRFactory>
         class ISQEnergy
         {
         public:
@@ -28,9 +28,9 @@ namespace SCaBOliC
             typedef ISQ::VariableMap VariableMap;
             typedef SCaBOliC::Energy::Solution Solution;
 
-            typedef EnergyTerm<TODRFactory> MyEnergyTerm;
+            typedef EnergyTerm MyEnergyTerm;
 
-            typedef TODRFactory ODRFactory;
+            typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
         private:
             typedef SCaBOliC::Energy::OptimizationData::UnaryTermsMatrix UnaryTermsMatrix;
@@ -38,7 +38,8 @@ namespace SCaBOliC
             typedef Solution::LabelsVector LabelsVector;
 
         public:
-            ISQEnergy(const InputData& id);
+            ISQEnergy(const InputData& id,
+                      const SpaceHandleInterface* spaceHandle);
 
             template< template <typename,typename,typename> class TQPBOSolver>
             void solve(Solution& solution)
@@ -78,15 +79,13 @@ namespace SCaBOliC
         public:
             int nvars;
 
-            ISQ::DataTerm<ODRFactory> dt;
-            ISQ::LengthTerm<ODRFactory> lt;
-            ISQ::SquaredCurvatureTerm<ODRFactory> sqt;
+            ISQ::DataTerm dt;
+            ISQ::LengthTerm lt;
+            ISQ::SquaredCurvatureTerm sqt;
 
             MyEnergyTerm energy;
         };
     }
 }
-
-#include "ISQEnergy.hpp"
 
 #endif //SCABOLIC_ISQ_H
