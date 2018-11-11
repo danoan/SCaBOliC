@@ -37,10 +37,14 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                                TEOInput::ApplicationCenter::AC_PIXEL,
                                TEOInput::CountingMode::CM_PIXEL);
 
-    Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImprove(inputImprove,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,outputFolder,exportRegions);
+    SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
+                                        TEOInput::CountingMode::CM_PIXEL,
+                                        3);
+
+    Test::TestEnergyOptimization teoSimple(inputSimple,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoProbe(inputProbe,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImprove(inputImprove,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,odrPixels,outputFolder,exportRegions);
 
 
 

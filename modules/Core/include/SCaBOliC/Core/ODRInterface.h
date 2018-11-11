@@ -27,7 +27,7 @@ namespace SCaBOliC
                                        unsigned int radius,
                                        const DigitalSet& original) const=0;
 
-            virtual const SpaceHandleInterface* handle()=0;
+            virtual const SpaceHandleInterface* handle() const=0;
 
         };
     }

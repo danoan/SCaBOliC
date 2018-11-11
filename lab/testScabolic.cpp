@@ -41,9 +41,10 @@ void runInstances(Model::ImageInput imageInput)
     bool success;
     Test::TestInstances::UserInput input = TI.next(success);
 
+    SCaBOliC::Core::ODRPixels odrPixels(input.ac,input.cm,3);
     while(success)
     {
-        Test::TestEnergyOptimization teo(input,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
+        Test::TestEnergyOptimization teo(input,odrPixels,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
         input = TI.next(success);
     }
 }

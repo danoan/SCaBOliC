@@ -42,7 +42,7 @@ namespace SCaBOliC
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
-                typedef ISQEnergy<SCaBOliC::Core::ODRPixels> MyISQEnergy;
+                typedef SCaBOliC::Energy::ISQEnergy MyISQEnergy;
                 typedef SCaBOliC::Core::ODRModel ODRModel;
 
                 typedef Lab::Utils::MockDistribution MockDistribution;

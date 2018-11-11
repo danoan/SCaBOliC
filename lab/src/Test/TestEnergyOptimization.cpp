@@ -12,8 +12,9 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
 }
 
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
+                                               const ODRInterface& odrFactory,
                                                const std::string& outputFolder,
-                                               bool exportRegions)
+                                               bool exportRegions):odrFactory(odrFactory)
 {
     unsigned int radius = 3;
     DigitalSet ds = deriveDS(testInput);
@@ -43,14 +44,10 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                                                                           const TestInput& testInput,
                                                                           const cv::Mat& cvImg)
 {
-    ISQEnergy::ODRFactory odrFactory(testInput.ac,
-                                     testInput.cm,
-                                     estimatingBallRadius);
-
-    ODRModel odr = odrFactory.createODR(testInput.om,
-                                        testInput.am,
-                                        estimatingBallRadius,
-                                        ds);
+    ODRModel odr = this->odrFactory.createODR(testInput.om,
+                                              testInput.am,
+                                              estimatingBallRadius,
+                                              ds);
 
     return ISQInputData (odr,
                          cvImg,
@@ -84,7 +81,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
                                                                QPBOSolverType solverType)
 {
     Solution solution(input.optimizationRegions.domain);
-    ISQEnergy energy(input);
+    ISQEnergy energy(input,this->odrFactory.handle());
     solution.init(energy.numVars());
 
     if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
@@ -128,15 +125,11 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         }
 
 
-        ISQEnergy::ODRFactory odrFactory(testInput.ac,
-                                         testInput.cm,
-                                         input.radius);
-
-        odrFactory.solutionSet(tempOutDS,
-                               initialDS,
-                               input.optimizationRegions,
-                               labelsVector.data(),
-                               energy.vm().pim);
+        this->odrFactory.handle()->solutionSet(tempOutDS,
+                                              initialDS,
+                                              input.optimizationRegions,
+                                              labelsVector.data(),
+                                              energy.vm().pim);
 
         solution.outputDS.clear();
         solution.outputDS.insert(tempOutDS.begin(),tempOutDS.end());

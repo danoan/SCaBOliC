@@ -6,7 +6,8 @@ add_library(scabolic-core SHARED
         src/ODRPixels.cpp
         src/ODRInterpixels.cpp
         src/ODRUtils.cpp
-        src/PixelSpaceHandle.cpp)
+        src/PixelSpaceHandle.cpp
+        src/InterpixelSpaceHandle.cpp)
 
 target_include_directories(scabolic-core PRIVATE
         include

@@ -39,12 +39,13 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
 
                 typedef Core::ODRModel ODRModel;
+                typedef Core::ODRInterface ODRInterface;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;
-                typedef Energy::ISQEnergy<SCaBOliC::Core::ODRInterpixels> ISQEnergy;
+                typedef Energy::ISQEnergy ISQEnergy;
 
                 typedef Lab::Model::UserInput TestInput;
                 typedef Lab::Model::OptOutput TestOutput;
@@ -55,6 +56,7 @@ namespace SCaBOliC
                 ~TestEnergyOptimization(){delete data;}
 
                 TestEnergyOptimization(const TestInput& testInput,
+                                       const ODRInterface& odrFactory,
                                        const std::string& outputFolder,
                                        bool exportRegions=false);
             private:
@@ -81,6 +83,8 @@ namespace SCaBOliC
             private:
                 Lab::Utils::MockDistribution frgDistribution;
                 Lab::Utils::MockDistribution bkgDistribution;
+
+                const ODRInterface& odrFactory;
 
             public:
                 TestOutput* data;

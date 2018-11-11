@@ -124,8 +124,8 @@ int main()
     inputSet.push_back( MyDigitizer::flag() );
 
 
-    expApplication(inputSet);
-    expSolver(inputSet);
+    //expApplication(inputSet);
+    //expSolver(inputSet);
     expFlow(inputSet,pv);
 
     return 0;

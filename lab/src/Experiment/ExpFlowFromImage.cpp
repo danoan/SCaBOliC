@@ -22,6 +22,10 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                                  flowFolder + "/00.pgm",
                                  boost::filesystem::copy_option::overwrite_if_exists);
 
+    SCaBOliC::Core::ODRInterpixels odrInterpixels(ApplicationCenter::AC_PIXEL,
+                                                  CountingMode::CM_POINTEL,
+                                                  3);
+
     OptimizationMode om = OptimizationMode::OM_OriginalBoundary;
     std::vector<TableEntry> entries;
     for(int i=1;i<=maxIterations;++i)
@@ -33,7 +37,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                        ApplicationCenter::AC_PIXEL,
                        CountingMode::CM_POINTEL);
 
-        Test::TestEnergyOptimization teo(input,flowFolder,exportRegions);
+        Test::TestEnergyOptimization teo(input,odrInterpixels,flowFolder,exportRegions);
         const TEOOutput::Solution& solution = teo.data->solution;
 
         entries.push_back(TableEntry(*teo.data,"IT " + std::to_string(i)));

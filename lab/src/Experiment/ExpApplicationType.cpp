@@ -30,9 +30,13 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                               TEOInput::ApplicationCenter::AC_PIXEL,
                               TEOInput::CountingMode::CM_PIXEL);
 
-    Test::TestEnergyOptimization teoAround(inputAround,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoOriginal(inputOriginal,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoIntRange(inputInternRange,outputFolder,exportRegions);
+    SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
+                                        TEOInput::CountingMode::CM_PIXEL,
+                                        3);
+
+    Test::TestEnergyOptimization teoAround(inputAround,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoOriginal(inputOriginal,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoIntRange(inputInternRange,odrPixels,outputFolder,exportRegions);
 
 
 
