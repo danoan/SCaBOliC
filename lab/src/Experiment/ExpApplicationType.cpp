@@ -32,7 +32,8 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
 
     SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
                                         TEOInput::CountingMode::CM_PIXEL,
-                                        3);
+                                        3,
+                                        ODRModel::FourNeighborhood);
 
     Test::TestEnergyOptimization teoAround(inputAround,odrPixels,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoOriginal(inputOriginal,odrPixels,outputFolder,exportRegions);

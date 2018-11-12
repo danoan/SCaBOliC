@@ -2,40 +2,12 @@
 
 using namespace SCaBOliC::Core;
 
-ODRUtils::DigitalSet ODRUtils::omOriginalBoundary(const DigitalSet& original)
-{
-    DigitalSet originalBoundary(original.domain());
-    EightNeighborhood en(originalBoundary,original);
-
-    return originalBoundary;
-}
-
-ODRUtils::DigitalSet ODRUtils::omDilationBoundary(const DigitalSet& original,
-                                                  const StructuringElement::Type& st)
-{
-    DigitalSet dilated(original.domain());
-    DigitalSet dilatedBoundary(original.domain());
-
-    DIPaCUS::Morphology::dilate(dilated,
-                                original,
-                                StructuringElement(st,1));
-
-    EightNeighborhood en(dilatedBoundary,dilated);
-
-    return dilatedBoundary;
-}
-
 ODRUtils::DigitalSet ODRUtils::omFullDomain(const Domain& originalDomain)
 {
     DigitalSet fullDomain(originalDomain);
     fullDomain.insert(originalDomain.begin(),originalDomain.end());
 
     return fullDomain;
-}
-
-ODRUtils::DigitalSet ODRUtils::amOriginalBoundary(const DigitalSet& original)
-{
-    return omOriginalBoundary(original);
 }
 
 

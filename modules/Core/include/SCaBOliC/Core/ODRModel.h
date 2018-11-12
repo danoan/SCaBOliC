@@ -42,6 +42,9 @@ namespace SCaBOliC
                 CM_PIXEL
             };
 
+            enum SpaceMode{Pixel,Interpixel};
+            enum NeighborhoodType{FourNeighborhood,EightNeighborhood};
+
 
         public:
             ODRModel(const Domain& domain,

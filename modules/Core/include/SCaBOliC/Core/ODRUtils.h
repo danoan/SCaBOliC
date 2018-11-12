@@ -19,17 +19,20 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
 
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate> EightNeighborhood;
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
+            template<typename TNeighborhood>
             DigitalSet omOriginalBoundary(const DigitalSet& original);
 
+            template<typename TNeighborhood>
             DigitalSet omDilationBoundary(const DigitalSet& original,
                                           const StructuringElement::Type& st);
 
-            DigitalSet omFullDomain(const Domain& originalDomain);
-
+            template<typename TNeighborhood>
             DigitalSet amOriginalBoundary(const DigitalSet& original);
+
+
+            DigitalSet omFullDomain(const Domain& originalDomain);
 
             DigitalSet amFullDomain(const Domain& applicationDomain);
 
@@ -53,5 +56,7 @@ namespace SCaBOliC
         }
     }
 }
+
+#include "ODRUtils.hpp"
 
 #endif //SCABOLIC_ODRUTILS_H

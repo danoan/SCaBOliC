@@ -39,7 +39,8 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
 
     SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
                                         TEOInput::CountingMode::CM_PIXEL,
-                                        3);
+                                        3,
+                                        ODRModel::NeighborhoodType::FourNeighborhood);
 
     Test::TestEnergyOptimization teoSimple(inputSimple,odrPixels,outputFolder,exportRegions);
     Test::TestEnergyOptimization teoProbe(inputProbe,odrPixels,outputFolder,exportRegions);

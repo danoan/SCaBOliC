@@ -24,7 +24,8 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
 
     SCaBOliC::Core::ODRInterpixels odrInterpixels(ApplicationCenter::AC_PIXEL,
                                                   CountingMode::CM_POINTEL,
-                                                  3);
+                                                  3,
+                                                  ODRModel::FourNeighborhood);
 
     OptimizationMode om = OptimizationMode::OM_OriginalBoundary;
     std::vector<TableEntry> entries;

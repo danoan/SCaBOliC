@@ -9,8 +9,9 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     MockDistribution bkgDistribution;
 
     SCaBOliC::Core::ODRPixels odrFactory(ui.ac,
-                                        ui.cm,
-                                        3);
+                                         ui.cm,
+                                         3,
+                                         ODRModel::FourNeighborhood);
 
 
     Image2D image = DGtal::GenericReader<Image2D>::import(ui.imagePath);
