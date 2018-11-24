@@ -12,7 +12,8 @@ bool ODRInterpixels::evenIteration = true;
 ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const CountingMode cntMode,
                                const int levels,
-                               const NeighborhoodType nt):ac(appCenter),
+                               const NeighborhoodType nt,
+                               bool manualEvenIteration):ac(appCenter),
                                                           cm(cntMode),
                                                           levels(levels),
                                                           nt(nt)
@@ -21,6 +22,8 @@ ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,false));
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_POINTEL,true));
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_POINTEL,false));
+
+    evenIteration = manualEvenIteration;
 }
 
 const SpaceHandleInterface* ODRInterpixels::handle() const

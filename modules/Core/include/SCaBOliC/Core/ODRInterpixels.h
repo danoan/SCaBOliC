@@ -39,7 +39,8 @@ namespace SCaBOliC
             ODRInterpixels(const ApplicationCenter appCenter,
                            const CountingMode cntMode,
                            const int levels,
-                           const NeighborhoodType nt);
+                           const NeighborhoodType nt,
+                           bool manualEvenIteration=evenIteration);
 
 
             ODRModel createODR(OptimizationMode optMode,
