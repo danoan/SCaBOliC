@@ -8,33 +8,19 @@ InterpixelSpaceHandle::Point InterpixelSpaceHandle::neighborhoodFilter[5] = {Int
                                                                              InterpixelSpaceHandle::Point(0,-2),
                                                                              InterpixelSpaceHandle::Point(0,0)};
 
-InterpixelSpaceHandle::DigitalSet InterpixelSpaceHandle::convertToPixelMode(const DigitalSet& ds,
-                                                                            CountingMode cm) const
+void InterpixelSpaceHandle::visit(DigitalSet& pixelDS,
+                                  std::set<Point>& visited,
+                                  DigitalSet::ConstIterator& it,
+                                  const DigitalSet& ds) const
 {
-
-    struct StackElement
-    {
-        StackElement(Point interpixel):interpixel(interpixel){}
-        Point interpixel;
-    };
-
     Point filterInterpixelMode[4] = {Point(0,2),Point(2,0),Point(0,-2),Point(-2,0)};
-
-    DigitalSet pixelDS(ds.domain());
-    std::set<Point> visited;
     std::stack<StackElement> s;
-
-    std::function<bool(Point)> isNotPointel = [](Point p){ return p(0)%2!=0 || p(1)%2!=0; };
-    std::function<bool(Point)> isNotPixel  = [](Point p){ return p(0)%2!=1 || p(1)%2!=1; };
-
-    std::function<bool(Point)> decideSeed = cm==CountingMode::CM_POINTEL?isNotPointel:isNotPixel;
-
-    DigitalSet::ConstIterator it = ds.begin();
-    Point sp;
-    do{
+    Point sp = *it;
+    while(decideSeed(sp))
+    {
         ++it;
         sp =  *it;
-    }while(decideSeed(sp));
+    };
 
     s.push(StackElement(sp));
     while(!s.empty())
@@ -66,6 +52,19 @@ InterpixelSpaceHandle::DigitalSet InterpixelSpaceHandle::convertToPixelMode(cons
             }
         }
     }
+}
+
+InterpixelSpaceHandle::DigitalSet InterpixelSpaceHandle::convertToPixelMode(const DigitalSet& ds,
+                                                                            CountingMode cm) const
+{
+    DigitalSet pixelDS(ds.domain());
+    std::set<Point> visited;
+
+    DigitalSet::ConstIterator it = ds.begin();
+    do{
+        visit(pixelDS,visited,it,ds);
+        ++it;
+    }while(pixelDS.size()!=ds.size());
 
     return pixelDS;
 }
