@@ -33,6 +33,7 @@ namespace SCaBOliC
 
             static DigitalSet filterPointels(DigitalSet& ds);
             static DigitalSet filterPixels(DigitalSet& ds);
+            static DigitalSet filterLinels(DigitalSet& ds);
 
         public:
 

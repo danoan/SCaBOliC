@@ -134,6 +134,18 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds)
     return filtered;
 }
 
+ODRInterpixels::DigitalSet ODRInterpixels::filterLinels(DigitalSet& ds)
+{
+    DigitalSet filtered(ds.domain());
+    for(auto it=ds.begin();it!=ds.end();++it)
+    {
+        Point p=*it;
+        if( (p(0)%2==0 && p(1)%2==1) || (p(0)%2==1 && p(1)%2==0) ) filtered.insert(*it);
+    }
+
+    return filtered;
+}
+
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
                                     unsigned int radius,
@@ -237,6 +249,11 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         case ApplicationCenter::AC_POINTEL:
         {
             appCntFilterApplication = filterPointels;
+            break;
+        }
+        case ApplicationCenter::AC_LINEL:
+        {
+            appCntFilterApplication = filterLinels;
             break;
         }
     }

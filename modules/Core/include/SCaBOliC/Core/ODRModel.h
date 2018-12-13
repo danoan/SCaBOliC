@@ -34,7 +34,8 @@ namespace SCaBOliC
 
             enum ApplicationCenter{
                 AC_POINTEL,
-                AC_PIXEL
+                AC_PIXEL,
+                AC_LINEL
             };
 
             enum CountingMode{
