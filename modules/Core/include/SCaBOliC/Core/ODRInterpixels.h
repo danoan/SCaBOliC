@@ -30,6 +30,7 @@ namespace SCaBOliC
 
         private:
             static DigitalSet doubleDS(const DigitalSet& ds);
+            static DigitalSet doubleDSForLinel(const DigitalSet& ds);
 
             static DigitalSet filterPointels(DigitalSet& ds);
             static DigitalSet filterPixels(DigitalSet& ds);
@@ -52,6 +53,11 @@ namespace SCaBOliC
             const SpaceHandleInterface* handle() const;
 
         private:
+            ODRModel createODRForLinelAC(OptimizationMode optMode,
+                                         ApplicationMode appMode,
+                                         unsigned int radius,
+                                         const DigitalSet& original) const;
+
             DigitalSet omOriginalBoundary(const DigitalSet& original) const
             {
                 if(nt==NeighborhoodType::FourNeighborhood)
