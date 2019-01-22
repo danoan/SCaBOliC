@@ -176,10 +176,10 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 {
     evenIteration = !evenIteration;
 
-    if(this->ac==ApplicationCenter::AC_LINEL)
-    {
-        return createODRForLinelAC(optMode,appMode,radius,original);
-    }
+    //if(this->ac==ApplicationCenter::AC_LINEL)
+    //{
+    //    return createODRForLinelAC(optMode,appMode,radius,original);
+    //}
 
     Point ballBorder = 4*Point(radius,radius);
     Domain domain(original.domain().lowerBound() - ballBorder,
