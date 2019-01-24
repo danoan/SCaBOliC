@@ -7,7 +7,8 @@
 #include <DIPaCUS/components/Transform.h>
 #include <DIPaCUS/derivates/Misc.h>
 
-#include <geoc/api/api.h>
+#include <geoc/api/gridCurve/Curvature.hpp>
+#include <geoc/api/gridCurve/Length.hpp>
 
 namespace SCaBOliC
 {
