@@ -23,6 +23,7 @@ set(BUILD_TESTS OFF CACHE BOOL "Build tests.")
 link_directories(${CMAKE_BINARY_DIR}/modules/Optimization
         ${CMAKE_BINARY_DIR}/modules/Core
         ${CMAKE_BINARY_DIR}/modules/Energy
+        ${CMAKE_BINARY_DIR}/modules/Utils
         ${DIPACUS_LIBS_DIR}
         ${BOOST_LIB_DIR})
 

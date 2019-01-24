@@ -32,6 +32,8 @@ namespace SCaBOliC
                 typedef TEOInput::OptimizationMode OptimizationMode;
                 typedef TEOInput::CountingMode CountingMode;
 
+                typedef enum{PixelSpace,InterpixelSpace} ApplicationSpace;
+
             private:
                 struct TableEntry
                 {
@@ -47,6 +49,7 @@ namespace SCaBOliC
                                  int maxIterations, 
                                  std::ostream& os,
                                  const std::string& outputFolder,
+                                 ApplicationSpace as,
                                  bool exportRegions=false);
 
             private:

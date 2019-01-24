@@ -162,6 +162,8 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
         solverTypeStr+="-AM_InternRange";
     else if(testInput.am==TestInput::ApplicationMode::AM_ExternRange)
         solverTypeStr+="-AM_ExternRange";
+    else if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
+        solverTypeStr+="-AM_InverseAround";
 
 
 

@@ -23,6 +23,7 @@ target_include_directories(test-scabolic PRIVATE
         )
 
 target_link_libraries(test-scabolic
+        -lscabolic-utils
         -lscabolic-energy
         -lscabolic-core
         -lscabolic-optimization
@@ -63,6 +64,7 @@ target_include_directories(experiment-scabolic PRIVATE
         )
 
 target_link_libraries(experiment-scabolic
+        -lscabolic-utils
         -lscabolic-energy
         -lscabolic-core
         -lscabolic-optimization

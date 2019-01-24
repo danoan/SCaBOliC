@@ -3,9 +3,10 @@ project(lib-scabolic-utils)
 
 find_package(DGtal REQUIRED)
 
-add_library(scabolic-utils INTERFACE)
+add_library(scabolic-utils SHARED
+        src/Utils.cpp)
 
-target_include_directories(scabolic-utils INTERFACE
+target_include_directories(scabolic-utils PRIVATE
         include
         ${DGTAL_INCLUDE_DIRS}
         ${DIPACUS_INCLUDE_DIRS})

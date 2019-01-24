@@ -77,9 +77,10 @@ void ExpApplicationType::printTable(const std::vector<TableEntry>& entries,
         os << fnD(colLength,current.data->solution.energyValue) << "\t";
         os << fnD(colLength,current.data->solution.energyValuePriorInversion) << "\t";
 
+        using namespace SCaBOliC::Utils;
         double IIValue,MDCAValue;
-        SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
-        SCaBOliC::Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
+        ISQEvaluation(IIValue,current.data->solution.outputDS,ISQEvaluation::II);
+        ISQEvaluation(MDCAValue,current.data->solution.outputDS,ISQEvaluation::MDCA);
 
         os << fnD(colLength,IIValue) << "\t"
            << fnD(colLength,MDCAValue) << "\t"

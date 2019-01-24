@@ -8,6 +8,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                                    int maxIterations,
                                    std::ostream& os,
                                    const std::string& outputFolder,
+                                   ApplicationSpace as,
                                    bool exportRegions)
 {
     typedef DIPaCUS::Representation::Image2D Image2D;
@@ -22,10 +23,23 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                                  flowFolder + "/00.pgm",
                                  boost::filesystem::copy_option::overwrite_if_exists);
 
-    SCaBOliC::Core::ODRInterpixels odrInterpixels(ApplicationCenter::AC_PIXEL,
-                                                  CountingMode::CM_POINTEL,
-                                                  3,
-                                                  ODRModel::FourNeighborhood);
+    SCaBOliC::Core::ODRInterface *odr;
+
+    if(as==PixelSpace)
+    {
+        odr = new SCaBOliC::Core::ODRPixels(ApplicationCenter::AC_PIXEL,
+                                            CountingMode::CM_PIXEL,
+                                            3,
+                                            ODRModel::FourNeighborhood);
+    }
+    else if(as==InterpixelSpace)
+    {
+        odr = new SCaBOliC::Core::ODRInterpixels(ApplicationCenter::AC_PIXEL,
+                                                 CountingMode::CM_POINTEL,
+                                                 3,
+                                                 ODRModel::FourNeighborhood);
+    }
+
 
     OptimizationMode om = OptimizationMode::OM_OriginalBoundary;
     std::vector<TableEntry> entries;
@@ -38,10 +52,13 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                        ApplicationCenter::AC_PIXEL,
                        CountingMode::CM_POINTEL);
 
-        Test::TestEnergyOptimization teo(input,odrInterpixels,flowFolder,exportRegions);
-        const TEOOutput::Solution& solution = teo.data->solution;
+        Test::TestEnergyOptimization *teo;
 
-        entries.push_back(TableEntry(*teo.data,"IT " + std::to_string(i)));
+        teo = new Test::TestEnergyOptimization(input, *odr,flowFolder,exportRegions);
+
+        const TEOOutput::Solution& solution = teo->data->solution;
+
+        entries.push_back(TableEntry( *(teo->data),"IT " + std::to_string(i)));
 
         DGtal::Z2i::Point lb,ub;
         solution.outputDS.computeBoundingBox(lb,ub);
@@ -54,6 +71,8 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
         DGtal::GenericWriter<Image2D>::exportFile(imageToSavePath, image);
 
         imageInput.imagePath = imageToSavePath;
+
+        delete teo;
     }
 
     os << "Image: " << imageInput.imageName << std::endl
@@ -62,6 +81,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
        << std::endl;
 
     printTable(entries,os);
+    delete odr;
 }
 
 void ExpFlowFromImage::printTable(const std::vector<TableEntry> &entries, std::ostream &os)
@@ -83,9 +103,10 @@ void ExpFlowFromImage::printTable(const std::vector<TableEntry> &entries, std::o
         os << fnS(colLength,it->name) << "\t"
            << fnD(colLength,curr.solution.energyValue) << "\t";
 
+        using namespace SCaBOliC::Utils;
         double IIValue,MDCAValue;
-        SCaBOliC::Utils::IIISQEvaluation(IIValue,curr.solution.outputDS);
-        SCaBOliC::Utils::MDCAISQEvaluation(MDCAValue,curr.solution.outputDS);
+        ISQEvaluation(IIValue,curr.solution.outputDS,ISQEvaluation::II);
+        ISQEvaluation(MDCAValue,curr.solution.outputDS,ISQEvaluation::MDCA);
 
         os << fnD(colLength,IIValue) << "\t"
            << fnD(colLength,MDCAValue) << "\t"
