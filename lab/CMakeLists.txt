@@ -78,3 +78,39 @@ target_link_libraries(experiment-scabolic
 
 set_target_properties(experiment-scabolic PROPERTIES COMPILE_FLAGS -fext-numeric-literals)
 
+
+
+
+
+
+add_executable(experiment-compareImproveProve
+        compareImproveProbe.cpp)
+
+add_dependencies(experiment-compareImproveProve scabolic-core scabolic-energy scabolic-optimization scabolic-utils)
+
+target_compile_definitions(experiment-compareImproveProve PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
+
+target_include_directories(experiment-compareImproveProve PRIVATE
+        include
+        ${CMAKE_SOURCE_DIR}/modules/Optimization/include
+        ${CMAKE_SOURCE_DIR}/modules/Core/include
+        ${CMAKE_SOURCE_DIR}/modules/Energy/include
+        ${CMAKE_SOURCE_DIR}/modules/Utils/include
+        ${DIPACUS_INCLUDE_DIRS}
+        ${DGTAL_INCLUDE_DIRS}
+        )
+
+target_link_libraries(experiment-compareImproveProve
+        -lscabolic-utils
+        -lscabolic-energy
+        -lscabolic-core
+        -lscabolic-optimization
+        -ldipacus-derivates
+        -ldipacus-components
+        -ldipacus-base
+        ${DGTAL_LIBRARIES}
+        ${OpenCV_LIBS}
+        -lboost_system
+        -lboost_filesystem)
+
+set_target_properties(experiment-compareImproveProve PROPERTIES COMPILE_FLAGS -fext-numeric-literals)

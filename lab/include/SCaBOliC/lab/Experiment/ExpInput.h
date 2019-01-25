@@ -1,13 +1,13 @@
 #ifndef SCABOLIC_EXPINPUT_H
 #define SCABOLIC_EXPINPUT_H
 
-#include <model/ImageInput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
 #include <DGtal/helpers/StdDefs.h>
 #include <DGtal/shapes/parametric/AccFlower2D.h>
 #include <DGtal/shapes/parametric/Ball2D.h>
 #include <DGtal/shapes/parametric/NGon2D.h>
 #include <DGtal/shapes/parametric/Ellipse2D.h>
-#include <Utils/ShapeDigitizer.h>
+#include <SCaBOliC/lab/Utils/ShapeDigitizer.h>
 
 namespace SCaBOliC
 {

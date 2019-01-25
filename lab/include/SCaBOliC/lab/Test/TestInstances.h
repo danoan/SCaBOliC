@@ -3,8 +3,8 @@
 
 #include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
 #include <SCaBOliC/Core/ODRPixels.h>
-#include <Utils/Generator.h>
-#include <model/UserInput.h>
+#include <SCaBOliC/lab/Utils/Generator.h>
+#include <SCaBOliC/lab/model/UserInput.h>
 
 namespace SCaBOliC
 {

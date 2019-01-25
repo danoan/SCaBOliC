@@ -65,11 +65,14 @@ ODRUtils::DigitalSet ODRUtils::amExternRange(const DigitalSet& original,
     originalPlusOptRegion.insert(original.begin(),original.end());
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
-    DigitalSet dilated (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::dilate(dilated,originalPlusOptRegion,StructuringElement(st,length));
+    DigitalSet tempPlus1(original.domain());
+    DIPaCUS::Morphology::dilate(tempPlus1,originalPlusOptRegion,StructuringElement(st,1));
+
+    DigitalSet dilated (tempPlus1.domain());
+    DIPaCUS::Morphology::dilate(dilated,tempPlus1,StructuringElement(st,length));
 
     DigitalSet externRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::setDifference(externRegion,dilated,originalPlusOptRegion);
+    DIPaCUS::SetOperations::setDifference(externRegion,dilated,tempPlus1);
 
     return externRegion;
 }

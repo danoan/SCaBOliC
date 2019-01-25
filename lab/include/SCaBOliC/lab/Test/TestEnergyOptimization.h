@@ -17,11 +17,11 @@
 #include <SCaBOliC/Energy/model/Solution.h>
 #include <SCaBOliC/Energy/ISQ/ISQEnergy.h>
 
-#include <Utils/MockDistribution.h>
+#include <SCaBOliC/lab/Utils/MockDistribution.h>
 
-#include <Utils/Utils.h>
-#include <model/UserInput.h>
-#include <model/OptOutput.h>
+#include <SCaBOliC/lab/Utils/Utils.h>
+#include <SCaBOliC/lab/model/UserInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
 
 
 namespace SCaBOliC

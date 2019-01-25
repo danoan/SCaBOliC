@@ -6,11 +6,11 @@
 #include <SCaBOliC/Utils/Utils.h>
 #include <SCaBOliC/Core/ODRPixels.h>
 
-#include <Test/TestEnergyOptimization.h>
+#include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
 
-#include <model/ImageInput.h>
-#include <model/OptOutput.h>
-#include <model/UserInput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
+#include <SCaBOliC/lab/model/UserInput.h>
 
 namespace SCaBOliC
 {
