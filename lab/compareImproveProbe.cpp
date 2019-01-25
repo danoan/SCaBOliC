@@ -31,9 +31,9 @@ Energy::ISQEnergy createEnergyObject(Core::ODRModel **odr,Core::ODRInterface **o
 //    DIPaCUS::Shapes::DigitalSet baseSquare = DIPaCUS::Shapes::flower(1.0,30,30,15,6,2);
 //    DIPaCUS::Shapes::DigitalSet square = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(baseSquare);
 
-//    DIPaCUS::Shapes::DigitalSet square = DIPaCUS::Shapes::square(1.0,45,45,20);
+    DIPaCUS::Shapes::DigitalSet baseSquare = DIPaCUS::Shapes::square(1.0,45,45,20);
 
-    DIPaCUS::Shapes::DigitalSet baseSquare = DIPaCUS::Shapes::square(1.0,25,25);
+//    DIPaCUS::Shapes::DigitalSet baseSquare = DIPaCUS::Shapes::square(1.0,25,25);
     DIPaCUS::Shapes::DigitalSet square = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(baseSquare);
 
     *odrFactory = new SCaBOliC::Core::ODRPixels(UserInput::ApplicationCenter::AC_PIXEL,
