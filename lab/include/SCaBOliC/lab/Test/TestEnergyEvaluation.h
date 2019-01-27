@@ -13,13 +13,13 @@
 #include <SCaBOliC/Core/ODRInterface.h>
 #include <SCaBOliC/Core/ODRModel.h>
 
-#include <Utils/MockDistribution.h>
+#include <SCaBOliC/lab/Utils/MockDistribution.h>
 
-#include <model/UserInput.h>
-#include <model/ImageInput.h>
-#include <model/OptOutput.h>
+#include <SCaBOliC/lab/model/UserInput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
 
-#include <Test/TestEnergyOptimization.h>
+#include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
 
 namespace SCaBOliC
 {

@@ -1,4 +1,4 @@
-#include "Experiment/ExpFlowFromImage.h"
+#include "SCaBOliC/lab/Experiment/ExpFlowFromImage.h"
 
 using namespace SCaBOliC::Lab::Experiment;
 

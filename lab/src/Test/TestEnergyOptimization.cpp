@@ -1,4 +1,4 @@
-#include "Test/TestEnergyOptimization.h"
+#include "SCaBOliC/lab/Test/TestEnergyOptimization.h"
 
 using namespace SCaBOliC::Lab::Test;
 

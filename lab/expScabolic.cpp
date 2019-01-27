@@ -1,10 +1,10 @@
 #include <string>
-#include <Experiment/ExpFlowFromImage.h>
-#include <Utils/Generator.h>
-#include <Experiment/ExpInput.h>
-#include "Experiment/ExpApplicationType.h"
-#include "Experiment/ExpQPBOSolverType.h"
-#include "Experiment/ExpInput.h"
+#include <SCaBOliC/lab/Experiment/ExpFlowFromImage.h>
+#include <SCaBOliC/lab/Utils/Generator.h>
+#include <SCaBOliC/lab/Experiment/ExpInput.h>
+#include "SCaBOliC/lab/Experiment/ExpApplicationType.h"
+#include "SCaBOliC/lab/Experiment/ExpQPBOSolverType.h"
+#include "SCaBOliC/lab/Experiment/ExpInput.h"
 
 namespace SCaBOliC
 {

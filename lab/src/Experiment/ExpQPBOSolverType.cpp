@@ -1,4 +1,4 @@
-#include "Experiment/ExpQPBOSolverType.h"
+#include "SCaBOliC/lab/Experiment/ExpQPBOSolverType.h"
 
 
 using namespace SCaBOliC::Lab::Experiment;

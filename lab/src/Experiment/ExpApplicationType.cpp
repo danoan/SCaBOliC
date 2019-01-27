@@ -1,5 +1,5 @@
 
-#include "Experiment/ExpApplicationType.h"
+#include "SCaBOliC/lab/Experiment/ExpApplicationType.h"
 
 using namespace SCaBOliC::Lab::Experiment;
 

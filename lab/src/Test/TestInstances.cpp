@@ -1,4 +1,4 @@
-#include <Test/TestInstances.h>
+#include <SCaBOliC/lab/Test/TestInstances.h>
 
 using namespace SCaBOliC::Lab::Test;
 

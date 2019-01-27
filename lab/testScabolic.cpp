@@ -1,7 +1,7 @@
-#include <Test/TestEnergyOptimization.h>
-#include <Test/TestInstances.h>
-#include <model/ImageInput.h>
-#include <Test/TestEnergyEvaluation.h>
+#include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
+#include <SCaBOliC/lab/Test/TestInstances.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
+#include <SCaBOliC/lab/Test/TestEnergyEvaluation.h>
 #include <SCaBOliC/Core/ODRPixels.h>
 
 namespace SCaBOliC

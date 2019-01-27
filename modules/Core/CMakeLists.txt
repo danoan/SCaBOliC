@@ -12,7 +12,8 @@ add_library(scabolic-core SHARED
 target_include_directories(scabolic-core PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}
-        ${DGTAL_INCLUDE_DIRS})
+        ${DGTAL_INCLUDE_DIRS}
+        ${OpenCV_INCLUDE_DIRS})
 
 target_link_libraries(scabolic-core
         -ldipacus-components

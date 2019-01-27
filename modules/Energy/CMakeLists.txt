@@ -16,8 +16,10 @@ target_include_directories(scabolic-energy PRIVATE
         include
         ${CMAKE_SOURCE_DIR}/modules/Optimization/include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
+        ${DIPACUS_INCLUDE_DIRS}
         ${DGTAL_INCLUDE_DIRS}
-        ${DIPACUS_INCLUDE_DIRS})
+        ${EIGEN_INCLUDE_DIRS}
+        )
 
 target_link_libraries(scabolic-energy
         -lscabolic-core
