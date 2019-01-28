@@ -120,6 +120,14 @@ namespace SCaBOliC
             { return ODRUtils::isolatedPoints(original,optRegion); }
 
 
+            DigitalSet applicationRegionForLinel(const Domain& interDomain,
+                                                 const DigitalSet& pixelAppRegion,
+                                                 const DigitalSet& pixelOptRegion,
+                                                 const DigitalSet& pixelTrustFRG,
+                                                 const DigitalSet& pixelTrustBKG,
+                                                 ApplicationMode appMode) const;
+
+
         private:
             static StructuringElement::Type dilationSE,erosionSE;
             static Point neighborhoodFilter[5];

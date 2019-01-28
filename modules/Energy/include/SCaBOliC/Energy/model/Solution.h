@@ -29,6 +29,7 @@ namespace SCaBOliC
             {
                 valid = true;
 
+                outputDS.clear();
                 labelsVector = LabelsVector(numVars);
                 labelsVector.setZero();
                 energyValue=0;

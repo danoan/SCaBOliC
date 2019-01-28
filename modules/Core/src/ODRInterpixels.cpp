@@ -110,29 +110,6 @@ ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
     return filledKDS;
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::doubleDSForLinel(const DigitalSet& ds)
-{
-    DIPaCUS::Representation::Image2D applicationRegionImg(ds.domain());
-    DIPaCUS::Representation::digitalSetToImage(applicationRegionImg,ds);
-
-    DIPaCUS::Misc::ComputeBoundaryCurve::Curve applicationRegionBoundaryCurve;
-    DIPaCUS::Misc::ComputeBoundaryCurve(applicationRegionImg,applicationRegionBoundaryCurve,1);
-
-    Domain doubleDomain( ds.domain().lowerBound()*2 - Point(1,1),ds.domain().upperBound()*2 + Point(1,1) );
-    DigitalSet outputDS(doubleDomain);
-
-    Point transformingPoint;
-    if(evenIteration) transformingPoint = Point(0,0);
-    else transformingPoint = Point(-2,-2);
-
-    for(auto it=applicationRegionBoundaryCurve.begin();it!=applicationRegionBoundaryCurve.end();++it)
-    {
-        outputDS.insert(it->preCell().coordinates + transformingPoint);
-    }
-
-    return outputDS;
-}
-
 ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds)
 {
     DigitalSet filtered(ds.domain());
@@ -176,10 +153,6 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 {
     evenIteration = !evenIteration;
 
-    //if(this->ac==ApplicationCenter::AC_LINEL)
-    //{
-    //    return createODRForLinelAC(optMode,appMode,radius,original);
-    //}
 
     Point ballBorder = 4*Point(radius,radius);
     Domain domain(original.domain().lowerBound() - ballBorder,
@@ -262,10 +235,24 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     DigitalSet _optRegion = doubleDS(optRegion);
     DigitalSet _trustFRG = doubleDS(trustFRG);
     DigitalSet _trustBKG = doubleDS(trustBKG);
-    DigitalSet _applicationRegion = doubleDS(applicationRegion);
 
-    DigitalSet (*appCntFilterApplication)(DigitalSet&);
-    DigitalSet (*appCntFilterOthers)(DigitalSet&);
+    DigitalSet _applicationRegion(_optRegion.domain());
+    if(this->ac==ApplicationCenter::AC_LINEL)
+    {
+        _applicationRegion = applicationRegionForLinel(_optRegion.domain(),
+                                                      applicationRegion,
+                                                      optRegion,
+                                                      trustFRG,
+                                                      trustBKG,
+                                                       appMode);
+    }
+    else
+    {
+        _applicationRegion = doubleDS(applicationRegion);
+    }
+
+    std::function<DigitalSet(DigitalSet&)> appCntFilterApplication;
+    std::function<DigitalSet(DigitalSet&)> appCntFilterOthers;
 
     switch(this->ac)
     {
@@ -320,88 +307,68 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     );
 }
 
-ODRModel ODRInterpixels::createODRForLinelAC(OptimizationMode optMode,
-                                             ApplicationMode appMode,
-                                             unsigned int radius,
-                                             const DigitalSet& original) const
+ODRInterpixels::DigitalSet ODRInterpixels::applicationRegionForLinel(const Domain& interDomain,
+                                                                     const DigitalSet& pixelAppRegion,
+                                                                     const DigitalSet& pixelOptRegion,
+                                                                     const DigitalSet& pixelTrustFRG,
+                                                                     const DigitalSet& pixelTrustBKG,
+                                                                     ApplicationMode appMode) const
 {
-    Point ballBorder = 4*Point(radius,radius);
-    Domain domain(original.domain().lowerBound() - ballBorder,
-                  original.domain().upperBound() + ballBorder);
+    DigitalSet interAppRegion(interDomain);
 
-    DigitalSet optRegion(domain);
-    DigitalSet applicationRegion(domain);
-
-    switch (optMode) {
-        case OptimizationMode::OM_OriginalBoundary: {
-            optRegion = omOriginalBoundary(original);
-            break;
-        }
-        case OptimizationMode::OM_DilationBoundary: {
-            optRegion = omDilationBoundary(original,dilationSE);
-            break;
-        }
-    }
-
-
-    DigitalSet extendedOriginal(original.domain());
-    extendedOriginal.insert(original.begin(),original.end());
-    extendedOriginal.insert(optRegion.begin(),optRegion.end());
-
-    DigitalSet trustFRG(domain);
-    DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
-
-    if(optMode==OptimizationMode::OM_DilationBoundary)
+    if(appMode==ApplicationMode::AM_OptimizationBoundary)
     {
-        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
-        trustFRG+=isolatedDS;
-    }
-
-    DigitalSet trustBKG(domain);
-    DigitalSet tempp(domain);
-
-    tempp += trustFRG;
-    tempp += optRegion;
-
-    trustBKG.assignFromComplement(tempp);
-
-
-
-    applicationRegion = extendedOriginal;
-    DigitalSet _applicationRegion = doubleDSForLinel(applicationRegion);
-
-
-    DigitalSet _optRegion = doubleDS(optRegion);
-    DigitalSet _trustFRG = doubleDS(trustFRG);
-    DigitalSet _trustBKG = doubleDS(trustBKG);
-
-
-    DigitalSet (*appCntFilterApplication)(DigitalSet&);
-    DigitalSet (*appCntFilterOthers)(DigitalSet&);
-
-    ODRModel::ToImageCoordinates toImgCoordinates;
-
-    switch(this->cm)
-    {
-        case CountingMode::CM_PIXEL:
+        DIPaCUS::Misc::ComputeBoundaryCurve::Curve boundaryCurve;
+        DIPaCUS::Misc::ComputeBoundaryCurve(pixelAppRegion,boundaryCurve);
+        for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
         {
-            appCntFilterOthers = filterPixels;
-            if(evenIteration)
-                toImgCoordinates = [](Point p)->Point{return (p-Point(1,1))/2 ;};
-            else
-                toImgCoordinates = [](Point p)->Point{return (p+Point(1,1))/2 ;};
-            break;
+            Point pt = it->preCell().coordinates;
+            if(evenIteration==false) pt+= Point(-2,-2);
+            interAppRegion.insert( pt );
+        }
+    }
+    else
+    {
+        DigitalSet appTemp = pixelAppRegion;
+        appTemp.insert(pixelOptRegion.begin(),pixelOptRegion.end());
+        if(appMode==ApplicationMode::AM_InverseAroundBoundary)
+        {
+            appTemp.insert(pixelTrustBKG.begin(),pixelTrustBKG.end());
+        }
+        else
+        {
+            appTemp.insert(pixelTrustFRG.begin(),pixelTrustFRG.end());
+        }
+
+
+        int countLevels = this->levels*2+1;
+
+        DigitalSet tempEroded(appTemp.domain());
+        DIPaCUS::Morphology::erode(tempEroded,appTemp,StructuringElement(erosionSE,1));
+
+        appTemp = tempEroded;
+        --countLevels;
+
+        while(countLevels>0)
+        {
+            DIPaCUS::Misc::ComputeBoundaryCurve::Curve boundaryCurve;
+            DIPaCUS::Misc::ComputeBoundaryCurve(appTemp,boundaryCurve);
+
+            for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
+            {
+                Point pt = it->preCell().coordinates;
+                if(evenIteration==false) pt+= Point(-2,-2);
+                interAppRegion.insert( pt );
+            }
+
+            DigitalSet tempEroded(appTemp.domain());
+            DIPaCUS::Morphology::erode(tempEroded,appTemp,StructuringElement(erosionSE,1));
+
+            appTemp = tempEroded;
+            --countLevels;
         }
     }
 
-
-
-    return ODRModel(_optRegion.domain(),
-                    original,
-                    appCntFilterOthers(_optRegion),
-                    appCntFilterOthers(_trustFRG),
-                    appCntFilterOthers(_trustBKG),
-                    _applicationRegion,
-                    toImgCoordinates
-    );
+    return interAppRegion;
 }
+
