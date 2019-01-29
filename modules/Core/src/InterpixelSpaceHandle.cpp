@@ -96,3 +96,25 @@ DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComput
     return DIPaCUS::Misc::DigitalBallIntersection(2*radius,toIntersect);
 }
 
+int InterpixelSpaceHandle::pixelArea(unsigned int radius) const
+{
+    Point center(1,0); //Centered in a linel
+    Point radiusPoint(2*radius+1,2*radius+1);
+    DGtal::Z2i::Domain domain( center-radiusPoint, center+radiusPoint);
+
+    DigitalSet tempBall(domain);
+    DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,center,2*radius);
+    std::cout << tempBall.size() << std::endl;
+    int area = 0;
+    for(auto it=tempBall.begin();it!=tempBall.end();++it)
+    {
+        if((*it)(0)%2!=0 && (*it)(1)%2!=0)
+        {
+            ++area;
+        }
+    }
+
+    return area;
+
+}
+

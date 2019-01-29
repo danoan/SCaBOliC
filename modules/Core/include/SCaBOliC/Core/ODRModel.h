@@ -30,6 +30,7 @@ namespace SCaBOliC
                 AM_AroundBoundary,
                 AM_InverseAroundBoundary,
                 AM_InternRange,
+                AM_InverseInternRange,
                 AM_ExternRange};
 
             enum ApplicationCenter{

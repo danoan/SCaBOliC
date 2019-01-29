@@ -26,6 +26,8 @@ namespace SCaBOliC
 
             virtual Point* neighBegin() const=0;
             virtual Point* neighEnd() const=0;
+
+            virtual int pixelArea(unsigned int radius) const=0;
         };
     }
 }

@@ -28,6 +28,8 @@ namespace SCaBOliC
             DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
                                                                         const DigitalSet& toIntersect) const;
 
+            int pixelArea(unsigned int radius) const;
+
         private:
             static Point neighborhoodFilter[5];
         };

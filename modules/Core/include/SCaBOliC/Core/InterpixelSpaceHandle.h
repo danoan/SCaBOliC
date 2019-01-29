@@ -45,6 +45,8 @@ namespace SCaBOliC
             DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
                                                                         const DigitalSet& toIntersect) const;
 
+            int pixelArea(unsigned int radius) const;
+
         private:
             DigitalSet convertToPixelMode(const DigitalSet& ds,
                                           CountingMode cm) const;
