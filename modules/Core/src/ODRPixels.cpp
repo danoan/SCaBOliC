@@ -42,34 +42,6 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     }
 
 
-    switch (appMode) {
-        case ApplicationMode::AM_OptimizationBoundary: {
-            DigitalSet temp = amOriginalBoundary(optRegion);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseAroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,erosionSE,1);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_ExternRange:{
-            DigitalSet temp = amExternRange(original,optRegion,dilationSE,1);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-    }
-
     DigitalSet extendedOriginal(original.domain());
     extendedOriginal.insert(original.begin(),original.end());
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
@@ -91,13 +63,53 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     trustBKG.assignFromComplement(tempp);
 
-
     if(appMode==ApplicationMode::AM_InverseAroundBoundary)
     {
         DigitalSet swap = trustFRG;
         trustFRG = trustBKG;
         trustBKG = swap;
     }
+
+
+    switch (appMode) {
+        case ApplicationMode::AM_OptimizationBoundary: {
+            applicationRegion.insert(optRegion.begin(),optRegion.end());
+            break;
+        }
+        case ApplicationMode::AM_AroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InverseAroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InternRange:{
+            DigitalSet temp = amInternRange(original,optRegion,erosionSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            for(auto it=optRegion.begin();it!=optRegion.end();++it)
+            {
+                applicationRegion.erase(*it);
+            }
+            break;
+        }
+        case ApplicationMode::AM_InverseInternRange:
+        {
+            DigitalSet temp = amExternRange(original,optRegion,dilationSE,1);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_ExternRange:{
+            DigitalSet temp = amExternRange(original,optRegion,dilationSE,1);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+    }
+
+
+
 
     return ODRModel(domain,
                     original,

@@ -34,7 +34,7 @@ namespace SCaBOliC
                 static MyGenerator::Index indexLims[3];
                 static QPBOSolverType vectorOfSolver[4];
                 static OptimizationMode vectorOfOM[2];
-                static ApplicationMode vectorOfAM[4];
+                static ApplicationMode vectorOfAM[5];
 
                 MyGenerator gen;
                 std::string imagePath;

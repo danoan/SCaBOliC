@@ -205,8 +205,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary: {
-            DigitalSet temp = amOriginalBoundary(optRegion);
-            applicationRegion.insert(temp.begin(),temp.end());
+            applicationRegion.insert(optRegion.begin(),optRegion.end());
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
@@ -228,8 +227,6 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         }
         case ApplicationMode::AM_InverseInternRange:
         {
-//            DigitalSet temp = amExternRange(original,optRegion,dilationSE,this->levels);
-
             applicationRegion.insert(optRegion.begin(),optRegion.end());
             applicationRegion.insert(trustFRG.begin(),trustFRG.end());
             break;

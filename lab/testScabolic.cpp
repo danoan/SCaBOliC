@@ -41,7 +41,7 @@ void runInstances(Model::ImageInput imageInput)
     bool success;
     Test::TestInstances::UserInput input = TI.next(success);
 
-    SCaBOliC::Core::ODRPixels odrPixels(input.ac,input.cm,3,ODRModel::NeighborhoodType::FourNeighborhood);
+    SCaBOliC::Core::ODRPixels odrPixels(input.ac,input.cm,1,ODRModel::NeighborhoodType::FourNeighborhood);
     while(success)
     {
         Test::TestEnergyOptimization teo(input,odrPixels,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);

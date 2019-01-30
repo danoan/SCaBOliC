@@ -10,13 +10,14 @@ TestInstances::QPBOSolverType TestInstances::vectorOfSolver[4] = {QPBOSolverType
 TestInstances::OptimizationMode TestInstances::vectorOfOM[2] = {TestInstances::OptimizationMode::OM_OriginalBoundary,
                                                                 TestInstances::OptimizationMode::OM_DilationBoundary};
 
-TestInstances::ApplicationMode TestInstances::vectorOfAM[4] = {TestInstances::ApplicationMode::AM_InternRange,
+TestInstances::ApplicationMode TestInstances::vectorOfAM[5] = {TestInstances::ApplicationMode::AM_InternRange,
                                                                TestInstances::ApplicationMode::AM_AroundBoundary,
                                                                TestInstances::ApplicationMode::AM_InverseAroundBoundary,
+                                                               TestInstances::ApplicationMode::AM_InverseInternRange,
                                                                TestInstances::ApplicationMode::AM_OptimizationBoundary,
                                                               };
 
-TestInstances::MyGenerator::Index TestInstances::indexLims[3] = {3,1,3};
+TestInstances::MyGenerator::Index TestInstances::indexLims[3] = {3,1,4};
 //int TestInstances::indexLims[3] = {1,1,1};
 
 TestInstances::TestInstances(std::string imagePath):imagePath(imagePath),
