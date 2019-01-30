@@ -31,13 +31,16 @@ void InterpixelSpaceHandle::visit(DigitalSet& pixelDS,
         if(visited.find(se.interpixel)!=visited.end()) continue;
         visited.insert(se.interpixel);
 
+        Point toInsert;
         if(cm==CountingMode::CM_PIXEL)
             if(this->evenIteration)
-                pixelDS.insert( (se.interpixel - Point(1,1) )/2);
+                toInsert = (se.interpixel - Point(1,1) )/2;
             else
-                pixelDS.insert( (se.interpixel + Point(1,1) )/2);
+                toInsert = (se.interpixel + Point(1,1) )/2;
         else
-            pixelDS.insert(se.interpixel/2);
+            toInsert = se.interpixel/2;
+
+        pixelDS.insert(toInsert);
 
         for(int i=0;i<4;++i)
         {
@@ -77,6 +80,7 @@ void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
 {
     const DigitalSet& optRegion = odrModel.optRegion;
 
+
     DigitalSet tempDS(outputDS.domain());
     tempDS.insert(initialDS.begin(),initialDS.end());
     for (DigitalSet::ConstIterator it = optRegion.begin();
@@ -104,7 +108,7 @@ int InterpixelSpaceHandle::pixelArea(unsigned int radius) const
 
     DigitalSet tempBall(domain);
     DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,center,2*radius);
-    std::cout << tempBall.size() << std::endl;
+
     int area = 0;
     for(auto it=tempBall.begin();it!=tempBall.end();++it)
     {

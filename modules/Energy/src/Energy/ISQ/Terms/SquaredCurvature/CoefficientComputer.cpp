@@ -17,7 +17,7 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
 //    C = tempBall.size() / 2.0;
     C = spaceHandle->pixelArea(radius)/2.0;
 
-    F = 9.0 / pow(R, 6.0);std::cout << "Ball size: " << C << " radius: " << R << std::endl;
+    F = 9.0 / pow(R, 6.0);
 
 
     DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(radius, trustForegroundRegion);

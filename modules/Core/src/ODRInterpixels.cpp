@@ -1,7 +1,6 @@
 #include "SCaBOliC/Core/ODRInterpixels.h"
 using namespace SCaBOliC::Core;
 
-
 ODRInterpixels::StructuringElement::Type ODRInterpixels::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
 ODRInterpixels::StructuringElement::Type ODRInterpixels::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
 
@@ -157,6 +156,8 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     Domain domain(original.domain().lowerBound() - ballBorder,
                   original.domain().upperBound() + ballBorder);
 
+
+
     DigitalSet optRegion(domain);
     DigitalSet applicationRegion(domain);
 
@@ -219,7 +220,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
             break;
         }
         case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,erosionSE,0);
+            DigitalSet temp = amInternRange(original,optRegion,erosionSE,this->levels);
 
             applicationRegion.insert(temp.begin(),temp.end());
             applicationRegion.insert(trustFRG.begin(),trustFRG.end());
@@ -227,9 +228,9 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         }
         case ApplicationMode::AM_InverseInternRange:
         {
-            DigitalSet temp = amInternRange(original,optRegion,erosionSE,0);
+//            DigitalSet temp = amExternRange(original,optRegion,dilationSE,this->levels);
 
-            applicationRegion.insert(temp.begin(),temp.end());
+            applicationRegion.insert(optRegion.begin(),optRegion.end());
             applicationRegion.insert(trustFRG.begin(),trustFRG.end());
             break;
         }
@@ -342,16 +343,6 @@ ODRInterpixels::DigitalSet ODRInterpixels::applicationRegionForLinel(const Domai
     else
     {
         DigitalSet appTemp = pixelAppRegion;
-        appTemp.insert(pixelOptRegion.begin(),pixelOptRegion.end());
-        if(appMode==ApplicationMode::AM_InverseAroundBoundary)
-        {
-            appTemp.insert(pixelTrustBKG.begin(),pixelTrustBKG.end());
-        }
-        else
-        {
-            appTemp.insert(pixelTrustFRG.begin(),pixelTrustFRG.end());
-        }
-
 
         int countLevels = this->levels*2+1;
 

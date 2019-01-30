@@ -34,12 +34,12 @@ void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
 
 int PixelSpaceHandle::pixelArea(unsigned int radius) const
 {
-    Point center(0,0); //Centered in a linel
-    Point radiusPoint(2*radius+1,2*radius+1);
+    Point center(0,0); //Centered in a pixel
+    Point radiusPoint(radius+1,radius+1);
     DGtal::Z2i::Domain domain( center-radiusPoint, center+radiusPoint);
 
     DigitalSet tempBall(domain);
-    DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,center,2*radius);
+    DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,center,radius);
 
     return tempBall.size();
 }
