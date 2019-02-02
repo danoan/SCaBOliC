@@ -12,7 +12,7 @@ namespace SCaBOliC
     {
         namespace Test
         {
-            class TestInstances
+            class PixelTestInstances
             {
             public:
                 typedef SCaBOliC::Optimization::QPBOSolverType QPBOSolverType;
@@ -26,7 +26,7 @@ namespace SCaBOliC
             private:
                 typedef SCaBOliC::Lab::Utils::Generator<3> MyGenerator;
             public:
-                TestInstances(std::string imagePath);
+                PixelTestInstances(std::string imagePath);
 
                 UserInput next(bool& success);
 
@@ -34,7 +34,7 @@ namespace SCaBOliC
                 static MyGenerator::Index indexLims[3];
                 static QPBOSolverType vectorOfSolver[4];
                 static OptimizationMode vectorOfOM[2];
-                static ApplicationMode vectorOfAM[5];
+                static ApplicationMode vectorOfAM[3];
 
                 MyGenerator gen;
                 std::string imagePath;

@@ -159,7 +159,6 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
 
     DigitalSet optRegion(domain);
-    DigitalSet applicationRegion(domain);
 
     switch (optMode) {
         case OptimizationMode::OM_OriginalBoundary: {
@@ -172,94 +171,31 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         }
     }
 
+    DigitalSet trustFRG = computeForeground(original,optRegion,optMode);
+    DigitalSet trustBKG = computeBackground(trustFRG,optRegion);
 
-    DigitalSet extendedOriginal(original.domain());
-    extendedOriginal.insert(original.begin(),original.end());
-    extendedOriginal.insert(optRegion.begin(),optRegion.end());
-
-    DigitalSet trustFRG(domain);
-    DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
-
-    if(optMode==OptimizationMode::OM_DilationBoundary)
-    {
-        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
-        trustFRG+=isolatedDS;
-    }
-
-    DigitalSet trustBKG(domain);
-    DigitalSet tempp(domain);
-
-    tempp += trustFRG;
-    tempp += optRegion;
-
-    trustBKG.assignFromComplement(tempp);
-
-
-    if(appMode==ApplicationMode::AM_InverseAroundBoundary || appMode==ApplicationMode::AM_InverseInternRange)
+    if(appMode==ApplicationMode::AM_InverseAroundBoundary
+    || appMode==ApplicationMode::AM_InverseInternRange
+    || appMode==ApplicationMode::AM_InverseAroundIntern)
     {
         DigitalSet swap = trustFRG;
         trustFRG = trustBKG;
         trustBKG = swap;
     }
 
-
-    switch (appMode) {
-        case ApplicationMode::AM_OptimizationBoundary: {
-            applicationRegion.insert(optRegion.begin(),optRegion.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseAroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,erosionSE,this->levels);
-
-            applicationRegion.insert(temp.begin(),temp.end());
-            applicationRegion.insert(trustFRG.begin(),trustFRG.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseInternRange:
-        {
-            applicationRegion.insert(optRegion.begin(),optRegion.end());
-            applicationRegion.insert(trustFRG.begin(),trustFRG.end());
-            break;
-        }
-        case ApplicationMode::AM_ExternRange:{
-            DigitalSet temp = amExternRange(original,optRegion,dilationSE,1);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-    }
-
-
-
-
-
     DigitalSet _optRegion = doubleDS(optRegion);
     DigitalSet _trustFRG = doubleDS(trustFRG);
     DigitalSet _trustBKG = doubleDS(trustBKG);
-
     DigitalSet _applicationRegion(_optRegion.domain());
-    if(this->ac==ApplicationCenter::AC_LINEL)
+
+    if(this->ac == ApplicationCenter::AC_LINEL)
     {
-        _applicationRegion = applicationRegionForLinel(_optRegion.domain(),
-                                                      applicationRegion,
-                                                      optRegion,
-                                                      trustFRG,
-                                                      trustBKG,
-                                                       appMode);
-    }
-    else
+        _applicationRegion = computeApplicationRegionForLinel(optRegion,original,trustFRG,appMode);
+    }else
     {
-        _applicationRegion = doubleDS(applicationRegion);
+        _applicationRegion = computeApplicationRegionForPixel(optRegion,original,appMode);
     }
+
 
     std::function<DigitalSet(DigitalSet&)> appCntFilterApplication;
     std::function<DigitalSet(DigitalSet&)> appCntFilterOthers;
@@ -317,31 +253,110 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     );
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::applicationRegionForLinel(const Domain& interDomain,
-                                                                     const DigitalSet& pixelAppRegion,
-                                                                     const DigitalSet& pixelOptRegion,
-                                                                     const DigitalSet& pixelTrustFRG,
-                                                                     const DigitalSet& pixelTrustBKG,
-                                                                     ApplicationMode appMode) const
+ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(const DigitalSet& optRegion,
+                                                             const DigitalSet& original,
+                                                             ApplicationMode appMode) const
 {
-    DigitalSet interAppRegion(interDomain);
-
-    if(appMode==ApplicationMode::AM_OptimizationBoundary)
-    {
-        DIPaCUS::Misc::ComputeBoundaryCurve::Curve boundaryCurve;
-        DIPaCUS::Misc::ComputeBoundaryCurve(pixelAppRegion,boundaryCurve);
-        for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
+    DigitalSet applicationRegion(optRegion.domain());
+    switch (appMode) {
+        case ApplicationMode::AM_OptimizationBoundary: {
+            applicationRegion.insert(optRegion.begin(),optRegion.end());
+            break;
+        }
+        case ApplicationMode::AM_AroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InverseAroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        default:
         {
-            Point pt = it->preCell().coordinates;
-            if(evenIteration==false) pt+= Point(-2,-2);
-            interAppRegion.insert( pt );
+            throw std::runtime_error("Invalid ODR configuration");
         }
     }
-    else
-    {
-        DigitalSet appTemp = pixelAppRegion;
 
-        int countLevels = this->levels*2+1;
+    return doubleDS(applicationRegion);
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(const DigitalSet& optRegion,
+                                                             const DigitalSet& original,
+                                                             const DigitalSet& trustFRG,
+                                                             ApplicationMode appMode) const
+{
+    DigitalSet applicationRegion(optRegion.domain());
+    applicationRegion.insert(optRegion.begin(),optRegion.end());
+    applicationRegion.insert(trustFRG.begin(),trustFRG.end());
+    switch (appMode) {
+        case ApplicationMode::AM_OptimizationBoundary: {
+            break;
+        }
+        case ApplicationMode::AM_InternRange:{
+            DigitalSet temp = amInternRange(original,optRegion,erosionSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InverseInternRange:
+        {
+            break;
+        }
+        case ApplicationMode::AM_AroundIntern:{
+            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InverseAroundIntern:{
+            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error("Invalid ODR configuration");
+        }
+    }
+
+    return convertToLinels(applicationRegion,appMode);
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pixelAppRegion,
+        ApplicationMode appMode) const
+{
+    Point lb = pixelAppRegion.domain().lowerBound();
+    Point ub = pixelAppRegion.domain().upperBound();
+
+    Domain interDomain( lb*2 - Point(1,1), ub*2 + Point(1,1));
+    DigitalSet interAppRegion(interDomain);
+    DigitalSet appTemp = pixelAppRegion;
+
+    int countLevels;
+    int skip;
+
+    if(appMode==ApplicationMode::AM_AroundIntern || appMode==ApplicationMode::AM_InverseAroundIntern)
+    {
+        countLevels = this->levels*2+1;
+        skip = this->levels+1;
+    }else
+    {
+        countLevels = this->levels+1;
+        skip= appMode==ApplicationMode::AM_OptimizationBoundary?0:this->levels+1;
+    }
+
+    do{
+        if(countLevels!=skip)
+        {
+            DIPaCUS::Misc::ComputeBoundaryCurve::Curve boundaryCurve;
+            DIPaCUS::Misc::ComputeBoundaryCurve(appTemp,boundaryCurve);
+            for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
+            {
+                Point pt = it->preCell().coordinates;
+                if(evenIteration==false) pt+= Point(-2,-2);
+                interAppRegion.insert( pt );
+            }
+        }
 
         DigitalSet tempEroded(appTemp.domain());
         DIPaCUS::Morphology::erode(tempEroded,appTemp,StructuringElement(erosionSE,1));
@@ -349,24 +364,8 @@ ODRInterpixels::DigitalSet ODRInterpixels::applicationRegionForLinel(const Domai
         appTemp = tempEroded;
         --countLevels;
 
-        do{
-            DIPaCUS::Misc::ComputeBoundaryCurve::Curve boundaryCurve;
-            DIPaCUS::Misc::ComputeBoundaryCurve(appTemp,boundaryCurve);
+    }while(appMode!=ApplicationMode::AM_OptimizationBoundary && countLevels>0);
 
-            for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
-            {
-                Point pt = it->preCell().coordinates;
-                if(evenIteration==false) pt+= Point(-2,-2);
-                interAppRegion.insert( pt );
-            }
-
-            DigitalSet tempEroded(appTemp.domain());
-            DIPaCUS::Morphology::erode(tempEroded,appTemp,StructuringElement(erosionSE,1));
-
-            appTemp = tempEroded;
-            --countLevels;
-        }while(countLevels>0);
-    }
 
     return interAppRegion;
 }

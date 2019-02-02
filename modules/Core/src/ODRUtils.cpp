@@ -16,6 +16,38 @@ ODRUtils::DigitalSet ODRUtils::amFullDomain(const Domain& applicationDomain)
     return omFullDomain(applicationDomain);
 }
 
+ODRUtils::DigitalSet ODRUtils::computeForeground(const DigitalSet& original,
+                                                 const DigitalSet& optRegion,
+                                                 OptimizationMode om)
+{
+    DigitalSet extendedOriginal(original.domain());
+    extendedOriginal.insert(original.begin(),original.end());
+    extendedOriginal.insert(optRegion.begin(),optRegion.end());
+
+    DigitalSet trustFRG(optRegion.domain());
+    DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
+
+    if(om==OptimizationMode::OM_DilationBoundary)
+    {
+        DigitalSet isolatedDS = isolatedPoints(original, optRegion);
+        trustFRG += isolatedDS;
+    }
+    return trustFRG;
+}
+
+ODRUtils::DigitalSet ODRUtils::computeBackground(const DigitalSet& trustFRG,
+                                                 const DigitalSet& optRegion)
+{
+    DigitalSet trustBKG(trustFRG.domain());
+    DigitalSet tempp(trustFRG.domain());
+
+    tempp += trustFRG;
+    tempp += optRegion;
+
+    trustBKG.assignFromComplement(tempp);
+    return trustBKG;
+}
+
 ODRUtils::DigitalSet ODRUtils::amAroundBoundary(const DigitalSet& original,
                                                 const DigitalSet& optRegion,
                                                 StructuringElement::Type st,

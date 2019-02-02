@@ -31,7 +31,8 @@ namespace SCaBOliC
                 AM_InverseAroundBoundary,
                 AM_InternRange,
                 AM_InverseInternRange,
-                AM_ExternRange};
+                AM_AroundIntern,
+                AM_InverseAroundIntern};
 
             enum ApplicationCenter{
                 AC_POINTEL,

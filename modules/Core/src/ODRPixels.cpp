@@ -101,10 +101,9 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
-        case ApplicationMode::AM_ExternRange:{
-            DigitalSet temp = amExternRange(original,optRegion,dilationSE,1);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
+        default:
+        {
+            throw std::runtime_error("Invalid ODR configuration");
         }
     }
 

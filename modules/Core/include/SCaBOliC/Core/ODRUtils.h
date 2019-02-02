@@ -7,6 +7,7 @@
 #include <DIPaCUS/derivates/Misc.h>
 #include <DIPaCUS/components/SetOperations.h>
 #include <DIPaCUS/components/Morphology.h>
+#include <SCaBOliC/Core/ODRModel.h>
 
 namespace SCaBOliC
 {
@@ -18,6 +19,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Domain Domain;
             typedef DGtal::Z2i::Point Point;
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
+            typedef Core::ODRModel::OptimizationMode  OptimizationMode;
 
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
@@ -36,10 +38,17 @@ namespace SCaBOliC
 
             DigitalSet amFullDomain(const Domain& applicationDomain);
 
+            DigitalSet computeBackground(const DigitalSet& trustFRG,
+                                         const DigitalSet& optRegion);
+
+            DigitalSet computeForeground(const DigitalSet& original,
+                                         const DigitalSet& optRegion,
+                                         OptimizationMode om);
+
             DigitalSet amAroundBoundary(const DigitalSet& original,
                                         const DigitalSet& optRegion,
                                         StructuringElement::Type st,
-                                        int length);
+                                        int length) ;
 
             DigitalSet amInternRange(const DigitalSet& original,
                                      const DigitalSet& optRegion,

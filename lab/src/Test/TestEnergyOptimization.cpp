@@ -154,18 +154,22 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
     std::string solverTypeStr = Lab::Utils::resolveQPBOSolverTypeName(testInput.solverType);
 
-    if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
-        solverTypeStr+="-AM_Around";
-    else if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
+    if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
         solverTypeStr+="-AM_OptRegion";
-    else if(testInput.am==TestInput::ApplicationMode::AM_InternRange)
-        solverTypeStr+="-AM_InternRange";
-    else if(testInput.am==TestInput::ApplicationMode::AM_ExternRange)
-        solverTypeStr+="-AM_ExternRange";
+    else if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
+        solverTypeStr+="-AM_Around";
     else if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
         solverTypeStr+="-AM_InverseAround";
+    else if(testInput.am==TestInput::ApplicationMode::AM_InternRange)
+        solverTypeStr+="-AM_InternRange";
     else if(testInput.am==TestInput::ApplicationMode::AM_InverseInternRange)
-        solverTypeStr+="-AM_InverseInternRange";
+        solverTypeStr+="-AM_InverseInternRange";    
+    else if(testInput.am==TestInput::ApplicationMode::AM_AroundIntern)
+        solverTypeStr+="-AM_AroundIntern";
+    else if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundIntern)
+        solverTypeStr+="-AM_InverseAroundIntern";    
+
+
 
 
     if(testInput.om==TestInput::OptimizationMode::OM_DilationBoundary)

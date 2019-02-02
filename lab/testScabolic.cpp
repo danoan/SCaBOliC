@@ -1,5 +1,6 @@
 #include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
-#include <SCaBOliC/lab/Test/TestInstances.h>
+#include <SCaBOliC/lab/Test/PixelTestInstances.h>
+#include <SCaBOliC/lab/Test/LinelTestInstances.h>
 #include <SCaBOliC/lab/model/ImageInput.h>
 #include <SCaBOliC/lab/Test/TestEnergyEvaluation.h>
 #include <SCaBOliC/Core/ODRPixels.h>
@@ -35,11 +36,25 @@ namespace SCaBOliC
 
 using namespace SCaBOliC::Lab;
 
-void runInstances(Model::ImageInput imageInput)
+void runLinelInstances(Model::ImageInput imageInput)
 {
-    Test::TestInstances TI(imageInput.imagePath);
+    Test::LinelTestInstances TI(imageInput.imagePath);
     bool success;
-    Test::TestInstances::UserInput input = TI.next(success);
+    Test::LinelTestInstances::UserInput input = TI.next(success);
+
+    SCaBOliC::Core::ODRInterpixels odrInterpixels(input.ac,input.cm,1,ODRModel::NeighborhoodType::FourNeighborhood);
+    while(success)
+    {
+        Test::TestEnergyOptimization teo(input,odrInterpixels,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
+        input = TI.next(success);
+    }
+}
+
+void runPixelInstances(Model::ImageInput imageInput)
+{
+    Test::PixelTestInstances TI(imageInput.imagePath);
+    bool success;
+    Test::PixelTestInstances::UserInput input = TI.next(success);
 
     SCaBOliC::Core::ODRPixels odrPixels(input.ac,input.cm,1,ODRModel::NeighborhoodType::FourNeighborhood);
     while(success)
@@ -52,8 +67,11 @@ void runInstances(Model::ImageInput imageInput)
 
 int main()
 {
-    runInstances(Test::TestInput::squareInput);
-    runInstances(Test::TestInput::squarex9Input);
+//    runPixelInstances(Test::TestInput::squareInput);
+//    runPixelInstances(Test::TestInput::squarex9Input);
+
+    runLinelInstances(Test::TestInput::squareInput);
+    //runLinelInstances(Test::TestInput::squarex9Input);
 
     Test::TestEnergyEvaluation::UserInput ui(Test::TestInput::squarex9Input.imagePath,
                                              Model::UserInput::QPBOSolverType::Probe,

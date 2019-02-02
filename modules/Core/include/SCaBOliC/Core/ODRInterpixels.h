@@ -53,11 +53,6 @@ namespace SCaBOliC
             const SpaceHandleInterface* handle() const;
 
         private:
-            ODRModel createODRForLinelAC(OptimizationMode optMode,
-                                         ApplicationMode appMode,
-                                         unsigned int radius,
-                                         const DigitalSet& original) const;
-
             DigitalSet omOriginalBoundary(const DigitalSet& original) const
             {
                 if(nt==NeighborhoodType::FourNeighborhood)
@@ -97,6 +92,9 @@ namespace SCaBOliC
 
             DigitalSet amFullDomain(const Domain& applicationDomain) const{ return ODRUtils::amFullDomain(applicationDomain); }
 
+            DigitalSet computeForeground(const DigitalSet& original, const DigitalSet& optRegion, OptimizationMode om) const{ return ODRUtils::computeForeground(original,optRegion,om); }
+            DigitalSet computeBackground(const DigitalSet& trustFRG, const DigitalSet& optRegion) const{ return ODRUtils::computeBackground(trustFRG,optRegion); }
+
             DigitalSet amAroundBoundary(const DigitalSet& original,
                                         const DigitalSet& optRegion,
                                         StructuringElement::Type st,
@@ -120,12 +118,17 @@ namespace SCaBOliC
             { return ODRUtils::isolatedPoints(original,optRegion); }
 
 
-            DigitalSet applicationRegionForLinel(const Domain& interDomain,
-                                                 const DigitalSet& pixelAppRegion,
-                                                 const DigitalSet& pixelOptRegion,
-                                                 const DigitalSet& pixelTrustFRG,
-                                                 const DigitalSet& pixelTrustBKG,
-                                                 ApplicationMode appMode) const;
+            DigitalSet computeApplicationRegionForPixel(const DigitalSet& optRegion,
+                                                         const DigitalSet& original,
+                                                         ApplicationMode appMode) const;
+
+            DigitalSet computeApplicationRegionForLinel(const DigitalSet& optRegion,
+                                                         const DigitalSet& original,
+                                                         const DigitalSet& trustFRG,
+                                                         ApplicationMode appMode) const;
+
+            DigitalSet convertToLinels(const DigitalSet& pixelAppRegion,
+                                       ApplicationMode appMode) const;
 
 
         private:
