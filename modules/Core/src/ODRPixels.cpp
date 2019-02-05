@@ -45,6 +45,12 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     }
 
 
+    if(optMode==OptimizationMode::OM_DilationBoundary)
+    {
+        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
+        optRegion+=isolatedDS;
+    }
+
     DigitalSet extendedOriginal(original.domain());
     extendedOriginal.insert(original.begin(),original.end());
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
@@ -52,11 +58,6 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
 
-    if(optMode==OptimizationMode::OM_DilationBoundary)
-    {
-        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
-        trustFRG+=isolatedDS;
-    }
 
     DigitalSet trustBKG(domain);
     DigitalSet tempp(domain);

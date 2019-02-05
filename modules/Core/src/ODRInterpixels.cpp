@@ -175,6 +175,12 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
         }
     }
 
+    if(optMode==OptimizationMode::OM_DilationBoundary)
+    {
+        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
+        optRegion+=isolatedDS;
+    }
+
     DigitalSet trustFRG = computeForeground(original,optRegion,optMode);
     DigitalSet trustBKG = computeBackground(trustFRG,optRegion);
 
