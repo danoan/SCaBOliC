@@ -20,12 +20,16 @@ namespace SCaBOliC
             typedef ODRModel::ApplicationMode ApplicationMode;
             typedef ODRModel::ApplicationCenter ApplicationCenter;
             typedef ODRModel::CountingMode CountingMode;
+            typedef ODRModel::LevelDefinition  LevelDefinition;
 
         public:
             virtual ODRModel createODR(OptimizationMode optMode,
                                        ApplicationMode appMode,
                                        unsigned int radius,
-                                       const DigitalSet& original) const=0;
+                                       const DigitalSet& original,
+                                       LevelDefinition ld,
+                                       bool optRegionInApplication=false,
+                                       bool invertFrgBkg=false) const=0;
 
             virtual const SpaceHandleInterface* handle() const=0;
 

@@ -20,6 +20,7 @@ namespace SCaBOliC
                 typedef Core::ODRModel::ApplicationMode ApplicationMode;
                 typedef Core::ODRModel::ApplicationCenter ApplicationCenter;
                 typedef Core::ODRModel::CountingMode CountingMode;
+                typedef Core::ODRModel::LevelDefinition LevelDefinition;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
@@ -29,12 +30,18 @@ namespace SCaBOliC
                           OptimizationMode om,
                           ApplicationMode am,
                           ApplicationCenter ac,
-                          CountingMode cm):imagePath(imagePath),
-                                           solverType(solverType),
-                                           om(om),
-                                           am(am),
-                                           ac(ac),
-                                           cm(cm){}
+                          CountingMode cm,
+                          LevelDefinition ld,
+                          bool optRegionInApplication,
+                          bool invertFrgBkg):imagePath(imagePath),
+                                                       solverType(solverType),
+                                                       om(om),
+                                                       am(am),
+                                                       ac(ac),
+                                                       cm(cm),
+                                                       ld(ld),
+                                                       optRegionInApplication(optRegionInApplication),
+                                                       invertFrgBkg(invertFrgBkg){}
 
             public:
                 std::string imagePath;
@@ -44,6 +51,10 @@ namespace SCaBOliC
                 ApplicationMode am;
                 ApplicationCenter ac;
                 CountingMode cm;
+                LevelDefinition ld;
+
+                bool invertFrgBkg;
+                bool optRegionInApplication;
             };
         }
     }

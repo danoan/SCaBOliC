@@ -42,7 +42,11 @@ void runLinelInstances(Model::ImageInput imageInput)
     bool success;
     Test::LinelTestInstances::UserInput input = TI.next(success);
 
-    SCaBOliC::Core::ODRInterpixels odrInterpixels(input.ac,input.cm,1,ODRModel::NeighborhoodType::FourNeighborhood);
+    SCaBOliC::Core::ODRInterpixels odrInterpixels(input.ac,
+                                                  input.cm,
+                                                  1,
+                                                  ODRModel::NeighborhoodType::FourNeighborhood,
+                                                  ODRModel::LevelDefinition::LD_CloserFromCenter);
     while(success)
     {
         Test::TestEnergyOptimization teo(input,odrInterpixels,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
@@ -56,7 +60,10 @@ void runPixelInstances(Model::ImageInput imageInput)
     bool success;
     Test::PixelTestInstances::UserInput input = TI.next(success);
 
-    SCaBOliC::Core::ODRPixels odrPixels(input.ac,input.cm,1,ODRModel::NeighborhoodType::FourNeighborhood);
+    SCaBOliC::Core::ODRPixels odrPixels(input.ac,
+                                        input.cm,
+                                        1,
+                                        ODRModel::NeighborhoodType::FourNeighborhood);
     while(success)
     {
         Test::TestEnergyOptimization teo(input,odrPixels,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);
@@ -67,10 +74,10 @@ void runPixelInstances(Model::ImageInput imageInput)
 
 int main()
 {
-//    runPixelInstances(Test::TestInput::squareInput);
+    runPixelInstances(Test::TestInput::squareInput);
 //    runPixelInstances(Test::TestInput::squarex9Input);
 
-    runLinelInstances(Test::TestInput::squareInput);
+    //runLinelInstances(Test::TestInput::squareInput);
     //runLinelInstances(Test::TestInput::squarex9Input);
 
     Test::TestEnergyEvaluation::UserInput ui(Test::TestInput::squarex9Input.imagePath,
@@ -78,7 +85,10 @@ int main()
                                              Model::UserInput::OptimizationMode::OM_OriginalBoundary,
                                              Model::UserInput::ApplicationMode::AM_AroundBoundary,
                                              Model::UserInput::ApplicationCenter::AC_PIXEL,
-                                             Model::UserInput::CountingMode::CM_PIXEL);
+                                             Model::UserInput::CountingMode::CM_PIXEL,
+                                             Model::UserInput::LevelDefinition::LD_CloserFromCenter,
+                                             false,
+                                             false);
     Test::TestEnergyEvaluation tev(ui);
 
     return 0;

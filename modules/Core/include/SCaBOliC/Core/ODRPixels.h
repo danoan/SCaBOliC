@@ -30,6 +30,7 @@ namespace SCaBOliC
             typedef ODRModel::ApplicationCenter ApplicationCenter;
             typedef ODRModel::CountingMode CountingMode;
             typedef ODRModel::NeighborhoodType NeighborhoodType;
+            typedef ODRModel::LevelDefinition  LevelDefinition;
 
 
             typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate> FourNeighborhood;
@@ -49,7 +50,10 @@ namespace SCaBOliC
             ODRModel createODR(OptimizationMode optMode,
                                ApplicationMode appMode,
                                unsigned int radius,
-                               const DigitalSet& original) const;
+                               const DigitalSet& original,
+                               LevelDefinition ld,
+                               bool optRegionInApplication=false,
+                               bool invertFrgBkg=false) const;
 
             const SpaceHandleInterface* handle() const{return &spaceHandle;};
 
@@ -95,21 +99,27 @@ namespace SCaBOliC
 
             DigitalSet amAroundBoundary(const DigitalSet& original,
                                         const DigitalSet& optRegion,
-                                        StructuringElement::Type st,
+                                        const unsigned int radius,
+                                        const LevelDefinition ld,
+                                        const StructuringElement::Type st,
                                         int length) const
-            { return ODRUtils::amAroundBoundary(original,optRegion,st,length); }
+            { return ODRUtils::amAroundBoundary(original,optRegion,radius,ld,st,length); }
 
             DigitalSet amInternRange(const DigitalSet& original,
                                      const DigitalSet& optRegion,
+                                     const unsigned int radius,
+                                     const LevelDefinition ld,
                                      const StructuringElement::Type st,
                                      int length) const
-            { return ODRUtils::amInternRange(original,optRegion,st,length); }
+            { return ODRUtils::amInternRange(original,optRegion,radius,ld,st,length); }
 
             DigitalSet amExternRange(const DigitalSet& original,
                                      const DigitalSet& optRegion,
+                                     const unsigned int radius,
+                                     const LevelDefinition ld,
                                      const StructuringElement::Type st,
                                      int length) const
-            { return ODRUtils::amExternRange(original,optRegion,st,length); }
+            { return ODRUtils::amExternRange(original,optRegion,radius,ld,st,length); }
 
             DigitalSet isolatedPoints(const DigitalSet& original,
                                       const DigitalSet& optRegion) const

@@ -30,16 +30,10 @@ namespace SCaBOliC
                         return "Optimizaiton Boundary";
                     case(ApplicationMode::AM_AroundBoundary):
                         return "Around Boundary";
-                    case(ApplicationMode::AM_InverseAroundBoundary):
-                        return "Inverse Around Boundary";
                     case(ApplicationMode::AM_InternRange):
                         return "Intern Range";
-                    case(ApplicationMode::AM_InverseInternRange):
-                        return "Inverse Intern Range";
                     case(ApplicationMode::AM_AroundIntern):
                         return "Around Intern";
-                    case(ApplicationMode::AM_InverseAroundIntern):
-                        return "Inverse Around Intern";
                 }
             }
 

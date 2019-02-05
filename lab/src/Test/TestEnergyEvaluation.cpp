@@ -27,7 +27,8 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     ODRModel odr = odrFactory.createODR(ui.om,
                                         ui.am,
                                         3,
-                                        ds);
+                                        ds,
+                                        ui.ld);
 
     ISQInputData input (odr,
                         cvImg,

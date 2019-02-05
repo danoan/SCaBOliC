@@ -47,7 +47,10 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
     ODRModel odr = this->odrFactory.createODR(testInput.om,
                                               testInput.am,
                                               estimatingBallRadius,
-                                              ds);
+                                              ds,
+                                              testInput.ld,
+                                              testInput.optRegionInApplication,
+                                              testInput.invertFrgBkg);
 
     return ISQInputData (odr,
                          cvImg,
@@ -109,7 +112,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
 
         const DigitalSet& optRegion = energyInput.optimizationRegions.optRegion;
 
-        if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
+        if(testInput.invertFrgBkg)
         {
             //Invert Solution
             for (int i = 0; i < labelsVector.rows(); ++i)
@@ -154,20 +157,19 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
     std::string solverTypeStr = Lab::Utils::resolveQPBOSolverTypeName(testInput.solverType);
 
+    if(testInput.invertFrgBkg)
+        solverTypeStr+="-AM_Inverse";
+    else
+        solverTypeStr+="-AM_";
+
     if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
-        solverTypeStr+="-AM_OptRegion";
+        solverTypeStr+="OptRegion";
     else if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
-        solverTypeStr+="-AM_Around";
-    else if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
-        solverTypeStr+="-AM_InverseAround";
+        solverTypeStr+="Around";
     else if(testInput.am==TestInput::ApplicationMode::AM_InternRange)
-        solverTypeStr+="-AM_InternRange";
-    else if(testInput.am==TestInput::ApplicationMode::AM_InverseInternRange)
-        solverTypeStr+="-AM_InverseInternRange";    
+        solverTypeStr+="InternRange";
     else if(testInput.am==TestInput::ApplicationMode::AM_AroundIntern)
-        solverTypeStr+="-AM_AroundIntern";
-    else if(testInput.am==TestInput::ApplicationMode::AM_InverseAroundIntern)
-        solverTypeStr+="-AM_InverseAroundIntern";    
+        solverTypeStr+="AroundIntern";
 
 
 
@@ -176,6 +178,16 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
         solverTypeStr+="-OM_Dilation";
     else if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
         solverTypeStr+="-OM_Original";
+
+    if(testInput.ld==TestInput::LevelDefinition::LD_CloserFromCenter)
+        solverTypeStr+="-LD_Closer";
+    else if(testInput.ld==TestInput::LevelDefinition::LD_FartherFromCenter)
+        solverTypeStr+="-LD_Farther";
+
+    if(testInput.optRegionInApplication)
+        solverTypeStr+="-Opt";
+    else
+        solverTypeStr+="-NoOpt";
 
 
     return solverTypeStr;

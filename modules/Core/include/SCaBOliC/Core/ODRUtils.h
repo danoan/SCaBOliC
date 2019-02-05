@@ -20,6 +20,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
             typedef Core::ODRModel::OptimizationMode  OptimizationMode;
+            typedef Core::ODRModel::LevelDefinition LevelDefinition;
 
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
@@ -47,16 +48,22 @@ namespace SCaBOliC
 
             DigitalSet amAroundBoundary(const DigitalSet& original,
                                         const DigitalSet& optRegion,
-                                        StructuringElement::Type st,
-                                        int length) ;
+                                        const unsigned int radius,
+                                        const LevelDefinition ld,
+                                        const StructuringElement::Type st,
+                                        int length);
 
             DigitalSet amInternRange(const DigitalSet& original,
                                      const DigitalSet& optRegion,
+                                     const unsigned int radius,
+                                     const LevelDefinition ld,
                                      const StructuringElement::Type st,
                                      int length);
 
             DigitalSet amExternRange(const DigitalSet& original,
                                      const DigitalSet& optRegion,
+                                     const unsigned int radius,
+                                     const LevelDefinition ld,
                                      const StructuringElement::Type st,
                                      int length);
 

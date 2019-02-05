@@ -11,7 +11,7 @@ ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const CountingMode cntMode,
                                const int levels,
                                const NeighborhoodType nt,
-                               bool manualEvenIteration):ac(appCenter),
+                               bool manualEvenIteration) :ac(appCenter),
                                                           cm(cntMode),
                                                           levels(levels),
                                                           nt(nt)
@@ -147,8 +147,12 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterLinels(DigitalSet& ds)
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
                                     unsigned int radius,
-                                    const DigitalSet& original) const
+                                    const DigitalSet& original,
+                                    const LevelDefinition ld,
+                                    bool optRegionInApplication,
+                                    bool invertFrgBkg) const
 {
+    if(ld==LevelDefinition::LD_FartherFromCenter) throw std::runtime_error("FartherFromCenter not implemented in interpixels models.");
     evenIteration = !evenIteration;
 
 
@@ -174,9 +178,7 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     DigitalSet trustFRG = computeForeground(original,optRegion,optMode);
     DigitalSet trustBKG = computeBackground(trustFRG,optRegion);
 
-    if(appMode==ApplicationMode::AM_InverseAroundBoundary
-    || appMode==ApplicationMode::AM_InverseInternRange
-    || appMode==ApplicationMode::AM_InverseAroundIntern)
+    if(invertFrgBkg)
     {
         DigitalSet swap = trustFRG;
         trustFRG = trustBKG;
@@ -190,10 +192,10 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     if(this->ac == ApplicationCenter::AC_LINEL)
     {
-        _applicationRegion = computeApplicationRegionForLinel(optRegion,original,trustFRG,appMode);
+        _applicationRegion = computeApplicationRegionForLinel(optRegion,original,trustFRG,radius,ld,appMode,optRegionInApplication);
     }else
     {
-        _applicationRegion = computeApplicationRegionForPixel(optRegion,original,appMode);
+        _applicationRegion = computeApplicationRegionForPixel(optRegion,original,radius,ld,appMode);
     }
 
 
@@ -254,8 +256,10 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 }
 
 ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(const DigitalSet& optRegion,
-                                                             const DigitalSet& original,
-                                                             ApplicationMode appMode) const
+                                                                            const DigitalSet& original,
+                                                                            unsigned int radius,
+                                                                            const LevelDefinition ld,
+                                                                            const ApplicationMode appMode) const
 {
     DigitalSet applicationRegion(optRegion.domain());
     switch (appMode) {
@@ -264,12 +268,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(cons
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseAroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius,ld,dilationSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
@@ -283,9 +282,12 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(cons
 }
 
 ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(const DigitalSet& optRegion,
-                                                             const DigitalSet& original,
-                                                             const DigitalSet& trustFRG,
-                                                             ApplicationMode appMode) const
+                                                                            const DigitalSet& original,
+                                                                            const DigitalSet& trustFRG,
+                                                                            unsigned int radius,
+                                                                            const LevelDefinition ld,
+                                                                            const ApplicationMode appMode,
+                                                                            bool optRegionInApplication) const
 {
     DigitalSet applicationRegion(optRegion.domain());
     applicationRegion.insert(optRegion.begin(),optRegion.end());
@@ -295,21 +297,12 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(cons
             break;
         }
         case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,erosionSE,this->levels);
+            DigitalSet temp = amInternRange(original,optRegion,radius,ld,erosionSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseInternRange:
-        {
             break;
         }
         case ApplicationMode::AM_AroundIntern:{
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseAroundIntern:{
-            DigitalSet temp = amAroundBoundary(original,optRegion,dilationSE,this->levels);
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius,ld,dilationSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
@@ -319,11 +312,14 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(cons
         }
     }
 
-    return convertToLinels(applicationRegion,appMode);
+
+
+    return convertToLinels(applicationRegion,appMode,optRegionInApplication);
 }
 
 ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pixelAppRegion,
-        ApplicationMode appMode) const
+                                                           ApplicationMode appMode,
+                                                           bool optRegionInApplication) const
 {
     Point lb = pixelAppRegion.domain().lowerBound();
     Point ub = pixelAppRegion.domain().upperBound();
@@ -335,14 +331,14 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pix
     int countLevels;
     int skip;
 
-    if(appMode==ApplicationMode::AM_AroundIntern || appMode==ApplicationMode::AM_InverseAroundIntern)
+    if(appMode==ApplicationMode::AM_AroundIntern)
     {
         countLevels = this->levels*2+1;
-        skip = this->levels+1;
+        skip = optRegionInApplication?0:this->levels+1;
     }else
     {
         countLevels = this->levels+1;
-        skip= appMode==ApplicationMode::AM_OptimizationBoundary?0:this->levels+1;
+        skip= appMode==ApplicationMode::AM_OptimizationBoundary || optRegionInApplication?0:this->levels+1;
     }
 
     do{
