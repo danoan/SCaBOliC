@@ -11,6 +11,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     SCaBOliC::Core::ODRPixels odrFactory(ui.ac,
                                          ui.cm,
                                          3,
+                                         ODRModel::LevelDefinition::LD_CloserFromCenter,
                                          ODRModel::FourNeighborhood);
 
 
@@ -27,8 +28,7 @@ TestEnergyEvaluation::TestEnergyEvaluation(const UserInput& ui)
     ODRModel odr = odrFactory.createODR(ui.om,
                                         ui.am,
                                         3,
-                                        ds,
-                                        ui.ld);
+                                        ds);
 
     ISQInputData input (odr,
                         cvImg,

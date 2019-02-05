@@ -48,7 +48,6 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                                               testInput.am,
                                               estimatingBallRadius,
                                               ds,
-                                              testInput.ld,
                                               testInput.optRegionInApplication,
                                               testInput.invertFrgBkg);
 
@@ -178,11 +177,6 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
         solverTypeStr+="-OM_Dilation";
     else if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
         solverTypeStr+="-OM_Original";
-
-    if(testInput.ld==TestInput::LevelDefinition::LD_CloserFromCenter)
-        solverTypeStr+="-LD_Closer";
-    else if(testInput.ld==TestInput::LevelDefinition::LD_FartherFromCenter)
-        solverTypeStr+="-LD_Farther";
 
     if(testInput.optRegionInApplication)
         solverTypeStr+="-Opt";

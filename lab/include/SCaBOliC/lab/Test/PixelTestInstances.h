@@ -25,18 +25,17 @@ namespace SCaBOliC
                 typedef SCaBOliC::Lab::Model::UserInput UserInput;
 
             private:
-                typedef SCaBOliC::Lab::Utils::Generator<6> MyGenerator;
+                typedef SCaBOliC::Lab::Utils::Generator<5> MyGenerator;
             public:
                 PixelTestInstances(std::string imagePath);
 
                 UserInput next(bool& success);
 
             private:
-                static MyGenerator::Index indexLims[6];
+                static MyGenerator::Index indexLims[5];
                 static QPBOSolverType vectorOfSolver[4];
                 static OptimizationMode vectorOfOM[2];
                 static ApplicationMode vectorOfAM[2];
-                static LevelDefinition vectorOfLD[2];
                 static bool vectorOfOptInAppl[2];
                 static bool vectorOfInversion[2];
 

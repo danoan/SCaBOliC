@@ -27,7 +27,6 @@ namespace SCaBOliC
                                        ApplicationMode appMode,
                                        unsigned int radius,
                                        const DigitalSet& original,
-                                       LevelDefinition ld,
                                        bool optRegionInApplication=false,
                                        bool invertFrgBkg=false) const=0;
 

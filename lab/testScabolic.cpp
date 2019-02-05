@@ -45,6 +45,7 @@ void runLinelInstances(Model::ImageInput imageInput)
     SCaBOliC::Core::ODRInterpixels odrInterpixels(input.ac,
                                                   input.cm,
                                                   1,
+                                                  ODRModel::LevelDefinition::LD_CloserFromCenter,
                                                   ODRModel::NeighborhoodType::FourNeighborhood,
                                                   ODRModel::LevelDefinition::LD_CloserFromCenter);
     while(success)
@@ -63,6 +64,7 @@ void runPixelInstances(Model::ImageInput imageInput)
     SCaBOliC::Core::ODRPixels odrPixels(input.ac,
                                         input.cm,
                                         1,
+                                        ODRModel::LevelDefinition::LD_CloserFromCenter,
                                         ODRModel::NeighborhoodType::FourNeighborhood);
     while(success)
     {
@@ -86,7 +88,6 @@ int main()
                                              Model::UserInput::ApplicationMode::AM_AroundBoundary,
                                              Model::UserInput::ApplicationCenter::AC_PIXEL,
                                              Model::UserInput::CountingMode::CM_PIXEL,
-                                             Model::UserInput::LevelDefinition::LD_CloserFromCenter,
                                              false,
                                              false);
     Test::TestEnergyEvaluation tev(ui);

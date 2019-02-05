@@ -13,19 +13,17 @@ PixelTestInstances::OptimizationMode PixelTestInstances::vectorOfOM[2] = {PixelT
 PixelTestInstances::ApplicationMode PixelTestInstances::vectorOfAM[2] = {PixelTestInstances::ApplicationMode::AM_AroundBoundary,
                                                                         PixelTestInstances::ApplicationMode::AM_OptimizationBoundary};
 
-PixelTestInstances::LevelDefinition PixelTestInstances::vectorOfLD[2] = {PixelTestInstances::LevelDefinition::LD_CloserFromCenter,
-                                                                         PixelTestInstances::LevelDefinition::LD_FartherFromCenter};
 
 bool PixelTestInstances::vectorOfOptInAppl[2] = {false, true};
 bool PixelTestInstances::vectorOfInversion[2] = {false, true};
 
-PixelTestInstances::MyGenerator::Index PixelTestInstances::indexLims[6] = {0,1,2,1,1,1};
+PixelTestInstances::MyGenerator::Index PixelTestInstances::indexLims[5] = {0,1,2,1,1};
 //int TestInstances::indexLims[3] = {1,1,1};
 
 PixelTestInstances::PixelTestInstances(std::string imagePath):imagePath(imagePath),
                                                     gen( PixelTestInstances::indexLims )
 {
-    memset(currSequence,0,sizeof(MyGenerator::Index)*6);
+    memset(currSequence,0,sizeof(MyGenerator::Index)*5);
 }
 
 PixelTestInstances::UserInput PixelTestInstances::next(bool& success)
@@ -40,7 +38,6 @@ PixelTestInstances::UserInput PixelTestInstances::next(bool& success)
                           vectorOfAM[currSequence[2]],
                           PixelTestInstances::ApplicationCenter::AC_PIXEL,
                           PixelTestInstances::CountingMode::CM_PIXEL,
-                          vectorOfLD[currSequence[3]],
                           vectorOfOptInAppl[currSequence[4]],
                           vectorOfInversion[currSequence[5]]);
     } else
@@ -51,7 +48,6 @@ PixelTestInstances::UserInput PixelTestInstances::next(bool& success)
                           vectorOfAM[0],
                           PixelTestInstances::ApplicationCenter::AC_PIXEL,
                           PixelTestInstances::CountingMode::CM_PIXEL,
-                          vectorOfLD[currSequence[0]],
                           vectorOfOptInAppl[currSequence[0]],
                           vectorOfInversion[currSequence[0]]);
     }

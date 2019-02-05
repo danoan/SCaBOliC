@@ -20,7 +20,6 @@ namespace SCaBOliC
                 typedef Core::ODRModel::ApplicationMode ApplicationMode;
                 typedef Core::ODRModel::ApplicationCenter ApplicationCenter;
                 typedef Core::ODRModel::CountingMode CountingMode;
-                typedef Core::ODRModel::LevelDefinition LevelDefinition;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
@@ -31,7 +30,6 @@ namespace SCaBOliC
                           ApplicationMode am,
                           ApplicationCenter ac,
                           CountingMode cm,
-                          LevelDefinition ld,
                           bool optRegionInApplication,
                           bool invertFrgBkg):imagePath(imagePath),
                                                        solverType(solverType),
@@ -39,7 +37,6 @@ namespace SCaBOliC
                                                        am(am),
                                                        ac(ac),
                                                        cm(cm),
-                                                       ld(ld),
                                                        optRegionInApplication(optRegionInApplication),
                                                        invertFrgBkg(invertFrgBkg){}
 
@@ -51,7 +48,6 @@ namespace SCaBOliC
                 ApplicationMode am;
                 ApplicationCenter ac;
                 CountingMode cm;
-                LevelDefinition ld;
 
                 bool invertFrgBkg;
                 bool optRegionInApplication;

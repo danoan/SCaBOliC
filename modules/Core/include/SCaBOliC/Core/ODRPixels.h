@@ -44,6 +44,7 @@ namespace SCaBOliC
             ODRPixels(const ApplicationCenter appCenter,
                       const CountingMode cntMode,
                       const int levels,
+                      LevelDefinition ld,
                       const NeighborhoodType nt);
 
 
@@ -51,7 +52,6 @@ namespace SCaBOliC
                                ApplicationMode appMode,
                                unsigned int radius,
                                const DigitalSet& original,
-                               LevelDefinition ld,
                                bool optRegionInApplication=false,
                                bool invertFrgBkg=false) const;
 
@@ -132,6 +132,7 @@ namespace SCaBOliC
             CountingMode cm;
             int levels;
             NeighborhoodType nt;
+            LevelDefinition ld;
 
             PixelSpaceHandle spaceHandle;
         };

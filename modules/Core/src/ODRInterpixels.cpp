@@ -10,11 +10,13 @@ bool ODRInterpixels::evenIteration = true;
 ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const CountingMode cntMode,
                                const int levels,
+                               LevelDefinition ld,
                                const NeighborhoodType nt,
                                bool manualEvenIteration) :ac(appCenter),
                                                           cm(cntMode),
                                                           levels(levels),
-                                                          nt(nt)
+                                                          nt(nt),
+                                                          ld(ld)
 {
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,true));
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,false));
@@ -148,11 +150,10 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
                                     unsigned int radius,
                                     const DigitalSet& original,
-                                    const LevelDefinition ld,
                                     bool optRegionInApplication,
                                     bool invertFrgBkg) const
 {
-    if(ld==LevelDefinition::LD_FartherFromCenter) throw std::runtime_error("FartherFromCenter not implemented in interpixels models.");
+    if(this->ld==LevelDefinition::LD_FartherFromCenter) throw std::runtime_error("FartherFromCenter not implemented in interpixels models.");
     evenIteration = !evenIteration;
 
 
@@ -198,10 +199,10 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     if(this->ac == ApplicationCenter::AC_LINEL)
     {
-        _applicationRegion = computeApplicationRegionForLinel(optRegion,original,trustFRG,radius,ld,appMode,optRegionInApplication);
+        _applicationRegion = computeApplicationRegionForLinel(optRegion,original,trustFRG,radius,this->ld,appMode,optRegionInApplication);
     }else
     {
-        _applicationRegion = computeApplicationRegionForPixel(optRegion,original,radius,ld,appMode);
+        _applicationRegion = computeApplicationRegionForPixel(optRegion,original,radius,this->ld,appMode);
     }
 
 

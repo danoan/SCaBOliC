@@ -15,19 +15,17 @@ LinelTestInstances::ApplicationMode LinelTestInstances::vectorOfAM[3] = {LinelTe
                                                                          LinelTestInstances::ApplicationMode::AM_OptimizationBoundary,
 };
 
-LinelTestInstances::LevelDefinition LinelTestInstances::vectorOfLD[1] = {LinelTestInstances::LevelDefinition::LD_CloserFromCenter,
-                                                                         /*LinelTestInstances::LevelDefinition::LD_FartherFromCenter*/};
 
 bool LinelTestInstances::vectorOfOptInAppl[2] = {false, true};
 bool LinelTestInstances::vectorOfInversion[2] = {false, true};
 
-LinelTestInstances::MyGenerator::Index LinelTestInstances::indexLims[6] = {0,1,2,0,1,1};
+LinelTestInstances::MyGenerator::Index LinelTestInstances::indexLims[5] = {0,1,2,1,1};
 //int TestInstances::indexLims[3] = {1,1,1};
 
 LinelTestInstances::LinelTestInstances(std::string imagePath):imagePath(imagePath),
                                                               gen( LinelTestInstances::indexLims )
 {
-    memset(currSequence,0,sizeof(MyGenerator::Index)*6);
+    memset(currSequence,0,sizeof(MyGenerator::Index)*5);
 }
 
 LinelTestInstances::UserInput LinelTestInstances::next(bool& success)
@@ -42,7 +40,6 @@ LinelTestInstances::UserInput LinelTestInstances::next(bool& success)
                           vectorOfAM[currSequence[2]],
                           LinelTestInstances::ApplicationCenter::AC_LINEL,
                           LinelTestInstances::CountingMode::CM_PIXEL,
-                          vectorOfLD[currSequence[3]],
                           vectorOfOptInAppl[currSequence[4]],
                           vectorOfInversion[currSequence[5]]);
     } else
@@ -53,7 +50,6 @@ LinelTestInstances::UserInput LinelTestInstances::next(bool& success)
                           vectorOfAM[0],
                           LinelTestInstances::ApplicationCenter::AC_LINEL,
                           LinelTestInstances::CountingMode::CM_PIXEL,
-                          vectorOfLD[0],
                           vectorOfOptInAppl[0],
                           vectorOfInversion[0]);
     }
