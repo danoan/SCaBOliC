@@ -46,8 +46,7 @@ void runLinelInstances(Model::ImageInput imageInput)
                                                   input.cm,
                                                   1,
                                                   ODRModel::LevelDefinition::LD_CloserFromCenter,
-                                                  ODRModel::NeighborhoodType::FourNeighborhood,
-                                                  ODRModel::LevelDefinition::LD_CloserFromCenter);
+                                                  ODRModel::NeighborhoodType::FourNeighborhood);
     while(success)
     {
         Test::TestEnergyOptimization teo(input,odrInterpixels,Test::outputFolder + "/testScabolic/" + imageInput.imageName,true);

@@ -30,6 +30,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
         odr = new SCaBOliC::Core::ODRPixels(ApplicationCenter::AC_PIXEL,
                                             CountingMode::CM_PIXEL,
                                             3,
+                                            ODRModel::LevelDefinition::LD_CloserFromCenter,
                                             ODRModel::FourNeighborhood);
     }
     else if(as==InterpixelSpace)
@@ -37,6 +38,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
         odr = new SCaBOliC::Core::ODRInterpixels(ApplicationCenter::AC_PIXEL,
                                                  CountingMode::CM_POINTEL,
                                                  3,
+                                                 ODRModel::LevelDefinition::LD_CloserFromCenter,
                                                  ODRModel::FourNeighborhood);
     }
 
@@ -50,7 +52,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                        om,
                        am,
                        ApplicationCenter::AC_PIXEL,
-                       CountingMode::CM_POINTEL);
+                       CountingMode::CM_POINTEL,false,false);
 
         Test::TestEnergyOptimization *teo;
 

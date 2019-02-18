@@ -14,25 +14,26 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                         TEOInput::ApplicationMode::AM_AroundBoundary,
                          TEOInput::ApplicationCenter::AC_PIXEL,
-                         TEOInput::CountingMode::CM_PIXEL);
+                         TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputOriginal(imageInput.imagePath,
                            solverType,
                            TEOInput::OptimizationMode::OM_OriginalBoundary,
                            TEOInput::ApplicationMode::AM_OptimizationBoundary,
                            TEOInput::ApplicationCenter::AC_PIXEL,
-                           TEOInput::CountingMode::CM_PIXEL);
+                           TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputInternRange(imageInput.imagePath,
                               solverType,
                               TEOInput::OptimizationMode::OM_OriginalBoundary,
                               TEOInput::ApplicationMode::AM_InternRange,
                               TEOInput::ApplicationCenter::AC_PIXEL,
-                              TEOInput::CountingMode::CM_PIXEL);
+                              TEOInput::CountingMode::CM_PIXEL,false,false);
 
     SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
                                         TEOInput::CountingMode::CM_PIXEL,
                                         3,
+                                        ODRModel::LevelDefinition::LD_CloserFromCenter,
                                         ODRModel::FourNeighborhood);
 
     Test::TestEnergyOptimization teoAround(inputAround,odrPixels,outputFolder,exportRegions);

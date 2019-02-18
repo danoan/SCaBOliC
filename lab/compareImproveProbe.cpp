@@ -39,6 +39,7 @@ Energy::ISQEnergy createEnergyObject(Core::ODRModel **odr,Core::ODRInterface **o
     *odrFactory = new SCaBOliC::Core::ODRPixels(UserInput::ApplicationCenter::AC_PIXEL,
                                                UserInput::CountingMode::CM_PIXEL,
                                                3,
+                                               ODRModel::LevelDefinition::LD_CloserFromCenter,
                                                Core::ODRModel::FourNeighborhood);
 
 //    *odrFactory = new SCaBOliC::Core::ODRInterpixels(UserInput::ApplicationCenter::AC_LINEL,

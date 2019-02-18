@@ -14,32 +14,35 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
                          TEOInput::ApplicationCenter::AC_PIXEL,
-                         TEOInput::CountingMode::CM_PIXEL);
+                         TEOInput::CountingMode::CM_PIXEL,
+                         false,
+                         false);
 
     TEOInput inputProbe(imageInput.imagePath,
                          QPBOSolverType::Probe,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
                         TEOInput::ApplicationCenter::AC_PIXEL,
-                        TEOInput::CountingMode::CM_PIXEL);
+                        TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputImprove(imageInput.imagePath,
                          QPBOSolverType::Improve,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
                           TEOInput::ApplicationCenter::AC_PIXEL,
-                          TEOInput::CountingMode::CM_PIXEL);
+                          TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputImproveProbe(imageInput.imagePath,
                                QPBOSolverType::ImproveProbe,
                                TEOInput::OptimizationMode::OM_OriginalBoundary,
                                am,
                                TEOInput::ApplicationCenter::AC_PIXEL,
-                               TEOInput::CountingMode::CM_PIXEL);
+                               TEOInput::CountingMode::CM_PIXEL,false,false);
 
     SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
                                         TEOInput::CountingMode::CM_PIXEL,
                                         3,
+                                        ODRModel::LevelDefinition::LD_CloserFromCenter,
                                         ODRModel::NeighborhoodType::FourNeighborhood);
 
     Test::TestEnergyOptimization teoSimple(inputSimple,odrPixels,outputFolder,exportRegions);
