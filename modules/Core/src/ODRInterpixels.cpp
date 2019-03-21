@@ -361,8 +361,14 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pix
             }
         }
 
+        DigitalSet tempBoundary(appTemp.domain());
+        if(this->nt==NeighborhoodType::FourNeighborhood)
+            DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate>(tempBoundary,appTemp);
+        else
+            DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate>(tempBoundary,appTemp);
+
         DigitalSet tempEroded(appTemp.domain());
-        DIPaCUS::Morphology::erode(tempEroded,appTemp,StructuringElement(erosionSE,1));
+        DIPaCUS::SetOperations::setDifference(tempEroded,appTemp,tempBoundary);
 
         appTemp = tempEroded;
         --countLevels;
