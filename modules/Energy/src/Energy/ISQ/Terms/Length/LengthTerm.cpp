@@ -85,12 +85,12 @@ void LengthTerm::setCoeffs(OptimizationData& od,
                 od.localUTM(1,xi) += 1;
                 od.localUTM(1,yi) += 1;
 
-                maxCtrb = od.localUTM(1,yi)>maxCtrb?od.localUTM(1,yi):maxCtrb;
-                addCoeff(od.localPTM,maxCtrb,xi,yi,-2);
+                maxCtrb = fabs(od.localUTM(1,yi))>maxCtrb?fabs(od.localUTM(1,yi)):maxCtrb;
+                addCoeff(od.localPTM,maxCtrb,xi,yi,2);
             }
 
-            maxCtrb = od.localUTM(1,xi)>maxCtrb?od.localUTM(1,xi):maxCtrb;
-            maxCtrb = od.localUTM(0,xi)>maxCtrb?od.localUTM(0,xi):maxCtrb;
+            maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;
+            maxCtrb = fabs(od.localUTM(0,xi))>maxCtrb?fabs(od.localUTM(0,xi)):maxCtrb;
         }
 
     }
