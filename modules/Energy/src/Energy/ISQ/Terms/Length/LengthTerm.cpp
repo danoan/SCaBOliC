@@ -96,7 +96,7 @@ void LengthTerm::setCoeffs(OptimizationData& od,
                 od.localUTM(0,xi) += 1;
                 od.localUTM(0,yi) += 1;
 
-                maxCtrb = fabs(od.localUTM(1,yi))>maxCtrb?fabs(od.localUTM(1,yi)):maxCtrb;
+                maxCtrb = fabs(od.localUTM(0,yi))>maxCtrb?fabs(od.localUTM(0,yi)):maxCtrb;
 
                 IndexPair ip = od.makePair(xi,yi);
                 od.localTable[ ip ] = BooleanConfigurations(-2,0,0,0);
