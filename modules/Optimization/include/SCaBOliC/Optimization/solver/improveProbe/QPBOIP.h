@@ -7,8 +7,8 @@ namespace SCaBOliC
 {
     namespace Optimization
     {
-        template<typename Unary, typename Graph, typename Labels>
-        class QPBOIP: public IQPBOSolver<Unary,Graph,Labels>
+        template<typename Unary, typename Graph, typename EnergyTable,  typename Labels>
+        class QPBOIP: public IQPBOSolver<Unary,Graph,EnergyTable,Labels>
         {
         public:
             typedef typename Unary::Scalar Scalar;
@@ -20,6 +20,7 @@ namespace SCaBOliC
                              int& unlabelled,
                              const Unary& U,
                              const Graph& G,
+                             const EnergyTable& ET,
                              Labels& labels,
                              int max_num_iterations);
 

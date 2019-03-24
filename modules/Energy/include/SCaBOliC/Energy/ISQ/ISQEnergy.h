@@ -35,19 +35,21 @@ namespace SCaBOliC
         private:
             typedef SCaBOliC::Energy::OptimizationData::UnaryTermsMatrix UnaryTermsMatrix;
             typedef SCaBOliC::Energy::OptimizationData::PairwiseTermsMatrix PairwiseTermsMatrix;
+            typedef SCaBOliC::Energy::OptimizationData::EnergyTable EnergyTable;
             typedef Solution::LabelsVector LabelsVector;
 
         public:
             ISQEnergy(const InputData& id,
                       const SpaceHandleInterface* spaceHandle);
 
-            template< template <typename,typename,typename> class TQPBOSolver>
+            template< template <typename,typename,typename,typename> class TQPBOSolver>
             void solve(Solution& solution)
             {
                 assert(solution.isValid());
 
                 typedef TQPBOSolver<UnaryTermsMatrix,
                 PairwiseTermsMatrix,
+                EnergyTable,
                 LabelsVector> MyQPBOSolver;
 
                 MyQPBOSolver (solution.energyValue,
@@ -55,6 +57,7 @@ namespace SCaBOliC
                              solution.unlabeled,
                              energy.od.localUTM,
                              energy.od.localPTM,
+                             energy.od.localTable,
                              solution.labelsVector,
                              10);
             }

@@ -46,6 +46,17 @@ void LengthTerm::configureOptimizationData(const InputData& id,
     od.localUTM*=this->weight*this->normalizationFactor;
     od.localPTM*=this->weight*this->normalizationFactor;
 
+    for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+    {
+        const IndexPair& ip = it->first;
+        BooleanConfigurations& bc = it->second;
+
+        bc.e00 *= this->weight*this->normalizationFactor;
+        bc.e01 *= this->weight*this->normalizationFactor;
+        bc.e10 *= this->weight*this->normalizationFactor;
+        bc.e11 *= this->weight*this->normalizationFactor;
+    }
+
 }
 
 
@@ -82,11 +93,13 @@ void LengthTerm::setCoeffs(OptimizationData& od,
             {
                 yi = vm.pim.at(neigh);
 
-                od.localUTM(1,xi) += 1;
-                od.localUTM(1,yi) += 1;
+                od.localUTM(0,xi) += 1;
+                od.localUTM(0,yi) += 1;
 
                 maxCtrb = fabs(od.localUTM(1,yi))>maxCtrb?fabs(od.localUTM(1,yi)):maxCtrb;
-                addCoeff(od.localPTM,maxCtrb,xi,yi,2);
+
+                IndexPair ip = od.makePair(xi,yi);
+                od.localTable[ ip ] = BooleanConfigurations(-2,0,0,0);
             }
 
             maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;

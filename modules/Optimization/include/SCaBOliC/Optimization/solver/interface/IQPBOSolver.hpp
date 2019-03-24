@@ -3,9 +3,10 @@
 using namespace SCaBOliC::Optimization;
 
 
-template<typename Unary, typename Graph, typename Labels>
-IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
-                                             const Graph &G)
+template<typename Unary, typename Graph, typename EnergyTable, typename Labels>
+IQPBOSolver<Unary,Graph,EnergyTable,Labels>::IQPBOSolver(const Unary &U,
+                                             const Graph &G,
+                                             const EnergyTable& ET)
 {
     numVariables = U.cols();
     mapping = (int*) malloc(sizeof(int)*this->numVariables);
@@ -19,6 +20,9 @@ IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
         qpbo->AddUnaryTerm( i,U(0,i),U(1,i) );
     }
 
+    typedef std::pair<Index,Index> IndexPair;
+    std::map<IndexPair,double> tempMap;
+
     for( int j=0;j<numVariables;++j )
     {
         for (typename Graph::InnerIterator it(
@@ -27,21 +31,33 @@ IQPBOSolver<Unary,Graph,Labels>::IQPBOSolver(const Unary &U,
             Index i1 = it.row();
             Index i2 = it.col();
 
-            qpbo->AddPairwiseTerm(
-                    static_cast<typename QPBO<Scalar>::NodeId>(i1),
-                    static_cast<typename QPBO<Scalar>::NodeId>(i2),
-                    0,
-                    0,
-                    0,
-                    it.value()
-            );
+            IndexPair ip(i1,i2);
+            tempMap[ip] = it.value();
         }
     }
 
+    for(auto it=ET.begin();it!=ET.end();++it)
+    {
+        const IndexPair& ip = it->first;
+        double e11 = it->second.e11;
+        if( tempMap.find(ip)!=tempMap.end()) e11 += tempMap[ip];
+
+        qpbo->AddPairwiseTerm(
+                static_cast<typename QPBO<Scalar>::NodeId>(ip.first),
+                static_cast<typename QPBO<Scalar>::NodeId>(ip.second),
+                it->second.e00,
+                it->second.e01,
+                it->second.e10,
+                e11
+        );
+    }
+
+
+
 }
 
-template<typename Unary, typename Graph, typename Labels>
-void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,
+template<typename Unary, typename Graph, typename EnergyTable, typename Labels>
+void IQPBOSolver<Unary,Graph,EnergyTable,Labels>::fillLabels(int& unlabelled,
                                                  Labels& labels)
 {
     Labels originalLabels = labels;
@@ -66,8 +82,8 @@ void IQPBOSolver<Unary,Graph,Labels>::fillLabels(int& unlabelled,
 
 }
 
-template<typename Unary, typename Graph, typename Labels>
-void IQPBOSolver<Unary,Graph,Labels>::invertLabels(Labels& labels)
+template<typename Unary, typename Graph,typename EnergyTable,  typename Labels>
+void IQPBOSolver<Unary,Graph,EnergyTable,Labels>::invertLabels(Labels& labels)
 {
     //Invert Solution
     for (int i = 0; i < labels.rows(); ++i)
@@ -76,9 +92,10 @@ void IQPBOSolver<Unary,Graph,Labels>::invertLabels(Labels& labels)
     }
 }
 
-template<typename Unary, typename Graph, typename Labels>
-double IQPBOSolver<Unary,Graph,Labels>::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
+template<typename Unary, typename Graph,typename EnergyTable,  typename Labels>
+double IQPBOSolver<Unary,Graph,EnergyTable,Labels>::computeEnergy(const Unary &U, const Graph &G, const Labels &labels)
 {
+    //It is not computing coefficients from OptimizationData::EnergyTable
     double energyValue=0;
     double EU=0;
     double EP=0;

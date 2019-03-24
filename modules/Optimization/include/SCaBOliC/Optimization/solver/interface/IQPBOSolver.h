@@ -12,7 +12,7 @@ namespace SCaBOliC
 {
     namespace Optimization
     {
-        template<typename Unary,typename Graph,typename Labels>
+        template<typename Unary,typename Graph,typename EnergyTable,typename Labels>
         class IQPBOSolver
         {
         public:
@@ -21,7 +21,8 @@ namespace SCaBOliC
 
         public:
             IQPBOSolver(const Unary& U,
-                       const Graph& G);
+                       const Graph& G,
+                        const EnergyTable& ET);
 
             virtual void solve(Scalar& energyValue,
                                int& unlabelled,

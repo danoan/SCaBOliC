@@ -14,6 +14,9 @@ namespace SCaBOliC
         public:
             typedef unsigned int Index;
 
+            typedef OptimizationData::IndexPair IndexPair;
+            typedef OptimizationData::BooleanConfigurations BooleanConfigurations;
+
         public:
             EnergyTerm& operator+(const EnergyTerm& other);
 

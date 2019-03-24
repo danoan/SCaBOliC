@@ -7,6 +7,19 @@ EnergyTerm& EnergyTerm::operator+(const EnergyTerm& other)
     od.localUTM += other.od.localUTM;
     od.localPTM += other.od.localPTM;
 
+    for(auto it=other.od.localTable.begin();it!=other.od.localTable.end();++it)
+    {
+        const IndexPair& ip = it->first;
+        const BooleanConfigurations& bc = it->second;
+        if(od.localTable.find(ip)!=od.localTable.end())
+        {
+            od.localTable[ip] = od.localTable[ip] + bc;
+        }else
+        {
+            od.localTable[ip] = bc;
+        }
+    }
+
     return *this;
 }
 
