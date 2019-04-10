@@ -313,6 +313,11 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(cons
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
+        case ApplicationMode::AM_AroundBoundary:{
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius,ld,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
         default:
         {
             throw std::runtime_error("Invalid ODR configuration");
@@ -342,10 +347,15 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pix
     {
         countLevels = this->levels*2+1;
         skip = optRegionInApplication?0:this->levels+1;
-    }else
+    }else if(appMode==ApplicationMode::AM_InternRange)
     {
         countLevels = this->levels+1;
         skip= appMode==ApplicationMode::AM_OptimizationBoundary || optRegionInApplication?0:this->levels+1;
+    }
+    else if(appMode==ApplicationMode::AM_AroundBoundary)
+    {
+        countLevels = this->levels*2+1;
+        skip = optRegionInApplication?0:this->levels+1;
     }
 
     do{
