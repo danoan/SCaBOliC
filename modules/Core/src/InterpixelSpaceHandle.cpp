@@ -107,7 +107,7 @@ int InterpixelSpaceHandle::pixelArea(unsigned int radius) const
     DGtal::Z2i::Domain domain( center-radiusPoint, center+radiusPoint);
 
     DigitalSet tempBall(domain);
-    DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,center,2*radius);
+    tempBall = DIPaCUS::Shapes::ball(1.0,center[0],center[1],2*radius);
 
     int area = 0;
     for(auto it=tempBall.begin();it!=tempBall.end();++it)

@@ -23,11 +23,12 @@ namespace SCaBOliC
             typedef ODRModel::NeighborhoodType NeighborhoodType;
             typedef ODRModel::LevelDefinition LevelDefinition;
 
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate> FourNeighborhood;
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate> EightNeighborhood;
+            typedef DIPaCUS::Neighborhood::FourNeighborhoodPredicate FourNeighborhood;
+            typedef DIPaCUS::Neighborhood::EightNeighborhoodPredicate EightNeighborhood;
 
         private:
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
+            typedef DGtal::Z2i::Curve Curve;
 
         private:
             static DigitalSet doubleDS(const DigitalSet& ds);

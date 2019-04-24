@@ -10,7 +10,7 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
 
 
     DigitalSet tempBall( Domain( 2*Point(-R,-R), 2*Point(R,R) ) );
-    DIPaCUS::Misc::DigitalBallIntersection::digitalBall(tempBall,Point(0,0),R);
+    tempBall=DIPaCUS::Shapes::ball(1.0,0,0,R);
 
     W = 0;
 //    C = (PI * R * R) / 2.0;

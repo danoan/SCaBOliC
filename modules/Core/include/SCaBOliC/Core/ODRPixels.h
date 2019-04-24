@@ -33,8 +33,8 @@ namespace SCaBOliC
             typedef ODRModel::LevelDefinition  LevelDefinition;
 
 
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate> FourNeighborhood;
-            typedef DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate> EightNeighborhood;
+            typedef DIPaCUS::Neighborhood::FourNeighborhoodPredicate FourNeighborhood;
+            typedef DIPaCUS::Neighborhood::EightNeighborhoodPredicate EightNeighborhood;
 
         private:
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;

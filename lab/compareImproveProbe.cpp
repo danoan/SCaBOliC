@@ -77,7 +77,7 @@ Energy::ISQEnergy createEnergyObject(Core::ODRModel **odr,Core::ODRInterface **o
     return energy;
 }
 
-template < template<typename Unary,typename Graph,typename Labels> class TSolver>
+template < template<typename Unary,typename Graph,typename EnergyTable,typename Labels> class TSolver>
 void solveAndSave(Energy::ISQEnergy& energy,
                   Energy::Solution& solution,
                   Core::ODRModel *odr,

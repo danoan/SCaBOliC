@@ -361,8 +361,8 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pix
     do{
         if(countLevels!=skip)
         {
-            DIPaCUS::Misc::ComputeBoundaryCurve::Curve boundaryCurve;
-            DIPaCUS::Misc::ComputeBoundaryCurve(appTemp,boundaryCurve);
+            Curve boundaryCurve;
+            DIPaCUS::Misc::computeBoundaryCurve(boundaryCurve,appTemp);
             for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
             {
                 Point pt = it->preCell().coordinates;
@@ -373,9 +373,9 @@ ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pix
 
         DigitalSet tempBoundary(appTemp.domain());
         if(this->nt==NeighborhoodType::FourNeighborhood)
-            DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::EightNeighborhoodPredicate>(tempBoundary,appTemp);
+            DIPaCUS::Misc::digitalBoundary<EightNeighborhood>(tempBoundary,appTemp);
         else
-            DIPaCUS::Misc::DigitalBoundary<DIPaCUS::Neighborhood::FourNeighborhoodPredicate>(tempBoundary,appTemp);
+            DIPaCUS::Misc::digitalBoundary<FourNeighborhood>(tempBoundary,appTemp);
 
         DigitalSet tempEroded(appTemp.domain());
         DIPaCUS::SetOperations::setDifference(tempEroded,appTemp,tempBoundary);

@@ -6,7 +6,7 @@ template<typename TNeighborhood>
 ODRUtils::DigitalSet ODRUtils::omOriginalBoundary(const DigitalSet& original)
 {
     DigitalSet originalBoundary(original.domain());
-    TNeighborhood en(originalBoundary,original);
+    DIPaCUS::Misc::digitalBoundary<TNeighborhood>(originalBoundary,original);
 
     return originalBoundary;
 }
@@ -22,7 +22,7 @@ ODRUtils::DigitalSet ODRUtils::omDilationBoundary(const DigitalSet& original,
                                 original,
                                 StructuringElement(st,1));
 
-    TNeighborhood en(dilatedBoundary,dilated);
+    DIPaCUS::Misc::digitalBoundary<TNeighborhood>(dilatedBoundary,dilated);
 
     return dilatedBoundary;
 }

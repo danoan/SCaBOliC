@@ -15,7 +15,7 @@ void ISQEvaluation::prepare(Curve& boundary, KSpace& KImage, double& h, const Di
     DIPaCUS::Representation::digitalSetToImage(img,ds);
 
 
-    DIPaCUS::Misc::ComputeBoundaryCurve(img,boundary,100);
+    DIPaCUS::Misc::computeBoundaryCurve(boundary,img,100);
 }
 
 double ISQEvaluation::mdca(const Curve& boundary, const KSpace& KImage, const double h)
