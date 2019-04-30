@@ -24,8 +24,6 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);
 
-
-
     for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it) {
         temp.clear();
         DBI(temp, *it);
