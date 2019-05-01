@@ -5,6 +5,7 @@
 #include <DIPaCUS/derivates/Misc.h>
 #include <SCaBOliC/Core/ODRInterface.h>
 
+#include "SCaBOliC/Core/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -18,8 +19,8 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::Point Point;
                 typedef DGtal::Z2i::Domain Domain;
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
-                
-                typedef Core::ODRInterface ODRInterface;
+
+                typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
                 typedef unsigned int Index;
 
@@ -36,7 +37,7 @@ namespace SCaBOliC
                 CoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
                                      int radius,
-                                     ODRInterface& odrFactory);
+                                     const SpaceHandleInterface* spaceHandle);
 
                 inline const CoefficientData &retrieve(const Point &p) const { return _cm.at(p); }
 

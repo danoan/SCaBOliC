@@ -2,14 +2,15 @@
 
 using namespace SCaBOliC::Optimization;
 
-template<typename Unary,typename Graph, typename Labels>
-QPBOIP<Unary,Graph,Labels>::QPBOIP(Scalar &energyValue,
+template<typename Unary,typename Graph, typename EnergyTable, typename Labels>
+QPBOIP<Unary,Graph,EnergyTable,Labels>::QPBOIP(Scalar &energyValue,
                                    Scalar &energyValuePriorInversion,
                                    int &unlabelled,
                                    const Unary &U,
                                    const Graph &G,
+                                   const EnergyTable& ET,
                                    Labels &labels,
-                                   int max_num_iterations):IQPBOSolver<Unary,Graph,Labels>(U,G)
+                                   int max_num_iterations):IQPBOSolver<Unary,Graph,EnergyTable,Labels>(U,G,ET)
 {
     this->solve(energyValue,unlabelled,U,G,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
@@ -19,8 +20,8 @@ QPBOIP<Unary,Graph,Labels>::QPBOIP(Scalar &energyValue,
     energyValue = this->computeEnergy(U,G,labels);
 }
 
-template<typename Unary,typename Graph, typename Labels>
-void QPBOIP<Unary,Graph,Labels>::solve(Scalar & energyValue,
+template<typename Unary,typename Graph, typename EnergyTable, typename Labels>
+void QPBOIP<Unary,Graph,EnergyTable,Labels>::solve(Scalar & energyValue,
                                        int & unlabelled,
                                        const Unary &U,
                                        const Graph &G,

@@ -1,4 +1,4 @@
-#include "Experiment/ExpQPBOSolverType.h"
+#include "SCaBOliC/lab/Experiment/ExpQPBOSolverType.h"
 
 
 using namespace SCaBOliC::Lab::Experiment;
@@ -14,33 +14,41 @@ ExpQPBOSolverType::ExpQPBOSolverType(ImageInput imageInput,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
                          TEOInput::ApplicationCenter::AC_PIXEL,
-                         TEOInput::CountingMode::CM_PIXEL);
+                         TEOInput::CountingMode::CM_PIXEL,
+                         false,
+                         false);
 
     TEOInput inputProbe(imageInput.imagePath,
                          QPBOSolverType::Probe,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
                         TEOInput::ApplicationCenter::AC_PIXEL,
-                        TEOInput::CountingMode::CM_PIXEL);
+                        TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputImprove(imageInput.imagePath,
                          QPBOSolverType::Improve,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                          am,
                           TEOInput::ApplicationCenter::AC_PIXEL,
-                          TEOInput::CountingMode::CM_PIXEL);
+                          TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputImproveProbe(imageInput.imagePath,
                                QPBOSolverType::ImproveProbe,
                                TEOInput::OptimizationMode::OM_OriginalBoundary,
                                am,
                                TEOInput::ApplicationCenter::AC_PIXEL,
-                               TEOInput::CountingMode::CM_PIXEL);
+                               TEOInput::CountingMode::CM_PIXEL,false,false);
 
-    Test::TestEnergyOptimization teoSimple(inputSimple,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoProbe(inputProbe,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImprove(inputImprove,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,outputFolder,exportRegions);
+    SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
+                                        TEOInput::CountingMode::CM_PIXEL,
+                                        3,
+                                        ODRModel::LevelDefinition::LD_CloserFromCenter,
+                                        ODRModel::NeighborhoodType::FourNeighborhood);
+
+    Test::TestEnergyOptimization teoSimple(inputSimple,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoProbe(inputProbe,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImprove(inputImprove,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoImproveProbe(inputImproveProbe,odrPixels,outputFolder,exportRegions);
 
 
 
@@ -81,9 +89,10 @@ void ExpQPBOSolverType::printTable(const std::vector<TableEntry>& entries,
            << fnD(colLength,current.data->solution.energyValue) << "\t"
            << fnD(colLength,current.data->solution.energyValuePriorInversion) << "\t";
 
+        using namespace SCaBOliC::Utils;
         double IIValue,MDCAValue;
-        SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
-        SCaBOliC::Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
+        ISQEvaluation(IIValue,current.data->solution.outputDS,ISQEvaluation::II);
+        ISQEvaluation(MDCAValue,current.data->solution.outputDS,ISQEvaluation::MDCA);
 
         os << fnD(colLength,IIValue) << "\t"
            << fnD(colLength,MDCAValue) << "\t"

@@ -1,5 +1,5 @@
 
-#include "Experiment/ExpApplicationType.h"
+#include "SCaBOliC/lab/Experiment/ExpApplicationType.h"
 
 using namespace SCaBOliC::Lab::Experiment;
 
@@ -14,25 +14,31 @@ ExpApplicationType::ExpApplicationType(ImageInput imageInput,
                          TEOInput::OptimizationMode::OM_OriginalBoundary,
                         TEOInput::ApplicationMode::AM_AroundBoundary,
                          TEOInput::ApplicationCenter::AC_PIXEL,
-                         TEOInput::CountingMode::CM_PIXEL);
+                         TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputOriginal(imageInput.imagePath,
                            solverType,
                            TEOInput::OptimizationMode::OM_OriginalBoundary,
                            TEOInput::ApplicationMode::AM_OptimizationBoundary,
                            TEOInput::ApplicationCenter::AC_PIXEL,
-                           TEOInput::CountingMode::CM_PIXEL);
+                           TEOInput::CountingMode::CM_PIXEL,false,false);
 
     TEOInput inputInternRange(imageInput.imagePath,
                               solverType,
                               TEOInput::OptimizationMode::OM_OriginalBoundary,
                               TEOInput::ApplicationMode::AM_InternRange,
                               TEOInput::ApplicationCenter::AC_PIXEL,
-                              TEOInput::CountingMode::CM_PIXEL);
+                              TEOInput::CountingMode::CM_PIXEL,false,false);
 
-    Test::TestEnergyOptimization teoAround(inputAround,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoOriginal(inputOriginal,outputFolder,exportRegions);
-    Test::TestEnergyOptimization teoIntRange(inputInternRange,outputFolder,exportRegions);
+    SCaBOliC::Core::ODRPixels odrPixels(TEOInput::ApplicationCenter::AC_PIXEL,
+                                        TEOInput::CountingMode::CM_PIXEL,
+                                        3,
+                                        ODRModel::LevelDefinition::LD_CloserFromCenter,
+                                        ODRModel::FourNeighborhood);
+
+    Test::TestEnergyOptimization teoAround(inputAround,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoOriginal(inputOriginal,odrPixels,outputFolder,exportRegions);
+    Test::TestEnergyOptimization teoIntRange(inputInternRange,odrPixels,outputFolder,exportRegions);
 
 
 
@@ -72,9 +78,10 @@ void ExpApplicationType::printTable(const std::vector<TableEntry>& entries,
         os << fnD(colLength,current.data->solution.energyValue) << "\t";
         os << fnD(colLength,current.data->solution.energyValuePriorInversion) << "\t";
 
+        using namespace SCaBOliC::Utils;
         double IIValue,MDCAValue;
-        SCaBOliC::Utils::IIISQEvaluation(IIValue,current.data->solution.outputDS);
-        SCaBOliC::Utils::MDCAISQEvaluation(MDCAValue,current.data->solution.outputDS);
+        ISQEvaluation(IIValue,current.data->solution.outputDS,ISQEvaluation::II);
+        ISQEvaluation(MDCAValue,current.data->solution.outputDS,ISQEvaluation::MDCA);
 
         os << fnD(colLength,IIValue) << "\t"
            << fnD(colLength,MDCAValue) << "\t"

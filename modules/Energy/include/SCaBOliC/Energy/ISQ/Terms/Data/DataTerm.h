@@ -7,21 +7,22 @@
 #include "SCaBOliC/Energy/ISQ/InputData.h"
 #include "SCaBOliC/Energy/ISQ/VariableMap.h"
 
+#include "SCaBOliC/Core/SpaceHandleInterface.h"
+
 namespace SCaBOliC
 {
     namespace Energy
     {
         namespace ISQ
         {
-            template<typename TODRFactory>
-            class DataTerm:public EnergyTerm<TODRFactory>
+            class DataTerm:public EnergyTerm
             {
 
             public:
                 typedef double Scalar;
                 typedef unsigned int Index;
 
-                typedef EnergyTerm<TODRFactory> Self;
+                typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
                 typedef InputData::cvColorImage cvColorImage;
                 typedef InputData::cvColorType cvColorType;
@@ -29,7 +30,9 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::Point Point;
 
             public:
-                DataTerm(const InputData& id);
+                DataTerm(const InputData& id,
+                         const SpaceHandleInterface* spaceHandle);
+
                 int numVars(){return vm.numVars;}
 
             private:
@@ -58,12 +61,11 @@ namespace SCaBOliC
             private:
                 const cvColorImage& image;
                 const Point& translation;
+                const SpaceHandleInterface* spaceHandle;
             };
 
         }
     }
 }
-
-#include "DataTerm.hpp"
 
 #endif //QBMISCURVATUREREGULARIZATION_DATATERM_H

@@ -6,11 +6,11 @@
 #include <SCaBOliC/Utils/Utils.h>
 #include <SCaBOliC/Core/ODRPixels.h>
 
-#include <Test/TestEnergyOptimization.h>
+#include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
 
-#include <model/ImageInput.h>
-#include <model/OptOutput.h>
-#include <model/UserInput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
+#include <SCaBOliC/lab/model/UserInput.h>
 
 namespace SCaBOliC
 {
@@ -32,6 +32,8 @@ namespace SCaBOliC
                 typedef TEOInput::OptimizationMode OptimizationMode;
                 typedef TEOInput::CountingMode CountingMode;
 
+                typedef enum{PixelSpace,InterpixelSpace} ApplicationSpace;
+
             private:
                 struct TableEntry
                 {
@@ -47,6 +49,7 @@ namespace SCaBOliC
                                  int maxIterations, 
                                  std::ostream& os,
                                  const std::string& outputFolder,
+                                 ApplicationSpace as,
                                  bool exportRegions=false);
 
             private:

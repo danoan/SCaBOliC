@@ -29,12 +29,16 @@ namespace SCaBOliC
                           OptimizationMode om,
                           ApplicationMode am,
                           ApplicationCenter ac,
-                          CountingMode cm):imagePath(imagePath),
-                                           solverType(solverType),
-                                           om(om),
-                                           am(am),
-                                           ac(ac),
-                                           cm(cm){}
+                          CountingMode cm,
+                          bool optRegionInApplication,
+                          bool invertFrgBkg):imagePath(imagePath),
+                                                       solverType(solverType),
+                                                       om(om),
+                                                       am(am),
+                                                       ac(ac),
+                                                       cm(cm),
+                                                       optRegionInApplication(optRegionInApplication),
+                                                       invertFrgBkg(invertFrgBkg){}
 
             public:
                 std::string imagePath;
@@ -44,6 +48,9 @@ namespace SCaBOliC
                 ApplicationMode am;
                 ApplicationCenter ac;
                 CountingMode cm;
+
+                bool invertFrgBkg;
+                bool optRegionInApplication;
             };
         }
     }

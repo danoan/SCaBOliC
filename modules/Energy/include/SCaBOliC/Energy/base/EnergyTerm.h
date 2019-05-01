@@ -9,14 +9,13 @@ namespace SCaBOliC
 {
     namespace Energy
     {
-        template<typename TODRFactory>
         class EnergyTerm
         {
         public:
             typedef unsigned int Index;
-            typedef TODRFactory ODRFactory;
 
-            typedef EnergyTerm<TODRFactory> Self;
+            typedef OptimizationData::IndexPair IndexPair;
+            typedef OptimizationData::BooleanConfigurations BooleanConfigurations;
 
         public:
             EnergyTerm& operator+(const EnergyTerm& other);
@@ -26,7 +25,6 @@ namespace SCaBOliC
 
         public:
             OptimizationData od;
-            ODRFactory odrFactory;
 
             double constantFactor;
             double constantTerm;
@@ -36,7 +34,5 @@ namespace SCaBOliC
         };
     }
 }
-
-#include "EnergyTerm.hpp"
 
 #endif //SCABOLIC_IENERGYTERM_H

@@ -1,10 +1,10 @@
 #include <string>
-#include <Experiment/ExpFlowFromImage.h>
-#include <Utils/Generator.h>
-#include <Experiment/ExpInput.h>
-#include "Experiment/ExpApplicationType.h"
-#include "Experiment/ExpQPBOSolverType.h"
-#include "Experiment/ExpInput.h"
+#include <SCaBOliC/lab/Experiment/ExpFlowFromImage.h>
+#include <SCaBOliC/lab/Utils/Generator.h>
+#include <SCaBOliC/lab/Experiment/ExpInput.h>
+#include "SCaBOliC/lab/Experiment/ExpApplicationType.h"
+#include "SCaBOliC/lab/Experiment/ExpQPBOSolverType.h"
+#include "SCaBOliC/lab/Experiment/ExpInput.h"
 
 namespace SCaBOliC
 {
@@ -59,13 +59,15 @@ void expSolver(const ExpInput::ExpInputSet& inputSet)
     ofs.close();
 }
 
-void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation& pv)
+void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation& pv, ExpFlowFromImage::ApplicationSpace as)
 {
     typedef ExpFlowFromImage::QPBOSolverType QPBOSolverType;
     typedef ExpFlowFromImage::ApplicationMode ApplicationMode;
     typedef ExpFlowFromImage::OptimizationMode OptimizationMode;
 
-    const std::string expOutputFolder = SCaBOliC::Lab::outputFolder + "/expFlow";
+    std::string sufix = as==ExpFlowFromImage::PixelSpace?"Pixel":"Interpixel";
+
+    const std::string expOutputFolder = SCaBOliC::Lab::outputFolder + "/expFlow-" + sufix;
     boost::filesystem::create_directories(expOutputFolder);
 
     std::ofstream ofs(expOutputFolder + "/exp-flow.txt",std::ios_base::out);
@@ -81,6 +83,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
                              6,
                              ofs,
                              expOutputFolder,
+                             as,
                              true);
         }
         pv.restart();
@@ -126,7 +129,8 @@ int main()
 
     expApplication(inputSet);
     expSolver(inputSet);
-    expFlow(inputSet,pv);
+    expFlow(inputSet,pv,ExpFlowFromImage::PixelSpace);
+    expFlow(inputSet,pv,ExpFlowFromImage::InterpixelSpace);
 
     return 0;
 }

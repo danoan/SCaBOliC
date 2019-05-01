@@ -3,7 +3,7 @@
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DGtal/shapes/Shapes.h>
-#include <model/ImageInput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
 #include <DIPaCUS/base/Representation.h>
 #include <DGtal/io/writers/GenericWriter.h>
 

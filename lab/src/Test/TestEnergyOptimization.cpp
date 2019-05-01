@@ -1,4 +1,4 @@
-#include "Test/TestEnergyOptimization.h"
+#include "SCaBOliC/lab/Test/TestEnergyOptimization.h"
 
 using namespace SCaBOliC::Lab::Test;
 
@@ -12,8 +12,9 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
 }
 
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
+                                               const ODRInterface& odrFactory,
                                                const std::string& outputFolder,
-                                               bool exportRegions)
+                                               bool exportRegions):odrFactory(odrFactory)
 {
     unsigned int radius = 3;
     DigitalSet ds = deriveDS(testInput);
@@ -26,7 +27,11 @@ TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
     ISQInputData input = prepareInput(ds,radius,testInput,cvImg);
 
     DigitalSet mBoundary(input.optimizationRegions.domain);
-    Solution solution = solve(input,mBoundary,testInput.solverType,testInput.om,testInput.am,testInput.cm);
+    Solution solution = solve(input,
+                              testInput,
+                              mBoundary,
+                              testInput.solverType);
+
     std::string prefix = resolvePrefix(testInput);
 
     data = new TestOutput(input,solution,prefix);
@@ -39,14 +44,12 @@ TestEnergyOptimization::ISQInputData TestEnergyOptimization::prepareInput(const 
                                                                           const TestInput& testInput,
                                                                           const cv::Mat& cvImg)
 {
-    ISQEnergy::ODRFactory odrFactory;
-
-    ODRModel odr = odrFactory.createODR(testInput.om,
-                                        testInput.am,
-                                        testInput.ac,
-                                        testInput.cm,
-                                        estimatingBallRadius,
-                                        ds);
+    ODRModel odr = this->odrFactory.createODR(testInput.om,
+                                              testInput.am,
+                                              estimatingBallRadius,
+                                              ds,
+                                              testInput.optRegionInApplication,
+                                              testInput.invertFrgBkg);
 
     return ISQInputData (odr,
                          cvImg,
@@ -75,17 +78,15 @@ void TestEnergyOptimization::modifiedBoundary(DigitalSet& modifiedBoundary,
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
+                                                               const TestInput& testInput,
                                                                DigitalSet& mb,
-                                                               QPBOSolverType solverType,
-                                                               TestInput::OptimizationMode om,
-                                                               TestInput::ApplicationMode am,
-                                                               TestInput::CountingMode cm)
+                                                               QPBOSolverType solverType)
 {
     Solution solution(input.optimizationRegions.domain);
-    ISQEnergy energy(input);
+    ISQEnergy energy(input,this->odrFactory.handle());
     solution.init(energy.numVars());
 
-    if(om==TestInput::OptimizationMode::OM_OriginalBoundary)
+    if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
         solution.labelsVector.setZero();
     else
         solution.labelsVector.setOnes();
@@ -99,8 +100,6 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     else if(solverType==QPBOSolverType::ImproveProbe)
         energy.solve<Optimization::QPBOIP>(solution);
 
-    ISQEnergy::ODRFactory odrFactory;
-
     Solution::LabelsVector& labelsVector = solution.labelsVector;
 
 
@@ -112,7 +111,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
 
         const DigitalSet& optRegion = energyInput.optimizationRegions.optRegion;
 
-        if(am==TestInput::ApplicationMode::AM_InverseAroundBoundary)
+        if(testInput.invertFrgBkg)
         {
             //Invert Solution
             for (int i = 0; i < labelsVector.rows(); ++i)
@@ -128,12 +127,11 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
         }
 
 
-        odrFactory.solutionSet(tempOutDS,
-                               initialDS,
-                               input.optimizationRegions,
-                               labelsVector.data(),
-                               energy.vm().pim,
-                               cm);
+        this->odrFactory.handle()->solutionSet(tempOutDS,
+                                              initialDS,
+                                              input.optimizationRegions,
+                                              labelsVector.data(),
+                                              energy.vm().pim);
 
         solution.outputDS.clear();
         solution.outputDS.insert(tempOutDS.begin(),tempOutDS.end());
@@ -158,14 +156,20 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
 {
     std::string solverTypeStr = Lab::Utils::resolveQPBOSolverTypeName(testInput.solverType);
 
-    if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
-        solverTypeStr+="-AM_Around";
-    else if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
-        solverTypeStr+="-AM_OptRegion";
+    if(testInput.invertFrgBkg)
+        solverTypeStr+="-AM_Inverse";
+    else
+        solverTypeStr+="-AM_";
+
+    if(testInput.am==TestInput::ApplicationMode::AM_OptimizationBoundary)
+        solverTypeStr+="OptRegion";
+    else if(testInput.am==TestInput::ApplicationMode::AM_AroundBoundary)
+        solverTypeStr+="Around";
     else if(testInput.am==TestInput::ApplicationMode::AM_InternRange)
-        solverTypeStr+="-AM_InternRange";
-    else if(testInput.am==TestInput::ApplicationMode::AM_ExternRange)
-        solverTypeStr+="-AM_ExternRange";
+        solverTypeStr+="InternRange";
+    else if(testInput.am==TestInput::ApplicationMode::AM_AroundIntern)
+        solverTypeStr+="AroundIntern";
+
 
 
 
@@ -173,6 +177,11 @@ std::string TestEnergyOptimization::resolvePrefix(const TestInput &testInput)
         solverTypeStr+="-OM_Dilation";
     else if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
         solverTypeStr+="-OM_Original";
+
+    if(testInput.optRegionInApplication)
+        solverTypeStr+="-Opt";
+    else
+        solverTypeStr+="-NoOpt";
 
 
     return solverTypeStr;

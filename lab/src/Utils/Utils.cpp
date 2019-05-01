@@ -1,4 +1,4 @@
-#include "Utils/Utils.h"
+#include "SCaBOliC/lab/Utils/Utils.h"
 
 namespace SCaBOliC
 {
@@ -30,12 +30,10 @@ namespace SCaBOliC
                         return "Optimizaiton Boundary";
                     case(ApplicationMode::AM_AroundBoundary):
                         return "Around Boundary";
-                    case(ApplicationMode::AM_InverseAroundBoundary):
-                        return "Inverse Around Boundary";
                     case(ApplicationMode::AM_InternRange):
                         return "Intern Range";
-                    case(ApplicationMode::AM_ExternRange):
-                        return "Extern Range";
+                    case(ApplicationMode::AM_AroundIntern):
+                        return "Around Intern";
                 }
             }
 

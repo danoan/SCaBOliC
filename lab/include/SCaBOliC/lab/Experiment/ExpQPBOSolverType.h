@@ -1,15 +1,14 @@
-#ifndef SCABOLIC_LAB_EXPERIMENT_EXPAPPLICATIONTYPE_H
-#define SCABOLIC_LAB_EXPERIMENT_EXPAPPLICATIONTYPE_H
+#ifndef SCABOLIC_LAB_EXPERIMENT_EXPQPBOSOLVERTYPE_H
+#define SCABOLIC_LAB_EXPERIMENT_EXPQPBOSOLVERTYPE_H
 
 #include "SCaBOliC/Utils/Utils.h"
-#include "SCaBOliC/Energy/base/EnergyTerm.h"
+#include "SCaBOliC/Core/ODRPixels.h"
 
-#include "Utils/Utils.h"
-#include <Test/TestEnergyOptimization.h>
+#include <SCaBOliC/lab/model/UserInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
 
-#include <model/UserInput.h>
-#include <model/OptOutput.h>
-#include <model/ImageInput.h>
+#include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
 
 namespace SCaBOliC
 {
@@ -17,7 +16,7 @@ namespace SCaBOliC
     {
         namespace Experiment
         {
-            class ExpApplicationType
+            class ExpQPBOSolverType
             {
             public:
                 typedef Lab::Model::ImageInput ImageInput;
@@ -25,6 +24,7 @@ namespace SCaBOliC
                 typedef Lab::Model::OptOutput TEOOutput;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
+                typedef TEOInput::ApplicationMode ApplicationMode;
 
             private:
                 struct TableEntry
@@ -35,11 +35,11 @@ namespace SCaBOliC
                 };
 
             public:
-                ExpApplicationType(ImageInput imageInput,
-                                   QPBOSolverType solverType,
-                                   std::ostream& os,
-                                   std::string outputFolder,
-                                   bool exportRegions=false);
+                ExpQPBOSolverType(ImageInput imageInput,
+                                  ApplicationMode am,
+                                  std::ostream& os,
+                                  std::string outputFolder,
+                                  bool exportRegions=false);
 
             private:
                 void printTable(const std::vector<TableEntry>& entries,
@@ -49,4 +49,4 @@ namespace SCaBOliC
     }
 }
 
-#endif //SCABOLIC_LAB_EXPERIMENT_EXPAPPLICATIONTYPE_H
+#endif //SCABOLIC_LAB_EXPERIMENT_EXPQPBOSOLVERTYPE_H

@@ -3,8 +3,8 @@
 
 #include <SCaBOliC/Optimization/solver/QPBOSolverType.h>
 #include <SCaBOliC/Core/ODRPixels.h>
-#include <Utils/Generator.h>
-#include <model/UserInput.h>
+#include <SCaBOliC/lab/Utils/Generator.h>
+#include <SCaBOliC/lab/model/UserInput.h>
 
 namespace SCaBOliC
 {
@@ -12,7 +12,7 @@ namespace SCaBOliC
     {
         namespace Test
         {
-            class TestInstances
+            class PixelTestInstances
             {
             public:
                 typedef SCaBOliC::Optimization::QPBOSolverType QPBOSolverType;
@@ -20,25 +20,28 @@ namespace SCaBOliC
                 typedef SCaBOliC::Core::ODRModel::ApplicationMode ApplicationMode;
                 typedef SCaBOliC::Core::ODRModel::ApplicationCenter ApplicationCenter;
                 typedef SCaBOliC::Core::ODRModel::CountingMode CountingMode;
+                typedef SCaBOliC::Core::ODRModel::LevelDefinition LevelDefinition;
 
                 typedef SCaBOliC::Lab::Model::UserInput UserInput;
 
             private:
-                typedef SCaBOliC::Lab::Utils::Generator<3> MyGenerator;
+                typedef SCaBOliC::Lab::Utils::Generator<5> MyGenerator;
             public:
-                TestInstances(std::string imagePath);
+                PixelTestInstances(std::string imagePath);
 
                 UserInput next(bool& success);
 
             private:
-                static MyGenerator::Index indexLims[3];
+                static MyGenerator::Index indexLims[5];
                 static QPBOSolverType vectorOfSolver[4];
                 static OptimizationMode vectorOfOM[2];
-                static ApplicationMode vectorOfAM[4];
+                static ApplicationMode vectorOfAM[2];
+                static bool vectorOfOptInAppl[2];
+                static bool vectorOfInversion[2];
 
                 MyGenerator gen;
                 std::string imagePath;
-                MyGenerator::Index currSequence[3];
+                MyGenerator::Index currSequence[6];
             };
         }
     }

@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-utils)
 
-find_package(DGtal REQUIRED)
+add_library(scabolic-utils SHARED
+        src/Utils.cpp)
 
-add_library(scabolic-utils INTERFACE)
-
-target_include_directories(scabolic-utils INTERFACE
+target_include_directories(scabolic-utils PRIVATE
         include
+        ${DIPACUS_INCLUDE_DIRS}
+        ${GEOC_INCLUDE_DIRS}
         ${DGTAL_INCLUDE_DIRS}
-        ${DIPACUS_INCLUDE_DIRS})
+        ${OpenCV_INCLUDE_DIRS})
 
 install(TARGETS scabolic-utils
         DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

@@ -7,16 +7,13 @@
 #include <DIPaCUS/components/Transform.h>
 #include <DIPaCUS/derivates/Misc.h>
 
-#include <geoc/adapter/base/GeneralAdapter.h>
-#include <geoc/adapter/GridCurve.h>
-#include <geoc/estimator/standard/Curvature.h>
-#include <geoc/estimator/standard/Tangent.h>
+#include <geoc/api/gridCurve/Curvature.hpp>
+#include <geoc/api/gridCurve/Length.hpp>
 
 namespace SCaBOliC
 {
     namespace Utils
     {
-        template<class TCurvatureAdaptor,class TTangentAdaptor>
         class ISQEvaluation
         {
         public:
@@ -24,19 +21,23 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Curve Curve;
             typedef DGtal::Z2i::DigitalSet DigitalSet;
 
+            typedef enum{MDCA,II} EstimationAlgorithm;
+
         private:
             typedef DIPaCUS::Representation::Image2D Image2D;
-            typedef TCurvatureAdaptor MyCurvatureAdaptor;
 
+        private:
+            static void prepare(Curve& boundary, KSpace& KImage, double& h, const DigitalSet& originalDS);
 
-            typedef GEOC::Adapter::GeneralAdapter::ProjectedLength<TTangentAdaptor > MyProjectedLength;
+            static double mdca(const Curve& boundary, const KSpace& KImage, const double h);
+            static double ii(const Curve& boundary, const KSpace& KImage, const double h);
+
 
         public:
-            ISQEvaluation(double& value,const DigitalSet& originalDS);
+            ISQEvaluation(double& value,const DigitalSet& originalDS, const EstimationAlgorithm ea);
         };
     }
 }
 
-#include "Utils.hpp"
 
 #endif //SCABOLIC_UTILS_H

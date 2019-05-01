@@ -17,11 +17,11 @@
 #include <SCaBOliC/Energy/model/Solution.h>
 #include <SCaBOliC/Energy/ISQ/ISQEnergy.h>
 
-#include <Utils/MockDistribution.h>
+#include <SCaBOliC/lab/Utils/MockDistribution.h>
 
-#include <Utils/Utils.h>
-#include <model/UserInput.h>
-#include <model/OptOutput.h>
+#include <SCaBOliC/lab/Utils/Utils.h>
+#include <SCaBOliC/lab/model/UserInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
 
 
 namespace SCaBOliC
@@ -38,14 +38,14 @@ namespace SCaBOliC
                 typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
 
-                typedef Core::ODRInterface ODRInterface;
                 typedef Core::ODRModel ODRModel;
+                typedef Core::ODRInterface ODRInterface;
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
                 typedef Energy::ISQ::InputData ISQInputData;
                 typedef Energy::Solution Solution;
-                typedef Energy::ISQEnergy<SCaBOliC::Core::ODRInterpixels> ISQEnergy;
+                typedef Energy::ISQEnergy ISQEnergy;
 
                 typedef Lab::Model::UserInput TestInput;
                 typedef Lab::Model::OptOutput TestOutput;
@@ -56,6 +56,7 @@ namespace SCaBOliC
                 ~TestEnergyOptimization(){delete data;}
 
                 TestEnergyOptimization(const TestInput& testInput,
+                                       const ODRInterface& odrFactory,
                                        const std::string& outputFolder,
                                        bool exportRegions=false);
             private:
@@ -66,11 +67,9 @@ namespace SCaBOliC
                                           const cv::Mat& cvImg);
 
                 Solution solve(const ISQInputData& input,
+                               const TestInput& testInput,
                                DigitalSet& mb,
-                               QPBOSolverType solverType,
-                               TestInput::OptimizationMode om,
-                               TestInput::ApplicationMode am,
-                               TestInput::CountingMode);
+                               QPBOSolverType solverType);
 
                 std::string resolvePrefix(const TestInput& testInput);
 
@@ -84,6 +83,8 @@ namespace SCaBOliC
             private:
                 Lab::Utils::MockDistribution frgDistribution;
                 Lab::Utils::MockDistribution bkgDistribution;
+
+                const ODRInterface& odrFactory;
 
             public:
                 TestOutput* data;

@@ -4,6 +4,7 @@
 #include <DGtal/helpers/StdDefs.h>
 #include "DIPaCUS/derivates/Misc.h"
 #include "ODRModel.h"
+#include "SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -19,27 +20,17 @@ namespace SCaBOliC
             typedef ODRModel::ApplicationMode ApplicationMode;
             typedef ODRModel::ApplicationCenter ApplicationCenter;
             typedef ODRModel::CountingMode CountingMode;
+            typedef ODRModel::LevelDefinition  LevelDefinition;
 
         public:
             virtual ODRModel createODR(OptimizationMode optMode,
                                        ApplicationMode appMode,
-                                       ApplicationCenter appCenter,
-                                       CountingMode cntMode,
                                        unsigned int radius,
-                                       const DigitalSet& original) const=0;
+                                       const DigitalSet& original,
+                                       bool optRegionInApplication=false,
+                                       bool invertFrgBkg=false) const=0;
 
-            virtual void solutionSet(DigitalSet& outputDS,
-                                     const DigitalSet& initialDS,
-                                     const ODRModel& odrModel,
-                                     const int* varValue,
-                                     const std::unordered_map<Point, unsigned int>& pointToVar,
-                                     CountingMode cm) const = 0;
-
-            virtual DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
-                                                                                const DigitalSet& toIntersect) const = 0;
-
-            virtual Point* neighBegin() const=0;
-            virtual Point* neighEnd() const=0;
+            virtual const SpaceHandleInterface* handle() const=0;
 
         };
     }

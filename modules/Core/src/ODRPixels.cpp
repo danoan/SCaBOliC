@@ -1,4 +1,3 @@
-#include <DGtal/io/boards/Board2D.h>
 #include "SCaBOliC/Core/ODRPixels.h"
 
 using namespace SCaBOliC::Core;
@@ -7,131 +6,27 @@ ODRPixels::StructuringElement::Type ODRPixels::dilationSE = StructuringElement::
 ODRPixels::StructuringElement::Type ODRPixels::erosionSE = StructuringElement::RECT;
 
 
-ODRPixels::Point ODRPixels::neighborhoodFilter[5] = {ODRPixels::Point(0,1),
-                                                     ODRPixels::Point(1,0),
-                                                     ODRPixels::Point(-1,0),
-                                                     ODRPixels::Point(0,-1),
-                                                     ODRPixels::Point(0,0)};
-
-ODRPixels::DigitalSet ODRPixels::omOriginalBoundary(const DigitalSet& original)
+ODRPixels::ODRPixels(const ApplicationCenter appCenter,
+                     const CountingMode cntMode,
+                     const int levels,
+                     LevelDefinition ld,
+                     const NeighborhoodType nt):ac(appCenter),
+                                               cm(cntMode),
+                                               levels(levels),
+                                               nt(nt),
+                                               ld(ld)
 {
-    DigitalSet originalBoundary(original.domain());
-    EightNeighborhood en(originalBoundary,original);
-
-    return originalBoundary;
-}
-
-ODRPixels::DigitalSet ODRPixels::omDilationBoundary(const DigitalSet& original)
-{
-    DigitalSet dilated(original.domain());
-    DigitalSet dilatedBoundary(original.domain());
-
-    DIPaCUS::Morphology::dilate(dilated,
-                                original,
-                                StructuringElement(dilationSE,1));
-
-    EightNeighborhood en(dilatedBoundary,dilated);
-
-    return dilatedBoundary;
-}
-
-ODRPixels::DigitalSet ODRPixels::omFullDomain(const Domain& originalDomain)
-{
-    DigitalSet fullDomain(originalDomain);
-    fullDomain.insert(originalDomain.begin(),originalDomain.end());
-
-    return fullDomain;
-}
-
-ODRPixels::DigitalSet ODRPixels::amOriginalBoundary(const DigitalSet& original)
-{
-    return omOriginalBoundary(original);
-}
-
-
-ODRPixels::DigitalSet ODRPixels::amFullDomain(const Domain& applicationDomain)
-{
-    return omFullDomain(applicationDomain);
-}
-
-ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DigitalSet& original,
-                                                  const DigitalSet& optRegion,
-                                                  int length)
-{
-    DigitalSet internRegion = amInternRange(original,optRegion,length);
-    DigitalSet externRegion = amExternRange(original,optRegion,length);
-
-    for(auto it=optRegion.begin();it!=optRegion.end();++it)
-    {
-        internRegion.erase(*it);
-        externRegion.erase(*it);
-    }
-
-    DigitalSet aroundBoundary(original.domain());
-
-    aroundBoundary.insert(externRegion.begin(),externRegion.end());
-    aroundBoundary.insert(internRegion.begin(),internRegion.end());
-
-    return aroundBoundary;
-}
-
-ODRPixels::DigitalSet ODRPixels::amInternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
-{
-    DigitalSet originalPlusOptRegion(original.domain());
-    originalPlusOptRegion.insert(original.begin(),original.end());
-    originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
-
-    DigitalSet eroded (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::erode(eroded,originalPlusOptRegion,StructuringElement(erosionSE,length+1));
-
-    DigitalSet internRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::setDifference(internRegion,originalPlusOptRegion,eroded);
-
-    return internRegion;
-}
-
-ODRPixels::DigitalSet ODRPixels::amExternRange(const DigitalSet& original, const DigitalSet& optRegion, int length)
-{
-    DigitalSet originalPlusOptRegion(original.domain());
-    originalPlusOptRegion.insert(original.begin(),original.end());
-    originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
-
-    DigitalSet dilated (originalPlusOptRegion.domain());
-    DIPaCUS::Morphology::dilate(dilated,originalPlusOptRegion,StructuringElement(dilationSE,length));
-
-    DigitalSet externRegion(originalPlusOptRegion.domain());
-    DIPaCUS::SetOperations::setDifference(externRegion,dilated,originalPlusOptRegion);
-
-    return externRegion;
-}
-
-ODRPixels::DigitalSet ODRPixels::isolatedPoints(const DigitalSet& original, const DigitalSet& optRegion)
-{
-    DigitalSet dilated(original.domain());
-
-    DIPaCUS::Morphology::dilate(dilated,
-                                original,
-                                StructuringElement(dilationSE,1));
-
-    DigitalSet tempDS(original.domain());
-    DigitalSet isolatedDS(original.domain());
-    DIPaCUS::SetOperations::setDifference(tempDS,dilated,original);
-    DIPaCUS::SetOperations::setDifference(isolatedDS,tempDS,optRegion);
-
-    return isolatedDS;
-
+    assert(appCenter==ApplicationCenter::AC_PIXEL);
+    assert(cntMode==CountingMode::CM_PIXEL);
 }
 
 ODRModel ODRPixels::createODR (OptimizationMode optMode,
                                ApplicationMode appMode,
-                               ApplicationCenter appCenter,
-                               CountingMode cntMode,
                                unsigned int radius,
-                               const DigitalSet& original) const
+                               const DigitalSet& original,
+                               bool optRegionInApplication,
+                               bool invertFrgBkg) const
 {
-    assert(appCenter==ApplicationCenter::AC_PIXEL);
-    assert(cntMode==CountingMode::CM_PIXEL);
-
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));
 
@@ -145,39 +40,16 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
             break;
         }
         case OptimizationMode::OM_DilationBoundary: {
-            optRegion = omDilationBoundary(original);
+            optRegion = omDilationBoundary(original,dilationSE);
             break;
         }
     }
 
 
-    switch (appMode) {
-        case ApplicationMode::AM_OptimizationBoundary: {
-            DigitalSet temp = amOriginalBoundary(optRegion);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,radius);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InverseAroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,radius);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,1);
-            applicationRegion.insert(temp.begin(),temp.end());
-            //for(auto it=optRegion.begin();it!=optRegion.end();++it) applicationRegion.erase(*it);
-            break;
-        }
-        case ApplicationMode::AM_ExternRange:{
-            DigitalSet temp = amExternRange(original,optRegion,radius);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
+    if(optMode==OptimizationMode::OM_DilationBoundary)
+    {
+        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
+        optRegion+=isolatedDS;
     }
 
     DigitalSet extendedOriginal(original.domain());
@@ -187,11 +59,6 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
 
-    if(optMode==OptimizationMode::OM_DilationBoundary)
-    {
-        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
-        trustFRG+=isolatedDS;
-    }
 
     DigitalSet trustBKG(domain);
     DigitalSet tempp(domain);
@@ -201,13 +68,47 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     trustBKG.assignFromComplement(tempp);
 
-
-    if(appMode==ApplicationMode::AM_InverseAroundBoundary)
+    if(invertFrgBkg)
     {
         DigitalSet swap = trustFRG;
         trustFRG = trustBKG;
         trustBKG = swap;
     }
+
+
+    switch (appMode) {
+        case ApplicationMode::AM_OptimizationBoundary: {
+            applicationRegion.insert(optRegion.begin(),optRegion.end());
+            break;
+        }
+        case ApplicationMode::AM_AroundBoundary: {
+            DigitalSet temp = amAroundBoundary(original,optRegion,radius,this->ld,dilationSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_InternRange:{
+            DigitalSet temp = amInternRange(original,optRegion,radius,this->ld,erosionSE,this->levels);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        case ApplicationMode::AM_ExternRange:
+        {
+            DigitalSet temp = amExternRange(original,optRegion,radius,this->ld,dilationSE,1);
+            applicationRegion.insert(temp.begin(),temp.end());
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error("Invalid ODR configuration");
+        }
+    }
+
+    if(optRegionInApplication)
+    {
+        applicationRegion.insert(optRegion.begin(),optRegion.end());
+    }
+
+
 
     return ODRModel(domain,
                     original,
@@ -218,8 +119,3 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
                     [](Point p){ return p; });
 }
 
-DIPaCUS::Misc::DigitalBallIntersection ODRPixels::intersectionComputer(unsigned int radius,
-                                                                       const DigitalSet &toIntersect) const
-{
-    return DIPaCUS::Misc::DigitalBallIntersection(radius,toIntersect);
-}

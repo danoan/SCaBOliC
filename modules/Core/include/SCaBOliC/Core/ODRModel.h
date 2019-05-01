@@ -23,24 +23,35 @@ namespace SCaBOliC
 
             enum OptimizationMode{
                 OM_OriginalBoundary,
-                OM_DilationBoundary};
+                OM_DilationBoundary
+            };
 
             enum ApplicationMode{
                 AM_OptimizationBoundary,
                 AM_AroundBoundary,
-                AM_InverseAroundBoundary,
                 AM_InternRange,
-                AM_ExternRange};
+                AM_ExternRange,
+                AM_AroundIntern};
+
+            enum LevelDefinition{
+                LD_CloserFromCenter,
+                LD_FartherFromCenter
+            };
+
 
             enum ApplicationCenter{
                 AC_POINTEL,
-                AC_PIXEL
+                AC_PIXEL,
+                AC_LINEL
             };
 
             enum CountingMode{
                 CM_POINTEL,
                 CM_PIXEL
             };
+
+            enum SpaceMode{Pixel,Interpixel};
+            enum NeighborhoodType{FourNeighborhood,EightNeighborhood};
 
 
         public:

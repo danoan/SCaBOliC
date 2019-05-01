@@ -13,13 +13,13 @@
 #include <SCaBOliC/Core/ODRInterface.h>
 #include <SCaBOliC/Core/ODRModel.h>
 
-#include <Utils/MockDistribution.h>
+#include <SCaBOliC/lab/Utils/MockDistribution.h>
 
-#include <model/UserInput.h>
-#include <model/ImageInput.h>
-#include <model/OptOutput.h>
+#include <SCaBOliC/lab/model/UserInput.h>
+#include <SCaBOliC/lab/model/ImageInput.h>
+#include <SCaBOliC/lab/model/OptOutput.h>
 
-#include <Test/TestEnergyOptimization.h>
+#include <SCaBOliC/lab/Test/TestEnergyOptimization.h>
 
 namespace SCaBOliC
 {
@@ -42,7 +42,7 @@ namespace SCaBOliC
 
                 typedef Optimization::QPBOSolverType QPBOSolverType;
 
-                typedef ISQEnergy<SCaBOliC::Core::ODRPixels> MyISQEnergy;
+                typedef SCaBOliC::Energy::ISQEnergy MyISQEnergy;
                 typedef SCaBOliC::Core::ODRModel ODRModel;
 
                 typedef Lab::Utils::MockDistribution MockDistribution;

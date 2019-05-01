@@ -3,8 +3,10 @@
 using namespace SCaBOliC::Energy;
 
 
-template<typename TODRFactory>
-ISQEnergy<TODRFactory>::ISQEnergy(const InputData& id):dt(id),sqt(id),lt(id)
+ISQEnergy::ISQEnergy(const InputData& id,
+                     const SpaceHandleInterface* spaceHandle):dt(id,spaceHandle),
+                                                              sqt(id,spaceHandle),
+                                                              lt(id,spaceHandle)
 {
     assert(dt.numVars()==sqt.numVars());
     this->nvars = dt.numVars();
@@ -13,8 +15,8 @@ ISQEnergy<TODRFactory>::ISQEnergy(const InputData& id):dt(id),sqt(id),lt(id)
     energy = energy+dt+lt;
 }
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::dataRealValue(const LabelsVector& labelsVector) const
+
+double ISQEnergy::dataRealValue(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,
                  dt,
@@ -22,8 +24,8 @@ double ISQEnergy<TODRFactory>::dataRealValue(const LabelsVector& labelsVector) c
                  dt.constantFactor/dt.normalizationFactor);
 }
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::dataEnergy(const LabelsVector& labelsVector) const
+
+double ISQEnergy::dataEnergy(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,
                  dt,
@@ -31,8 +33,8 @@ double ISQEnergy<TODRFactory>::dataEnergy(const LabelsVector& labelsVector) cons
                  1);
 };
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::dataEnergyNotNormalized(const LabelsVector& labelsVector) const
+
+double ISQEnergy::dataEnergyNotNormalized(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,
                  dt,
@@ -40,8 +42,8 @@ double ISQEnergy<TODRFactory>::dataEnergyNotNormalized(const LabelsVector& label
                  1.0/dt.normalizationFactor);
 }
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::sqRealValue(const LabelsVector& labelsVector) const
+
+double ISQEnergy::sqRealValue(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,
                  sqt,
@@ -49,8 +51,8 @@ double ISQEnergy<TODRFactory>::sqRealValue(const LabelsVector& labelsVector) con
                  sqt.constantFactor/dt.normalizationFactor);
 }
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::sqEnergy(const LabelsVector& labelsVector) const
+
+double ISQEnergy::sqEnergy(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,
                  sqt,
@@ -58,8 +60,8 @@ double ISQEnergy<TODRFactory>::sqEnergy(const LabelsVector& labelsVector) const
                  1);
 }
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::sqEnergyNotNormalized(const LabelsVector& labelsVector) const
+
+double ISQEnergy::sqEnergyNotNormalized(const LabelsVector& labelsVector) const
 {
     return value(labelsVector,
                  sqt,
@@ -67,11 +69,11 @@ double ISQEnergy<TODRFactory>::sqEnergyNotNormalized(const LabelsVector& labelsV
                  1.0/sqt.normalizationFactor);
 }
 
-template<typename TODRFactory>
-double ISQEnergy<TODRFactory>::value(const LabelsVector& labelsVector,
-                                     const MyEnergyTerm& et,
-                                     double sumFactor,
-                                     double multiplyFactor ) const
+
+double ISQEnergy::value(const LabelsVector& labelsVector,
+                        const MyEnergyTerm& et,
+                        double sumFactor,
+                        double multiplyFactor ) const
 {
     typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> DynMatrix;
     DynMatrix extendedVector;
