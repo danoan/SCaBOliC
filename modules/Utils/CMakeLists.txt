@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-utils)
 
-add_library(scabolic-utils SHARED
+set(LIBRARY_ACTION "STATIC")
+if(${CREATE_SHARED_LIBRARIES})
+    set(LIBRARY_ACTION "SHARED")
+endif()
+
+add_library(scabolic-utils ${LIBRARY_ACTION}
         src/Utils.cpp)
 
 target_include_directories(scabolic-utils PRIVATE
@@ -12,7 +17,8 @@ target_include_directories(scabolic-utils PRIVATE
         ${OpenCV_INCLUDE_DIRS})
 
 install(TARGETS scabolic-utils
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX})
