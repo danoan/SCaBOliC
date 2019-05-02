@@ -59,6 +59,15 @@ namespace SCaBOliC
                                        const ODRInterface& odrFactory,
                                        const std::string& outputFolder,
                                        bool exportRegions=false);
+
+                TestEnergyOptimization(const DigitalSet& ds,
+                                       const ISQInputData& input,
+                                       const ODRInterface& odrFactory,
+                                       const ODRModel& odrPixels,
+                                       const TestInput::OptimizationMode optMode,
+                                       const std::string& outputFolder,
+                                       const std::string& prefix,
+                                       bool exportRegions);
             private:
                 DigitalSet deriveDS(const TestInput& testInput);
                 ISQInputData prepareInput(const DigitalSet& ds,
@@ -68,6 +77,16 @@ namespace SCaBOliC
 
                 Solution solve(const ISQInputData& input,
                                const TestInput& testInput,
+                               DigitalSet& mb,
+                               QPBOSolverType solverType);
+
+                Solution solve(const ISQInputData& input,
+                               DigitalSet& mb,
+                               QPBOSolverType solverType);
+
+                Solution solve(const ISQInputData& input,
+                               TestInput::OptimizationMode optMode,
+                               bool invertFrgBkg,
                                DigitalSet& mb,
                                QPBOSolverType solverType);
 

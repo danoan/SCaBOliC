@@ -11,6 +11,27 @@ TestEnergyOptimization::DigitalSet TestEnergyOptimization::deriveDS(const TestIn
     return DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(ds);
 }
 
+TestEnergyOptimization::TestEnergyOptimization(const DigitalSet& ds,
+                                               const ISQInputData& input,
+                                               const ODRInterface& odrFactory,
+                                               const ODRModel& odrPixels,
+                                               const TestInput::OptimizationMode optMode,
+                                               const std::string& outputFolder,
+                                               const std::string& prefix,
+                                               bool exportRegions):odrFactory(odrFactory)
+{
+    DigitalSet mBoundary(input.optimizationRegions.domain);
+    Solution solution = solve(input,
+                              optMode,
+                              false,
+                              mBoundary,
+                              QPBOSolverType::Improve);
+
+    data = new TestOutput(input,solution,prefix);
+    if(exportRegions) Lab::Utils::display(input,solution,mBoundary,outputFolder,prefix);
+}
+
+
 TestEnergyOptimization::TestEnergyOptimization(const TestInput& testInput,
                                                const ODRInterface& odrFactory,
                                                const std::string& outputFolder,
@@ -78,7 +99,23 @@ void TestEnergyOptimization::modifiedBoundary(DigitalSet& modifiedBoundary,
 }
 
 TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
+                                                               DigitalSet& mb,
+                                                               QPBOSolverType solverType)
+{
+    return solve(input,TestInput::OptimizationMode::OM_DilationBoundary,false,mb,solverType);
+}
+
+TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
                                                                const TestInput& testInput,
+                                                               DigitalSet& mb,
+                                                               QPBOSolverType solverType)
+{
+    return solve(input,testInput.om,testInput.invertFrgBkg,mb,solverType);
+}
+
+TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputData& input,
+                                                               TestInput::OptimizationMode optMode,
+                                                               bool invertFrgBkg,
                                                                DigitalSet& mb,
                                                                QPBOSolverType solverType)
 {
@@ -86,7 +123,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
     ISQEnergy energy(input,this->odrFactory.handle());
     solution.init(energy.numVars());
 
-    if(testInput.om==TestInput::OptimizationMode::OM_OriginalBoundary)
+    if(optMode==TestInput::OptimizationMode::OM_OriginalBoundary)
         solution.labelsVector.setZero();
     else
         solution.labelsVector.setOnes();
@@ -111,7 +148,7 @@ TestEnergyOptimization::Solution TestEnergyOptimization::solve(const ISQInputDat
 
         const DigitalSet& optRegion = energyInput.optimizationRegions.optRegion;
 
-        if(testInput.invertFrgBkg)
+        if(invertFrgBkg)
         {
             //Invert Solution
             for (int i = 0; i < labelsVector.rows(); ++i)
