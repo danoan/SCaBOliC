@@ -25,49 +25,53 @@ namespace SCaBOliC
             typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
 
             template<typename TNeighborhood>
-            DigitalSet omOriginalBoundary(const DigitalSet& original);
+            DigitalSet omOriginalBoundary(const Domain& domain,const DigitalSet& original);
 
             template<typename TNeighborhood>
-            DigitalSet omDilationBoundary(const DigitalSet& original,
+            DigitalSet omDilationBoundary(const Domain& domain,
+                                          const DigitalSet& original,
                                           const StructuringElement::Type& st);
 
             template<typename TNeighborhood>
-            DigitalSet amOriginalBoundary(const DigitalSet& original);
+            DigitalSet amOriginalBoundary(const Domain& domain,
+                                          const DigitalSet& original);
 
 
-            DigitalSet omFullDomain(const Domain& originalDomain);
-
-            DigitalSet amFullDomain(const Domain& applicationDomain);
-
-            DigitalSet computeBackground(const DigitalSet& trustFRG,
+            DigitalSet computeBackground(const Domain& domain,
+                                         const DigitalSet& trustFRG,
                                          const DigitalSet& optRegion);
 
-            DigitalSet computeForeground(const DigitalSet& original,
+            DigitalSet computeForeground(const Domain& domain,
+                                         const DigitalSet& original,
                                          const DigitalSet& optRegion,
                                          OptimizationMode om);
 
-            DigitalSet amAroundBoundary(const DigitalSet& original,
+            DigitalSet amAroundBoundary(const Domain& domain,
+                                        const DigitalSet& original,
                                         const DigitalSet& optRegion,
                                         const unsigned int radius,
                                         const LevelDefinition ld,
                                         const StructuringElement::Type st,
                                         int length);
 
-            DigitalSet amInternRange(const DigitalSet& original,
+            DigitalSet amInternRange(const Domain& domain,
+                                     const DigitalSet& original,
                                      const DigitalSet& optRegion,
                                      const unsigned int radius,
                                      const LevelDefinition ld,
                                      const StructuringElement::Type st,
                                      int length);
 
-            DigitalSet amExternRange(const DigitalSet& original,
+            DigitalSet amExternRange(const Domain& domain,
+                                     const DigitalSet& original,
                                      const DigitalSet& optRegion,
                                      const unsigned int radius,
                                      const LevelDefinition ld,
                                      const StructuringElement::Type st,
                                      int length);
 
-            DigitalSet isolatedPoints(const DigitalSet& original,
+            DigitalSet isolatedPoints(const Domain& domain,
+                                      const DigitalSet& original,
                                       const DigitalSet& optRegion);
         }
     }

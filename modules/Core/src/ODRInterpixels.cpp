@@ -167,23 +167,23 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     switch (optMode) {
         case OptimizationMode::OM_OriginalBoundary: {
-            optRegion = omOriginalBoundary(original);
+            optRegion = omOriginalBoundary(domain,original);
             break;
         }
         case OptimizationMode::OM_DilationBoundary: {
-            optRegion = omDilationBoundary(original,dilationSE);
+            optRegion = omDilationBoundary(domain,original,dilationSE);
             break;
         }
     }
 
     if(optMode==OptimizationMode::OM_DilationBoundary)
     {
-        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
+        DigitalSet isolatedDS = isolatedPoints(domain,original,optRegion);
         optRegion+=isolatedDS;
     }
 
-    DigitalSet trustFRG = computeForeground(original,optRegion,optMode);
-    DigitalSet trustBKG = computeBackground(trustFRG,optRegion);
+    DigitalSet trustFRG = computeForeground(domain,original,optRegion,optMode);
+    DigitalSet trustBKG = computeBackground(domain,trustFRG,optRegion);
 
     if(invertFrgBkg)
     {
@@ -199,10 +199,10 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
     if(this->ac == ApplicationCenter::AC_LINEL)
     {
-        _applicationRegion = computeApplicationRegionForLinel(optRegion,original,trustFRG,radius,this->ld,appMode,optRegionInApplication);
+        _applicationRegion = computeApplicationRegionForLinel(domain,optRegion,original,trustFRG,radius,this->ld,appMode,optRegionInApplication);
     }else
     {
-        _applicationRegion = computeApplicationRegionForPixel(optRegion,original,radius,this->ld,appMode);
+        _applicationRegion = computeApplicationRegionForPixel(domain,optRegion,original,radius,this->ld,appMode);
     }
 
 
@@ -262,20 +262,21 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     );
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(const DigitalSet& optRegion,
+ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(const Domain& domain,
+                                                                            const DigitalSet& optRegion,
                                                                             const DigitalSet& original,
                                                                             unsigned int radius,
                                                                             const LevelDefinition ld,
                                                                             const ApplicationMode appMode) const
 {
-    DigitalSet applicationRegion(optRegion.domain());
+    DigitalSet applicationRegion(domain);
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary: {
             applicationRegion.insert(optRegion.begin(),optRegion.end());
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,radius,ld,dilationSE,this->levels);
+            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,ld,dilationSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
@@ -288,7 +289,8 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(cons
     return doubleDS(applicationRegion);
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(const DigitalSet& optRegion,
+ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(const Domain& domain,
+                                                                            const DigitalSet& optRegion,
                                                                             const DigitalSet& original,
                                                                             const DigitalSet& trustFRG,
                                                                             unsigned int radius,
@@ -296,7 +298,7 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(cons
                                                                             const ApplicationMode appMode,
                                                                             bool optRegionInApplication) const
 {
-    DigitalSet applicationRegion(optRegion.domain());
+    DigitalSet applicationRegion(domain);
     applicationRegion.insert(optRegion.begin(),optRegion.end());
     applicationRegion.insert(trustFRG.begin(),trustFRG.end());
     switch (appMode) {
@@ -304,17 +306,17 @@ ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(cons
             break;
         }
         case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,radius,ld,erosionSE,this->levels);
+            DigitalSet temp = amInternRange(domain,original,optRegion,radius,ld,erosionSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_AroundIntern:{
-            DigitalSet temp = amAroundBoundary(original,optRegion,radius,ld,dilationSE,this->levels);
+            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,ld,dilationSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_AroundBoundary:{
-            DigitalSet temp = amAroundBoundary(original,optRegion,radius,ld,dilationSE,this->levels);
+            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,ld,dilationSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }

@@ -3,19 +3,20 @@
 using namespace SCaBOliC::Core;
 
 template<typename TNeighborhood>
-ODRUtils::DigitalSet ODRUtils::omOriginalBoundary(const DigitalSet& original)
+ODRUtils::DigitalSet ODRUtils::omOriginalBoundary(const Domain& domain,const DigitalSet& original)
 {
-    DigitalSet originalBoundary(original.domain());
+    DigitalSet originalBoundary(domain);
     DIPaCUS::Misc::digitalBoundary<TNeighborhood>(originalBoundary,original);
 
     return originalBoundary;
 }
 
 template<typename TNeighborhood>
-ODRUtils::DigitalSet ODRUtils::omDilationBoundary(const DigitalSet& original,
+ODRUtils::DigitalSet ODRUtils::omDilationBoundary(const Domain& domain,
+                                                  const DigitalSet& original,
                                                   const StructuringElement::Type& st)
 {
-    DigitalSet dilated(original.domain());
+    DigitalSet dilated(domain);
     DigitalSet dilatedBoundary(original.domain());
 
     DIPaCUS::Morphology::dilate(dilated,
@@ -28,7 +29,8 @@ ODRUtils::DigitalSet ODRUtils::omDilationBoundary(const DigitalSet& original,
 }
 
 template<typename TNeighborhood>
-ODRUtils::DigitalSet ODRUtils::amOriginalBoundary(const DigitalSet& original)
+ODRUtils::DigitalSet ODRUtils::amOriginalBoundary(const Domain& domain,
+                                                  const DigitalSet& original)
 {
-    return omOriginalBoundary<TNeighborhood>(original);
+    return omOriginalBoundary<TNeighborhood>(domain,original);
 }

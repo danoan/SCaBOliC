@@ -161,7 +161,7 @@ DigitalSet solutionFromGreedy(const ODRInterface& odrFactory, const ISQInputData
         unsigned int index = energy.sqt.vm.pim[*it];
         double v1 = energy.sqt.od.localUTM.coeff(1,index);
 
-        if(v1>-0.3) greedyDS.insert(*it);
+        if(v1>-0.7) greedyDS.insert(*it);
 
     }
     return greedyDS;
@@ -177,7 +177,7 @@ int main()
     boost::filesystem::create_directories(outputFolder);
 
     DigitalSet square = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(
-            DIPaCUS::Shapes::triangle(1.0,0,0,squareSize) );
+            DIPaCUS::Shapes::flower(1.0,0,0,squareSize) );
 
 
 

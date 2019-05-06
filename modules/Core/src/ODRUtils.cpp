@@ -2,21 +2,8 @@
 
 using namespace SCaBOliC::Core;
 
-ODRUtils::DigitalSet ODRUtils::omFullDomain(const Domain& originalDomain)
-{
-    DigitalSet fullDomain(originalDomain);
-    fullDomain.insert(originalDomain.begin(),originalDomain.end());
-
-    return fullDomain;
-}
-
-
-ODRUtils::DigitalSet ODRUtils::amFullDomain(const Domain& applicationDomain)
-{
-    return omFullDomain(applicationDomain);
-}
-
-ODRUtils::DigitalSet ODRUtils::computeForeground(const DigitalSet& original,
+ODRUtils::DigitalSet ODRUtils::computeForeground(const Domain& domain,
+                                                 const DigitalSet& original,
                                                  const DigitalSet& optRegion,
                                                  OptimizationMode om)
 {
@@ -29,17 +16,18 @@ ODRUtils::DigitalSet ODRUtils::computeForeground(const DigitalSet& original,
 
     if(om==OptimizationMode::OM_DilationBoundary)
     {
-        DigitalSet isolatedDS = isolatedPoints(original, optRegion);
+        DigitalSet isolatedDS = isolatedPoints(domain,original, optRegion);
         trustFRG += isolatedDS;
     }
     return trustFRG;
 }
 
-ODRUtils::DigitalSet ODRUtils::computeBackground(const DigitalSet& trustFRG,
+ODRUtils::DigitalSet ODRUtils::computeBackground(const Domain& domain,
+                                                 const DigitalSet& trustFRG,
                                                  const DigitalSet& optRegion)
 {
-    DigitalSet trustBKG(trustFRG.domain());
-    DigitalSet tempp(trustFRG.domain());
+    DigitalSet trustBKG(domain);
+    DigitalSet tempp(domain);
 
     tempp += trustFRG;
     tempp += optRegion;
@@ -48,18 +36,19 @@ ODRUtils::DigitalSet ODRUtils::computeBackground(const DigitalSet& trustFRG,
     return trustBKG;
 }
 
-ODRUtils::DigitalSet ODRUtils::amAroundBoundary(const DigitalSet& original,
+ODRUtils::DigitalSet ODRUtils::amAroundBoundary(const Domain& domain,
+                                                const DigitalSet& original,
                                                 const DigitalSet& optRegion,
                                                 const unsigned int radius,
                                                 const LevelDefinition ld,
                                                 const StructuringElement::Type st,
                                                 int length)
 {
-    DigitalSet internRegion = amInternRange(original,optRegion,radius,ld,st,length);
-    DigitalSet externRegion = amExternRange(original,optRegion,radius,ld,st,length);
+    DigitalSet internRegion = amInternRange(domain,original,optRegion,radius,ld,st,length);
+    DigitalSet externRegion = amExternRange(domain,original,optRegion,radius,ld,st,length);
 
 
-    DigitalSet aroundBoundary(original.domain());
+    DigitalSet aroundBoundary(domain);
 
     aroundBoundary.insert(internRegion.begin(),internRegion.end());
     aroundBoundary.insert(externRegion.begin(),externRegion.end());
@@ -67,23 +56,24 @@ ODRUtils::DigitalSet ODRUtils::amAroundBoundary(const DigitalSet& original,
     return aroundBoundary;
 }
 
-ODRUtils::DigitalSet ODRUtils::amInternRange(const DigitalSet& original,
+ODRUtils::DigitalSet ODRUtils::amInternRange(const Domain& domain,
+                                             const DigitalSet& original,
                                              const DigitalSet& optRegion,
                                              const unsigned int radius,
                                              const LevelDefinition ld,
                                              const StructuringElement::Type st,
                                              int length)
 {
-    DigitalSet originalPlusOptRegion(original.domain());
+    DigitalSet originalPlusOptRegion(domain);
     originalPlusOptRegion.insert(original.begin(),original.end());
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
 
-    DigitalSet lengthEroded (originalPlusOptRegion.domain());
+    DigitalSet lengthEroded (domain);
 
 
 
-    DigitalSet internRegion(originalPlusOptRegion.domain());
+    DigitalSet internRegion(domain);
     if(ld==LevelDefinition::LD_CloserFromCenter)
     {
         DIPaCUS::Morphology::erode(lengthEroded,originalPlusOptRegion,StructuringElement(st,length+1));
@@ -92,7 +82,7 @@ ODRUtils::DigitalSet ODRUtils::amInternRange(const DigitalSet& original,
     {
         DIPaCUS::Morphology::erode(lengthEroded,originalPlusOptRegion,StructuringElement(st,(radius-length)+1));
 
-        DigitalSet radiusEroded (originalPlusOptRegion.domain());
+        DigitalSet radiusEroded (domain);
         DIPaCUS::Morphology::erode(radiusEroded,originalPlusOptRegion,StructuringElement(st,radius+1));
         DIPaCUS::SetOperations::setDifference(internRegion,lengthEroded,radiusEroded);
     }
@@ -106,21 +96,22 @@ ODRUtils::DigitalSet ODRUtils::amInternRange(const DigitalSet& original,
     return internRegion;
 }
 
-ODRUtils::DigitalSet ODRUtils::amExternRange(const DigitalSet& original,
+ODRUtils::DigitalSet ODRUtils::amExternRange(const Domain& domain,
+                                             const DigitalSet& original,
                                              const DigitalSet& optRegion,
                                              const unsigned int radius,
                                              const LevelDefinition ld,
                                              const StructuringElement::Type st,
                                              int length)
 {
-    DigitalSet originalPlusOptRegion(original.domain());
+    DigitalSet originalPlusOptRegion(domain);
     originalPlusOptRegion.insert(original.begin(),original.end());
     originalPlusOptRegion.insert(optRegion.begin(),optRegion.end());
 
-    DigitalSet lengthDilated (originalPlusOptRegion.domain());
+    DigitalSet lengthDilated (domain);
 
 
-    DigitalSet externRegion(originalPlusOptRegion.domain());
+    DigitalSet externRegion(domain);
     if(ld==LevelDefinition::LD_CloserFromCenter)
     {
         DIPaCUS::Morphology::dilate(lengthDilated,originalPlusOptRegion,StructuringElement(st,length));
@@ -128,7 +119,7 @@ ODRUtils::DigitalSet ODRUtils::amExternRange(const DigitalSet& original,
     }else if(ld==LevelDefinition::LD_FartherFromCenter)
     {
         DIPaCUS::Morphology::dilate(lengthDilated,originalPlusOptRegion,StructuringElement(st,(radius-length) ));
-        DigitalSet radiusDilated (originalPlusOptRegion.domain());
+        DigitalSet radiusDilated (domain);
         DIPaCUS::Morphology::dilate(radiusDilated,originalPlusOptRegion,StructuringElement(st,radius));
 
         DIPaCUS::SetOperations::setDifference(externRegion,radiusDilated,lengthDilated);
@@ -143,17 +134,18 @@ ODRUtils::DigitalSet ODRUtils::amExternRange(const DigitalSet& original,
     return externRegion;
 }
 
-ODRUtils::DigitalSet ODRUtils::isolatedPoints(const DigitalSet& original,
+ODRUtils::DigitalSet ODRUtils::isolatedPoints(const Domain& domain,
+                                              const DigitalSet& original,
                                               const DigitalSet& optRegion)
 {
-    DigitalSet dilated(original.domain());
+    DigitalSet dilated(domain);
 
     DIPaCUS::Morphology::dilate(dilated,
                                 original,
                                 StructuringElement(StructuringElement::RECT,1));
 
-    DigitalSet tempDS(original.domain());
-    DigitalSet isolatedDS(original.domain());
+    DigitalSet tempDS(domain);
+    DigitalSet isolatedDS(domain);
     DIPaCUS::SetOperations::setDifference(tempDS,dilated,original);
     DIPaCUS::SetOperations::setDifference(isolatedDS,tempDS,optRegion);
 

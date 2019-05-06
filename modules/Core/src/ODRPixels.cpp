@@ -36,11 +36,11 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     switch (optMode) {
         case OptimizationMode::OM_OriginalBoundary: {
-            optRegion = omOriginalBoundary(original);
+            optRegion = omOriginalBoundary(domain,original);
             break;
         }
         case OptimizationMode::OM_DilationBoundary: {
-            optRegion = omDilationBoundary(original,dilationSE);
+            optRegion = omDilationBoundary(domain,original,dilationSE);
             break;
         }
     }
@@ -48,11 +48,11 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     if(optMode==OptimizationMode::OM_DilationBoundary)
     {
-        DigitalSet isolatedDS = isolatedPoints(original,optRegion);
+        DigitalSet isolatedDS = isolatedPoints(domain,original,optRegion);
         optRegion+=isolatedDS;
     }
 
-    DigitalSet extendedOriginal(original.domain());
+    DigitalSet extendedOriginal(domain);
     extendedOriginal.insert(original.begin(),original.end());
     extendedOriginal.insert(optRegion.begin(),optRegion.end());
 
@@ -82,18 +82,18 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(original,optRegion,radius,this->ld,dilationSE,this->levels);
+            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,this->ld,dilationSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(original,optRegion,radius,this->ld,erosionSE,this->levels);
+            DigitalSet temp = amInternRange(domain,original,optRegion,radius,this->ld,erosionSE,this->levels);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_ExternRange:
         {
-            DigitalSet temp = amExternRange(original,optRegion,radius,this->ld,dilationSE,1);
+            DigitalSet temp = amExternRange(domain,original,optRegion,radius,this->ld,dilationSE,1);
             applicationRegion.insert(temp.begin(),temp.end());
             break;
         }
