@@ -62,7 +62,7 @@ namespace SCaBOliC
                                                      const OptModeVector& oms,
                                                      const AppModeVector& ams)
                     {
-                        MyGenerator::Index indexLims[3] = {sss.size()-1,oms.size(),ams.size()-1};
+                        MyGenerator::Index indexLims[3] = {sss.size()-1,oms.size()-1,ams.size()-1};
                         return MyGenerator(indexLims);
                     }
 

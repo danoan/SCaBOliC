@@ -2,22 +2,22 @@
 
 using namespace SCaBOliC::Lab::Test;
 
-PixelTestInstances::QPBOSolverType PixelTestInstances::vectorOfSolver[4] = {QPBOSolverType::ImproveProbe,
-                                                                  QPBOSolverType::Simple,
-                                                                  QPBOSolverType::Probe,
-                                                                  QPBOSolverType::Improve};
+PixelTestInstances::QPBOSolverType PixelTestInstances::vectorOfSolver[4] = {QPBOSolverType::Improve,
+                                                                            QPBOSolverType::ImproveProbe,
+                                                                            QPBOSolverType::Simple,
+                                                                            QPBOSolverType::Probe};
 
 PixelTestInstances::OptimizationMode PixelTestInstances::vectorOfOM[2] = {PixelTestInstances::OptimizationMode::OM_OriginalBoundary,
                                                                 PixelTestInstances::OptimizationMode::OM_DilationBoundary};
 
-PixelTestInstances::ApplicationMode PixelTestInstances::vectorOfAM[2] = {PixelTestInstances::ApplicationMode::AM_AroundBoundary,
-                                                                        PixelTestInstances::ApplicationMode::AM_OptimizationBoundary};
+PixelTestInstances::ApplicationMode PixelTestInstances::vectorOfAM[2] = {PixelTestInstances::ApplicationMode::AM_OptimizationBoundary,
+                                                                         PixelTestInstances::ApplicationMode::AM_AroundBoundary};
 
 
 bool PixelTestInstances::vectorOfOptInAppl[2] = {false, true};
 bool PixelTestInstances::vectorOfInversion[2] = {false, true};
 
-PixelTestInstances::MyGenerator::Index PixelTestInstances::indexLims[5] = {0,1,2,1,1};
+PixelTestInstances::MyGenerator::Index PixelTestInstances::indexLims[5] = {0,0,0,0,0};
 //int TestInstances::indexLims[3] = {1,1,1};
 
 PixelTestInstances::PixelTestInstances(std::string imagePath):imagePath(imagePath),
@@ -38,8 +38,8 @@ PixelTestInstances::UserInput PixelTestInstances::next(bool& success)
                           vectorOfAM[currSequence[2]],
                           PixelTestInstances::ApplicationCenter::AC_PIXEL,
                           PixelTestInstances::CountingMode::CM_PIXEL,
-                          vectorOfOptInAppl[currSequence[4]],
-                          vectorOfInversion[currSequence[5]]);
+                          vectorOfOptInAppl[currSequence[3]],
+                          vectorOfInversion[currSequence[4]]);
     } else
     {
         return UserInput (imagePath,

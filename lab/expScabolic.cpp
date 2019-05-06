@@ -80,7 +80,7 @@ void expFlow(const ExpInput::ExpInputSet& inputSet, ExpInput::ParameterVariation
             ExpFlowFromImage(*it,
                              pvi.solverType,
                              pvi.applicationMode,
-                             6,
+                             20,
                              ofs,
                              expOutputFolder,
                              as,
@@ -106,14 +106,15 @@ int main()
     ExpInput::OptModeVector omv;
     ExpInput::AppModeVector amv;
 
-    ssv.push_back(QPBOSolverType::Probe);
-    ssv.push_back(QPBOSolverType::ImproveProbe);
+//    ssv.push_back(QPBOSolverType::Probe);
+//    ssv.push_back(QPBOSolverType::ImproveProbe);
+    ssv.push_back(QPBOSolverType::Improve);
 
 //    omv.push_back(OptimizationMode::OM_OriginalBoundary);
-//    omv.push_back(OptimizationMode::OM_DilationBoundary);
+    omv.push_back(OptimizationMode::OM_DilationBoundary);
 
     amv.push_back(ApplicationMode::AM_OptimizationBoundary);
-    amv.push_back(ApplicationMode::AM_AroundBoundary);
+//    amv.push_back(ApplicationMode::AM_AroundBoundary);
 
 
     ExpInput::ParameterVariation pv(ssv,omv,amv);
@@ -121,16 +122,16 @@ int main()
     typedef ExpInput::DigitizerInput MyDigitizer;
 
     ExpInput::ExpInputSet inputSet;
-    inputSet.push_back( MyDigitizer::ball() );
-    inputSet.push_back( MyDigitizer::triangle() );
+//    inputSet.push_back( MyDigitizer::ball() );
+//    inputSet.push_back( MyDigitizer::triangle() );
     inputSet.push_back( MyDigitizer::square() );
-    inputSet.push_back( MyDigitizer::flag() );
+//    inputSet.push_back( MyDigitizer::flag() );
 
 
-    expApplication(inputSet);
-    expSolver(inputSet);
+//    expApplication(inputSet);
+//    expSolver(inputSet);
     expFlow(inputSet,pv,ExpFlowFromImage::PixelSpace);
-    expFlow(inputSet,pv,ExpFlowFromImage::InterpixelSpace);
+//    expFlow(inputSet,pv,ExpFlowFromImage::InterpixelSpace);
 
     return 0;
 }

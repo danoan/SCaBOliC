@@ -52,7 +52,7 @@ ExpFlowFromImage::ExpFlowFromImage(ImageInput imageInput,
                        om,
                        am,
                        ApplicationCenter::AC_PIXEL,
-                       CountingMode::CM_POINTEL,false,false);
+                       CountingMode::CM_PIXEL,false,false);
 
         Test::TestEnergyOptimization *teo;
 
@@ -107,10 +107,10 @@ void ExpFlowFromImage::printTable(const std::vector<TableEntry> &entries, std::o
 
         using namespace SCaBOliC::Utils;
         double IIValue,MDCAValue;
-        ISQEvaluation(IIValue,curr.solution.outputDS,ISQEvaluation::II);
+        //ISQEvaluation(IIValue,curr.solution.outputDS,ISQEvaluation::II);
         ISQEvaluation(MDCAValue,curr.solution.outputDS,ISQEvaluation::MDCA);
 
-        os << fnD(colLength,IIValue) << "\t"
+        os << 0/*fnD(colLength,IIValue)*/ << "\t"
            << fnD(colLength,MDCAValue) << "\t"
            << std::endl;
     }
