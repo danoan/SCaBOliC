@@ -83,6 +83,8 @@ void LengthTerm::setCoeffs(OptimizationData& od,
         for(auto itp=this->spaceHandle->neighBegin();itp!=this->spaceHandle->neighEnd();++itp)
         {
             neigh = *it + *itp;
+            if(!ODR.domain.isInside(neigh)) continue;
+            
             if(ODR.trustFRG(neigh))
             {
                 od.localUTM(1,xi) += 1;

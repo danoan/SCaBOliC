@@ -38,5 +38,5 @@ add_subdirectory(modules/Energy)
 add_subdirectory(modules/Utils)
 
 if(${BUILD_TESTS})
-    add_subdirectory(lab)
+    add_subdirectory(modules/lab/test/flow)
 endif()

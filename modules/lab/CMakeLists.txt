@@ -14,7 +14,7 @@ add_dependencies(test-scabolic scabolic-core scabolic-energy scabolic-optimizati
 target_compile_definitions(test-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(test-scabolic PRIVATE
-        include
+        lab/include
         ${CMAKE_SOURCE_DIR}/modules/Optimization/include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
         ${CMAKE_SOURCE_DIR}/modules/Energy/include
@@ -43,7 +43,7 @@ set_target_properties(test-scabolic PROPERTIES COMPILE_FLAGS -fext-numeric-liter
 
 
 add_executable(experiment-scabolic
-        expScabolic.cpp
+        lab/exp/flow/exp-flow.cpp
         src/Experiment/ExpQPBOSolverType.cpp
         src/Experiment/ExpApplicationType.cpp
         src/Experiment/ExpFlowFromImage.cpp
@@ -55,7 +55,7 @@ add_dependencies(experiment-scabolic scabolic-core scabolic-energy scabolic-opti
 target_compile_definitions(experiment-scabolic PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(experiment-scabolic PRIVATE
-        include
+        lab/include
         ${CMAKE_SOURCE_DIR}/modules/Optimization/include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
         ${CMAKE_SOURCE_DIR}/modules/Energy/include
@@ -92,7 +92,7 @@ add_dependencies(experiment-compareImproveProve scabolic-core scabolic-energy sc
 target_compile_definitions(experiment-compareImproveProve PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(experiment-compareImproveProve PRIVATE
-        include
+        lab/include
         ${CMAKE_SOURCE_DIR}/modules/Optimization/include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
         ${CMAKE_SOURCE_DIR}/modules/Energy/include
@@ -122,7 +122,7 @@ set_target_properties(experiment-compareImproveProve PROPERTIES COMPILE_FLAGS -f
 
 
 add_executable(exp-greedy
-        expGreedy.cpp
+        lab/exp/greedy/expGreedy.cpp
         src/Test/TestEnergyOptimization.cpp
         src/Utils/Utils.cpp)
 
@@ -131,7 +131,7 @@ add_dependencies(exp-greedy scabolic-core scabolic-energy scabolic-optimization 
 target_compile_definitions(exp-greedy PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(exp-greedy PRIVATE
-        include
+        lab/include
         ${CMAKE_SOURCE_DIR}/modules/Optimization/include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
         ${CMAKE_SOURCE_DIR}/modules/Energy/include
@@ -167,7 +167,7 @@ set_target_properties(exp-greedy PROPERTIES COMPILE_FLAGS -fext-numeric-literals
 
 
 add_executable(exp-opening
-        expOpening.cpp
+        lab/exp/opening/expOpening.cpp
         src/Test/TestEnergyOptimization.cpp
         src/Utils/Utils.cpp)
 
@@ -176,7 +176,7 @@ add_dependencies(exp-opening scabolic-core scabolic-energy scabolic-optimization
 target_compile_definitions(exp-opening PRIVATE -DPROJECT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
 target_include_directories(exp-opening PRIVATE
-        include
+        lab/include
         ${CMAKE_SOURCE_DIR}/modules/Optimization/include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
         ${CMAKE_SOURCE_DIR}/modules/Energy/include
