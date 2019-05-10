@@ -2,19 +2,18 @@
 
 using namespace SCaBOliC::Core;
 
-ODRPixels::StructuringElement::Type ODRPixels::dilationSE = StructuringElement::RECT;
-ODRPixels::StructuringElement::Type ODRPixels::erosionSE = StructuringElement::RECT;
-
-
 ODRPixels::ODRPixels(const ApplicationCenter appCenter,
                      const CountingMode cntMode,
                      const int levels,
                      LevelDefinition ld,
-                     const NeighborhoodType nt):ac(appCenter),
-                                               cm(cntMode),
-                                               levels(levels),
-                                               nt(nt),
-                                               ld(ld)
+                     const NeighborhoodType nt,
+                     StructuringElementType se):ac(appCenter),
+                                                  cm(cntMode),
+                                                  levels(levels),
+                                                  nt(nt),
+                                                  ld(ld),
+                                                  dilationSE(se),
+                                                  erosionSE(se)
 {
     assert(appCenter==ApplicationCenter::AC_PIXEL);
     assert(cntMode==CountingMode::CM_PIXEL);

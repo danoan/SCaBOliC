@@ -7,6 +7,8 @@
 #include <DGtal/io/readers/GenericReader.h>
 #include <DGtal/images/ImageContainerBySTLVector.h>
 
+#include <DIPaCUS/components/Morphology.h>
+
 namespace SCaBOliC
 {
     namespace Core
@@ -20,6 +22,8 @@ namespace SCaBOliC
 
             typedef DGtal::ImageContainerBySTLVector<Domain, unsigned char> Image2D;
             typedef std::function<Point(Point)> ToImageCoordinates;
+
+            typedef DIPaCUS::Morphology::StructuringElement::Type StructuringElementType;
 
             enum OptimizationMode{
                 OM_OriginalBoundary,

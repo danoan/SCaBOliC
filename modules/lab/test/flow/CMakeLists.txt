@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 project(test-flow)
 
 add_executable(test-flow test-flow.cpp)
+add_dependencies(test-flow scabolic-optimization scabolic-core scabolic-energy)
 target_include_directories(test-flow PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}

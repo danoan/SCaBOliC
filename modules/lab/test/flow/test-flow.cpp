@@ -28,6 +28,7 @@ struct InputData
         levels = 2;
         ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
+        se = DIPaCUS::Morphology::StructuringElement::RECT;
 
         optMode = ODRModel::OptimizationMode::OM_DilationBoundary;
         appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
@@ -46,6 +47,7 @@ struct InputData
     int levels;
     ODRModel::LevelDefinition ld;
     ODRModel::NeighborhoodType nt;
+    DIPaCUS::Morphology::StructuringElement::Type se;
 
     ODRModel::OptimizationMode optMode;
     ODRModel::ApplicationMode appMode;
@@ -100,7 +102,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 {
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
-    ODRPixels odrPixels(id.appCenter,id.cntMode,id.levels,id.ld,id.nt);
+    ODRPixels odrPixels(id.appCenter,id.cntMode,id.levels,id.ld,id.nt,id.se);
     ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,id.radius,ds,id.optRegionInApplication);
 
 

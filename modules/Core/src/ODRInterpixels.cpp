@@ -1,10 +1,6 @@
 #include "SCaBOliC/Core/ODRInterpixels.h"
 using namespace SCaBOliC::Core;
 
-ODRInterpixels::StructuringElement::Type ODRInterpixels::dilationSE = DIPaCUS::Morphology::StructuringElement::RECT;
-ODRInterpixels::StructuringElement::Type ODRInterpixels::erosionSE = DIPaCUS::Morphology::StructuringElement::RECT;
-
-
 bool ODRInterpixels::evenIteration = true;
 
 ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
@@ -12,11 +8,14 @@ ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const int levels,
                                LevelDefinition ld,
                                const NeighborhoodType nt,
+                               StructuringElementType se,
                                bool manualEvenIteration) :ac(appCenter),
                                                           cm(cntMode),
                                                           levels(levels),
                                                           nt(nt),
-                                                          ld(ld)
+                                                          ld(ld),
+                                                          dilationSE(se),
+                                                          erosionSE(se)
 {
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,true));
     handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,false));

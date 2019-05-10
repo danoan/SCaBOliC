@@ -31,13 +31,13 @@ namespace SCaBOliC
             typedef ODRModel::CountingMode CountingMode;
             typedef ODRModel::NeighborhoodType NeighborhoodType;
             typedef ODRModel::LevelDefinition  LevelDefinition;
-
+            typedef ODRModel::StructuringElementType StructuringElementType;
 
             typedef DIPaCUS::Neighborhood::FourNeighborhoodPredicate FourNeighborhood;
             typedef DIPaCUS::Neighborhood::EightNeighborhoodPredicate EightNeighborhood;
 
         private:
-            typedef DIPaCUS::Morphology::StructuringElement StructuringElement;
+
 
 
         public:
@@ -45,7 +45,8 @@ namespace SCaBOliC
                       const CountingMode cntMode,
                       const int levels,
                       LevelDefinition ld,
-                      const NeighborhoodType nt);
+                      const NeighborhoodType nt,
+                      StructuringElementType se);
 
 
             ODRModel createODR(OptimizationMode optMode,
@@ -72,7 +73,7 @@ namespace SCaBOliC
 
             DigitalSet omDilationBoundary(const Domain& domain,
                                           const DigitalSet& original,
-                                          const StructuringElement::Type& st) const
+                                          const StructuringElementType& st) const
             {
                 if(nt==NeighborhoodType::FourNeighborhood)
                 {
@@ -101,7 +102,7 @@ namespace SCaBOliC
                                         const DigitalSet& optRegion,
                                         const unsigned int radius,
                                         const LevelDefinition ld,
-                                        const StructuringElement::Type st,
+                                        const StructuringElementType st,
                                         int length) const
             { return ODRUtils::amAroundBoundary(domain,original,optRegion,radius,ld,st,length); }
 
@@ -110,7 +111,7 @@ namespace SCaBOliC
                                      const DigitalSet& optRegion,
                                      const unsigned int radius,
                                      const LevelDefinition ld,
-                                     const StructuringElement::Type st,
+                                     const StructuringElementType st,
                                      int length) const
             { return ODRUtils::amInternRange(domain,original,optRegion,radius,ld,st,length); }
 
@@ -119,7 +120,7 @@ namespace SCaBOliC
                                      const DigitalSet& optRegion,
                                      const unsigned int radius,
                                      const LevelDefinition ld,
-                                     const StructuringElement::Type st,
+                                     const StructuringElementType st,
                                      int length) const
             { return ODRUtils::amExternRange(domain,original,optRegion,radius,ld,st,length); }
 
@@ -129,13 +130,13 @@ namespace SCaBOliC
             { return ODRUtils::isolatedPoints(domain,original,optRegion); }
 
         private:
-            static StructuringElement::Type dilationSE,erosionSE;
-
             ApplicationCenter ac;
             CountingMode cm;
             int levels;
             NeighborhoodType nt;
             LevelDefinition ld;
+
+            StructuringElementType dilationSE,erosionSE;
 
             PixelSpaceHandle spaceHandle;
         };
