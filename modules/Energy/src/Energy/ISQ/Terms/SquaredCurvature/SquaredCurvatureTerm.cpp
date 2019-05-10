@@ -33,6 +33,7 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
 {
     CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
                             id.optimizationRegions.trustFRG,
+                            id.optimizationRegions.optRegion,
                             id.radius,
                             this->spaceHandle);
 

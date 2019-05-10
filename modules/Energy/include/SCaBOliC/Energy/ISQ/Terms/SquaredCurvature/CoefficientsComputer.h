@@ -36,6 +36,7 @@ namespace SCaBOliC
 
                 CoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
+                                     const DigitalSet &optRegion,
                                      int radius,
                                      const SpaceHandleInterface* spaceHandle);
 
@@ -46,14 +47,15 @@ namespace SCaBOliC
 
             private:
                 void insertConstant(const Point &p,
-                                    DigitalSet &ds);
+                                    int notIncludeCount,
+                                    int intersectionCount);
 
             private:
                 ConstantsMap _cm;
 
                 double R;
-                double C;
                 double F;
+                double A;
 
                 double W;
             public:

@@ -4,6 +4,7 @@ using namespace SCaBOliC::Energy::ISQ;
 
 CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            const DigitalSet &trustForegroundRegion,
+                                           const DigitalSet &optRegion,
                                            int radius,
                                            const SpaceHandleInterface* spaceHandle):R(radius)
 {
@@ -13,29 +14,41 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     tempBall=DIPaCUS::Shapes::ball(1.0,0,0,R);
 
     W = 0;
-//    C = (PI * R * R) / 2.0;
-//    C = tempBall.size() / 2.0;
-    C = spaceHandle->pixelArea(radius)/2.0;
+    A = spaceHandle->pixelArea(radius);
 
     F = 9.0 / pow(R, 6.0);
 
 
     DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(radius, trustForegroundRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIO = spaceHandle->intersectionComputer(radius, optRegion);
+
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);
+    temp.clear();
 
-    for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it) {
-        temp.clear();
+    double fgCount,optCount;
+    for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it)
+    {
         DBI(temp, *it);
-        insertConstant(*it, temp);
+        fgCount = temp.size();
+        temp.clear();
+
+        DBIO(temp,*it);
+        optCount = temp.size();
+        temp.clear();
+
+        insertConstant(*it, optCount, fgCount);
+//        insertConstant(*it, 0, fgCount+optCount);
     }
 
 }
 
 void CoefficientsComputer::insertConstant(const Point &p,
-                                          DigitalSet &ds)
+                                          int notIncludeCount,
+                                          int intersectionCount)
 {
-    double Ij = ds.size();
+    double C = (A - notIncludeCount)/2.0;
+    double Ij = intersectionCount;
 
     CoefficientData ch;
 
