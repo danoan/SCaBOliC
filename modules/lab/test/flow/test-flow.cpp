@@ -123,8 +123,6 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
     ISQ::InputData isqInput(odr,
                             colorImage,
-                            id.radius,
-                            id.gridStep,
                             fgDistr,
                             bgDistr,
                             id.excludeOptPointsFromAreaComputation,

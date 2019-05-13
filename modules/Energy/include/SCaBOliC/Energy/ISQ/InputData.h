@@ -33,8 +33,6 @@ namespace SCaBOliC
             public:
                 InputData(const OptimizationDigitalRegions& ODR,
                           const cvColorImage& image,
-                          double radius,
-                          double gridStep,
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           bool excludeOptPointsFromAreaComputation,
@@ -44,8 +42,6 @@ namespace SCaBOliC
                           double lengthTermWeight=1.0,
                           Point translation=Point(0,0)):optimizationRegions(ODR),
                                                         image(image),
-                                                        radius(radius),
-                                                        gridStep(gridStep),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
                                                         dataTermWeight(dataTermWeight),
@@ -57,8 +53,6 @@ namespace SCaBOliC
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
-                const double radius;
-                const double gridStep;
 
                 const double dataTermWeight;
                 const double sqTermWeight;
