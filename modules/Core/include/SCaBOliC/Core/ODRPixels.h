@@ -61,108 +61,38 @@ namespace SCaBOliC
             const SpaceHandleInterface* handle() const{return &spaceHandle;};
 
         private:
-            DTL2 interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
-            {
-                DigitalSet b = getBoundary(domain,original);
-                DigitalSet d(domain);
-                d.insert(original.begin(),original.end());
-                for(auto it=b.begin();it!=b.end();++it) d.erase(*it);
+            DTL2 interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const;
 
-                return DTL2(domain, d, DGtal::Z2i::l2Metric);
-            }
+            DTL2 exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const;
 
-            DTL2 exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const
-            {
-                DigitalSet _d(domain);
-                _d.insert(original.begin(),original.end());
+            DigitalSet level(const DTL2& dtL2, int lessThan, int greaterThan=0) const;
 
-                DigitalSet d(domain);
-                d.assignFromComplement(_d);
-
-                return DTL2(domain, d, DGtal::Z2i::l2Metric);
-            }
-
-            DigitalSet level(const DTL2& dtL2, int lessThan, int greaterThan=0) const
-            {
-                DigitalSet d(dtL2.domain());
-                for(auto it=dtL2.domain().begin();it!=dtL2.domain().end();++it)
-                {
-                    if(dtL2(*it)<=lessThan && dtL2(*it)>greaterThan) d.insert(*it);
-                }
-
-                return d;
-            }
-
-            DigitalSet getBoundary(const Domain& domain, const DigitalSet& ds) const
-            {
-                DigitalSet boundary(domain);
-                if(nt==NeighborhoodType::FourNeighborhood)
-                {
-                    DIPaCUS::Misc::digitalBoundary<FourNeighborhood>(boundary,ds);
-                } else
-                {
-                    DIPaCUS::Misc::digitalBoundary<EightNeighborhood>(boundary,ds);
-                }
-
-                return boundary;
-            }
+            DigitalSet getBoundary(const Domain& domain, const DigitalSet& ds) const;
 
             DigitalSet omOriginalBoundary(const Domain& domain,
-                                          const DigitalSet& original) const
-            {
-                return getBoundary(domain,original);
-            }
+                                          const DigitalSet& original) const;
 
-            DigitalSet omDilationBoundary(const DTL2& dtL2) const
-            {
-                return getBoundary(dtL2.domain(),level(dtL2,1));
-            }
+            DigitalSet omDilationBoundary(const DTL2& dtL2) const;
 
             DigitalSet amOriginalBoundary(const Domain& domain,
-                                          const DigitalSet& original) const
-            {
-                return getBoundary(domain,original);
-            }
+                                          const DigitalSet& original) const;
 
 
             DigitalSet amAroundBoundary(const DTL2& interiorTransform,
                                         const DTL2& exteriorTransform,
                                         const unsigned int radius,
                                         const LevelDefinition ld,
-                                        int length) const
-            {
-                DigitalSet ir = amLevel(interiorTransform,radius,ld,length);
-                DigitalSet er = amLevel(exteriorTransform,radius,ld,length);
-
-                DigitalSet ab(ir.domain());
-                ab.insert(ir.begin(),ir.end());
-                ab.insert(er.begin(),er.end());
-
-                return ab;
-            }
+                                        int length) const;
 
             DigitalSet amLevel(const DTL2& distanceTransform,
                                const unsigned int radius,
                                const LevelDefinition ld,
-                               int length) const
-            {
-                DigitalSet temp(distanceTransform.domain());
-                if(ld==LevelDefinition::LD_CloserFromCenter)
-                {
-                    temp = level(distanceTransform,length);
-                }else if(ld==LevelDefinition::LD_FartherFromCenter)
-                {
-                    temp = level(distanceTransform,radius,radius-length);
-                }
-
-                return temp;
-            }
+                               int length) const;
 
 
             DigitalSet isolatedPoints(const Domain& domain,
                                       const DigitalSet& original,
-                                      const DigitalSet& optRegion) const
-            { return ODRUtils::isolatedPoints(domain,original,optRegion); }
+                                      const DigitalSet& optRegion) const;
 
         private:
             ApplicationCenter ac;

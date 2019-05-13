@@ -13,6 +13,8 @@
 #include "SCaBOliC/Energy/ISQ/InputData.h"
 #include "SCaBOliC/Energy/model/Solution.h"
 
+#include "SCaBOliC/Core/display.h"
+
 #include "MockDistribution.h"
 
 using namespace DGtal::Z2i;
@@ -26,12 +28,12 @@ struct InputData
         appCenter = ODRModel::ApplicationCenter::AC_PIXEL;
         cntMode = ODRModel::CountingMode::CM_PIXEL;
         levels = 0;
-        ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
+        ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
         optMode = ODRModel::OptimizationMode::OM_OriginalBoundary;
-        appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
+        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
         gridStep=1.0;
@@ -117,6 +119,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     ODRPixels odrPixels(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
     ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
 
+    SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
     cv::Mat colorImage = cv::Mat::zeros(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
@@ -148,7 +151,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(const InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::square(0.25);
+    DigitalSet square = DIPaCUS::Shapes::square(1.0);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);

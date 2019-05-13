@@ -27,12 +27,17 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
         fgCount = temp.size();
         temp.clear();
 
-        DBIO(temp,*it);
-        optCount = temp.size();
-        temp.clear();
+        if(excludeOptPointsFromAreaComputation)
+        {
+            DBIO(temp,*it);
+            optCount = temp.size();
+            temp.clear();
 
-        if(excludeOptPointsFromAreaComputation) insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
-        else insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount+optCount );
+            insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
+        }else
+        {
+            insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount );
+        }
     }
 
     if(penalization==PenalizationMode::Penalize_Ones)

@@ -96,7 +96,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     for(auto iti=ODR.optRegion.begin();iti!=ODR.optRegion.end();++iti)
     {
         Index xi = iiv.at(*iti);
-        UTM(1,xi) += cc.unaryPenalization();
+        UTM(1,xi) += id.penalizationWeight*cc.unaryPenalization();
 
         auto itj = iti;
         ++itj;
@@ -104,7 +104,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*itj);
             this->crescentOrder(xi,xj);
-            PTM.coeffRef(xi,xj) += cc.binaryPenalization();
+            PTM.coeffRef(xi,xj) += id.penalizationWeight*cc.binaryPenalization();
         }
     }
 
