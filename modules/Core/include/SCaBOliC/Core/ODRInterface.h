@@ -25,10 +25,8 @@ namespace SCaBOliC
         public:
             virtual ODRModel createODR(OptimizationMode optMode,
                                        ApplicationMode appMode,
-                                       unsigned int radius,
                                        const DigitalSet& original,
-                                       bool optRegionInApplication=false,
-                                       bool invertFrgBkg=false) const=0;
+                                       bool optRegionInApplication=false) const=0;
 
             virtual const SpaceHandleInterface* handle() const=0;
 

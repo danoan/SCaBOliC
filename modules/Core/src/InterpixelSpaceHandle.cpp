@@ -94,20 +94,14 @@ void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
     outputDS = convertToPixelMode(tempDS,this->cm);
 }
 
-DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComputer(unsigned int radius,
-                                                                                   const DigitalSet& toIntersect) const
+DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComputer(const DigitalSet& toIntersect) const
 {
-    return DIPaCUS::Misc::DigitalBallIntersection(2*radius,toIntersect);
+    return DIPaCUS::Misc::DigitalBallIntersection(2*this->scaledRadius(),toIntersect);
 }
 
-int InterpixelSpaceHandle::pixelArea(unsigned int radius) const
+double InterpixelSpaceHandle::pixelArea() const
 {
-    Point center(1,0); //Centered in a linel
-    Point radiusPoint(2*radius+1,2*radius+1);
-    DGtal::Z2i::Domain domain( center-radiusPoint, center+radiusPoint);
-
-    DigitalSet tempBall(domain);
-    tempBall = DIPaCUS::Shapes::ball(1.0,center[0],center[1],2*radius);
+    DigitalSet tempBall = DIPaCUS::Shapes::ball(this->gridStep,0,0,2*this->radius);
 
     int area = 0;
     for(auto it=tempBall.begin();it!=tempBall.end();++it)

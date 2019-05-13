@@ -15,19 +15,25 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
 
         public:
+            SpaceHandleInterface(double radius,double gridStep):radius(radius),gridStep(gridStep){}
+
             virtual void solutionSet(DigitalSet& outputDS,
                                      const DigitalSet& initialDS,
                                      const ODRModel& odrModel,
                                      const int* varValue,
                                      const std::unordered_map<Point, unsigned int>& pointToVar) const = 0;
 
-            virtual DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
-                                                                                const DigitalSet& toIntersect) const = 0;
+            virtual DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet& toIntersect) const = 0;
 
             virtual Point* neighBegin() const=0;
             virtual Point* neighEnd() const=0;
+            virtual double pixelArea() const=0;
 
-            virtual int pixelArea(unsigned int radius) const=0;
+            inline double scaledRadius() const {return radius*1.0/gridStep;}
+
+        public:
+            const double radius;
+            const double gridStep;
         };
     }
 }

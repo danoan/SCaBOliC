@@ -41,6 +41,8 @@ namespace SCaBOliC
 
             ODRInterpixels(const ApplicationCenter appCenter,
                            const CountingMode cntMode,
+                           double radius,
+                           double gridStep,
                            const int levels,
                            LevelDefinition ld,
                            const NeighborhoodType nt,
@@ -50,10 +52,8 @@ namespace SCaBOliC
 
             ODRModel createODR(OptimizationMode optMode,
                                ApplicationMode appMode,
-                               unsigned int radius,
                                const DigitalSet& original,
-                               bool optRegionInApplication=false,
-                               bool invertFrgBkg=false) const;
+                               bool optRegionInApplication=false) const;
 
             const SpaceHandleInterface* handle() const;
 

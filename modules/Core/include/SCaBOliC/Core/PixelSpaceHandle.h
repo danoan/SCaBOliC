@@ -16,6 +16,8 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
 
         public:
+            PixelSpaceHandle(double radius, double gridStep):SpaceHandleInterface(radius,gridStep){}
+
             void solutionSet(DigitalSet& outputDS,
                              const DigitalSet& initialDS,
                              const ODRModel& odrModel,
@@ -25,10 +27,9 @@ namespace SCaBOliC
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
 
-            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
-                                                                        const DigitalSet& toIntersect) const;
+            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet& toIntersect) const;
 
-            int pixelArea(unsigned int radius) const;
+            double pixelArea() const;
 
         private:
             static Point neighborhoodFilter[5];

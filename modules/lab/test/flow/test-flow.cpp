@@ -25,14 +25,20 @@ struct InputData
     {
         appCenter = ODRModel::ApplicationCenter::AC_PIXEL;
         cntMode = ODRModel::CountingMode::CM_PIXEL;
-        levels = 2;
+        levels = 0;
         ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
-        optMode = ODRModel::OptimizationMode::OM_DilationBoundary;
-        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
+        optMode = ODRModel::OptimizationMode::OM_OriginalBoundary;
+        appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
+
         radius = 3;
+        gridStep=1.0;
+
+        excludeOptPointsFromAreaComputation = false;
+        penalizationMode = ISQ::InputData::PenalizationMode::No_Penalization;
+
         optRegionInApplication = true;
 
         dataTerm = 0;
@@ -51,7 +57,13 @@ struct InputData
 
     ODRModel::OptimizationMode optMode;
     ODRModel::ApplicationMode appMode;
-    int radius;
+
+    double radius;
+    double gridStep;
+
+    bool excludeOptPointsFromAreaComputation;
+    ISQ::InputData::PenalizationMode penalizationMode;
+
     bool optRegionInApplication;
 
     double dataTerm;
@@ -102,14 +114,25 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 {
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
-    ODRPixels odrPixels(id.appCenter,id.cntMode,id.levels,id.ld,id.nt,id.se);
-    ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,id.radius,ds,id.optRegionInApplication);
+    ODRPixels odrPixels(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+    ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
 
 
     cv::Mat colorImage = cv::Mat::zeros(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
 
-    ISQ::InputData isqInput(odr,colorImage,id.radius,fgDistr,bgDistr,id.dataTerm,id.sqTerm,id.lengthTerm);
+    ISQ::InputData isqInput(odr,
+                            colorImage,
+                            id.radius,
+                            id.gridStep,
+                            fgDistr,
+                            bgDistr,
+                            id.excludeOptPointsFromAreaComputation,
+                            id.penalizationMode,
+                            id.dataTerm,
+                            id.sqTerm,
+                            id.lengthTerm);
+
     ISQEnergy energy(isqInput,odrPixels.handle());
 
 
@@ -127,21 +150,25 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(const InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::square(0.1);
-    Domain domain = square.domain();
+    DigitalSet square = DIPaCUS::Shapes::square(0.25);
+
+    Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
+    DigitalSet workSet(domain);
+    workSet.insert(square.begin(),square.end());
+
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
     int it=0;
     while(it<id.iterations)
     {
-        square = flow(square,id,domain);
+        workSet = flow(workSet,id,domain);
         ++it;
     }
 
     boost::filesystem::create_directories(id.outputFolder);
 
     cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
-    DIPaCUS::Representation::digitalSetToCVMat(imgOut,square);
+    DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
     cv::imwrite(id.outputFolder + "/square.png",imgOut);
 }
 

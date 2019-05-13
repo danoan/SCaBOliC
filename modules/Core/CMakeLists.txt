@@ -9,7 +9,6 @@ endif()
 add_library(scabolic-core ${LIBRARY_ACTION}
         src/display.cpp
         src/ODRPixels.cpp
-        src/ODRDistance.cpp
         src/ODRInterpixels.cpp
         src/ODRUtils.cpp
         src/PixelSpaceHandle.cpp

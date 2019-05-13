@@ -1,26 +1,20 @@
 #include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/CoefficientsComputer.h"
-#include "DGtal/io/boards/Board2D.h"
+
 using namespace SCaBOliC::Energy::ISQ;
 
 CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            const DigitalSet &trustForegroundRegion,
                                            const DigitalSet &optRegion,
-                                           int radius,
-                                           const SpaceHandleInterface* spaceHandle):R(radius)
+                                           const SpaceHandleInterface* spaceHandle,
+                                           PenalizationMode penalization,
+                                           bool excludeOptPointsFromAreaComputation)
 {
+    c1 = 9.0 / pow(spaceHandle->radius, 6.0);
+    c2 = 0;
 
 
-    DigitalSet tempBall( Domain( 2*Point(-R,-R), 2*Point(R,R) ) );
-    tempBall=DIPaCUS::Shapes::ball(1.0,0,0,R);
-
-    W = 0;
-    A = spaceHandle->pixelArea(radius);
-
-    F = 9.0 / pow(R, 6.0);
-
-
-    DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(radius, trustForegroundRegion);
-    DIPaCUS::Misc::DigitalBallIntersection DBIO = spaceHandle->intersectionComputer(radius, optRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(trustForegroundRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIO = spaceHandle->intersectionComputer(optRegion);
 
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);
@@ -37,27 +31,40 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
         optCount = temp.size();
         temp.clear();
 
-        insertConstant(*it, optCount, fgCount);
-//        insertConstant(*it, 0, fgCount+optCount);
+        if(excludeOptPointsFromAreaComputation) insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
+        else insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount+optCount );
+    }
+
+    if(penalization==PenalizationMode::Penalize_Ones)
+    {
+        p1 = 1;
+        p2 = 2;
+    }else if(penalization==PenalizationMode::Penalize_Zeros)
+    {
+        p1 = 1-2*optRegion.size();
+        p2 = 2;
+    }else
+    {
+        p1 = 0;
+        p2 = 0;
     }
 
 }
 
 void CoefficientsComputer::insertConstant(const Point &p,
-                                          int notIncludeCount,
-                                          int intersectionCount)
+                                          double halfBallArea,
+                                          double Ij)
 {
-    double C = (A - notIncludeCount)/2.0;
-    double Ij = intersectionCount;
-
     CoefficientData ch;
 
-    W += pow(C, 2);
-    W += pow(Ij, 2);
-    W += -2 * C * Ij;
+    c2 += pow(halfBallArea, 2);
+    c2 += pow(Ij, 2);
+    c2 += -2 * halfBallArea * Ij;
 
-    ch.xi = 1 - 2 * C + 2 * Ij;
+    ch.xi = (1 - 2 * halfBallArea + 2 * Ij);
     ch.xi_xj = 2;
+
+
 
     _cm[p] = ch;
 }

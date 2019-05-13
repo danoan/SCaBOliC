@@ -24,8 +24,11 @@ namespace SCaBOliC
             };
 
         public:
-            InterpixelSpaceHandle(const CountingMode& cm,
-                                  bool evenIteration):cm(cm),
+            InterpixelSpaceHandle(double radius,
+                                  double gridStep,
+                                  const CountingMode& cm,
+                                  bool evenIteration):SpaceHandleInterface(radius,gridStep),
+                                                      cm(cm),
                                                       evenIteration(evenIteration){}
 
             void visit(DigitalSet& pixelDS,
@@ -42,10 +45,9 @@ namespace SCaBOliC
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
 
-            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(unsigned int radius,
-                                                                        const DigitalSet& toIntersect) const;
+            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet& toIntersect) const;
 
-            int pixelArea(unsigned int radius) const;
+            double pixelArea() const;
 
         private:
             DigitalSet convertToPixelMode(const DigitalSet& ds,

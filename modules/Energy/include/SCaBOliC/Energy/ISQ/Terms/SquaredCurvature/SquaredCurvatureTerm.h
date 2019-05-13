@@ -26,7 +26,6 @@ namespace SCaBOliC
                 typedef unsigned int Index;
 
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
-
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
             public:

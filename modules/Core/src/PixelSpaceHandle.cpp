@@ -9,10 +9,9 @@ PixelSpaceHandle::Point PixelSpaceHandle::neighborhoodFilter[5] = {PixelSpaceHan
                                                                    PixelSpaceHandle::Point(0,0)};
 
 
-DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(unsigned int radius,
-                                                                              const DigitalSet &toIntersect) const
+DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(const DigitalSet &toIntersect) const
 {
-    return DIPaCUS::Misc::DigitalBallIntersection(radius,toIntersect);
+    return DIPaCUS::Misc::DigitalBallIntersection(this->scaledRadius(),toIntersect);
 }
 
 void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
@@ -32,15 +31,8 @@ void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
     }
 }
 
-int PixelSpaceHandle::pixelArea(unsigned int radius) const
+double PixelSpaceHandle::pixelArea() const
 {
-    Point center(0,0); //Centered in a pixel
-    Point radiusPoint(radius+1,radius+1);
-    DGtal::Z2i::Domain domain( center-radiusPoint, center+radiusPoint);
-
-    DigitalSet tempBall(domain);
-    tempBall = DIPaCUS::Shapes::ball(1.0,center[0],center[1],radius);
-
-
+    DigitalSet tempBall = DIPaCUS::Shapes::ball(this->gridStep,0,0,this->radius);
     return tempBall.size();
 }

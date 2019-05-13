@@ -6,6 +6,7 @@
 #include <SCaBOliC/Core/ODRInterface.h>
 
 #include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Energy/ISQ/InputData.h"
 
 namespace SCaBOliC
 {
@@ -32,32 +33,39 @@ namespace SCaBOliC
 
                 typedef std::unordered_map<Point,CoefficientData> ConstantsMap;
 
+                typedef SCaBOliC::Energy::ISQ::InputData::PenalizationMode PenalizationMode;
+
             public:
 
                 CoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
                                      const DigitalSet &optRegion,
-                                     int radius,
-                                     const SpaceHandleInterface* spaceHandle);
+                                     const SpaceHandleInterface* spaceHandle,
+                                     PenalizationMode penalization,
+                                     bool excludeOptPointsFromAreaComputation);
 
                 inline const CoefficientData &retrieve(const Point &p) const { return _cm.at(p); }
 
-                inline double factor() const { return F; }
-                inline double constantTerm() const { return W; }
+                inline double scalingFactor() const { return c1; }
+                inline double constantTerm() const { return c1*c2; }
+
+                inline double unaryPenalization() const{return p1;};
+                inline double binaryPenalization() const{return p2;};
 
             private:
                 void insertConstant(const Point &p,
-                                    int notIncludeCount,
-                                    int intersectionCount);
+                                    double halfBallArea,
+                                    double Ij);
 
             private:
                 ConstantsMap _cm;
 
-                double R;
-                double F;
-                double A;
+                double c1;
+                double c2;
 
-                double W;
+                double p1;
+                double p2;
+
             public:
                 static constexpr double PI = 3.141592653589793;
             };

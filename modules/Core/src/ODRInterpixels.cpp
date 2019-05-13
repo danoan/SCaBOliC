@@ -5,6 +5,8 @@ bool ODRInterpixels::evenIteration = true;
 
 ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const CountingMode cntMode,
+                               double radius,
+                               double gridStep,
                                const int levels,
                                LevelDefinition ld,
                                const NeighborhoodType nt,
@@ -17,10 +19,10 @@ ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                                           dilationSE(se),
                                                           erosionSE(se)
 {
-    handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,true));
-    handles.push_back(InterpixelSpaceHandle(CountingMode::CM_PIXEL,false));
-    handles.push_back(InterpixelSpaceHandle(CountingMode::CM_POINTEL,true));
-    handles.push_back(InterpixelSpaceHandle(CountingMode::CM_POINTEL,false));
+    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_PIXEL,true));
+    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_PIXEL,false));
+    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_POINTEL,true));
+    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_POINTEL,false));
 
     evenIteration = manualEvenIteration;
 }
@@ -147,14 +149,13 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterLinels(DigitalSet& ds)
 
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
-                                    unsigned int radius,
                                     const DigitalSet& original,
-                                    bool optRegionInApplication,
-                                    bool invertFrgBkg) const
+                                    bool optRegionInApplication) const
 {
     if(this->ld==LevelDefinition::LD_FartherFromCenter) throw std::runtime_error("FartherFromCenter not implemented in interpixels models.");
     evenIteration = !evenIteration;
 
+    const double& radius = handle()->scaledRadius();
 
     Point ballBorder = 4*Point(radius,radius);
     Domain domain(original.domain().lowerBound() - ballBorder,
@@ -184,12 +185,6 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
     DigitalSet trustFRG = computeForeground(domain,original,optRegion,optMode);
     DigitalSet trustBKG = computeBackground(domain,trustFRG,optRegion);
 
-    if(invertFrgBkg)
-    {
-        DigitalSet swap = trustFRG;
-        trustFRG = trustBKG;
-        trustBKG = swap;
-    }
 
     DigitalSet _optRegion = doubleDS(optRegion);
     DigitalSet _trustFRG = doubleDS(trustFRG);

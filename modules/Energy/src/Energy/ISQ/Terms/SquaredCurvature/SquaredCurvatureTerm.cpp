@@ -34,8 +34,9 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
     CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
                             id.optimizationRegions.trustFRG,
                             id.optimizationRegions.optRegion,
-                            id.radius,
-                            this->spaceHandle);
+                            this->spaceHandle,
+                            id.penalizationMode,
+                            id.excludeOptPointsFromAreaComputation);
 
     double maxCtrb;
     setCoeffs(od,
@@ -47,8 +48,8 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
     this->normalizationFactor = 1.0/maxCtrb;
     this->weight = id.sqTermWeight;
 
-    this->constantFactor = cc.factor();
-    this->constantTerm = cc.factor()*cc.constantTerm()*this->normalizationFactor;
+    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
+    this->constantTerm = cc.constantTerm()*this->normalizationFactor;
 
     od.localUTM*=this->weight*this->normalizationFactor;
     od.localPTM*=this->weight*this->normalizationFactor;
@@ -63,8 +64,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
     DigitalSet temp(ODR.domain);
-    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->spaceHandle->intersectionComputer(id.radius,
-                                                                                                     ODR.optRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->spaceHandle->intersectionComputer(ODR.optRegion);
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
@@ -90,6 +90,21 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             {
                 addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
             }
+        }
+    }
+
+    for(auto iti=ODR.optRegion.begin();iti!=ODR.optRegion.end();++iti)
+    {
+        Index xi = iiv.at(*iti);
+        UTM(1,xi) += cc.unaryPenalization();
+
+        auto itj = iti;
+        ++itj;
+        for(;itj!=ODR.optRegion.end();++itj)
+        {
+            Index xj = iiv.at(*itj);
+            this->crescentOrder(xi,xj);
+            PTM.coeffRef(xi,xj) += cc.binaryPenalization();
         }
     }
 

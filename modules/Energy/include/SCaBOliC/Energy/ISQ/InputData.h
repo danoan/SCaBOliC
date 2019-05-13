@@ -28,37 +28,50 @@ namespace SCaBOliC
                 typedef cv::Mat cvColorImage;
                 typedef cv::Vec3b cvColorType;
 
+                enum PenalizationMode{No_Penalization,Penalize_Ones,Penalize_Zeros};
+
             public:
                 InputData(const OptimizationDigitalRegions& ODR,
                           const cvColorImage& image,
-                          unsigned long int radius,
+                          double radius,
+                          double gridStep,
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
+                          bool excludeOptPointsFromAreaComputation,
+                          PenalizationMode penalizationMode,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
                           Point translation=Point(0,0)):optimizationRegions(ODR),
                                                         image(image),
                                                         radius(radius),
+                                                        gridStep(gridStep),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
                                                         dataTermWeight(dataTermWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
+                                                        excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
+                                                        penalizationMode(penalizationMode),
                                                         translation(translation){}
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
-                const unsigned long int radius;
-                double dataTermWeight;
-                double sqTermWeight;
-                double lengthTermWeight;
+                const double radius;
+                const double gridStep;
+
+                const double dataTermWeight;
+                const double sqTermWeight;
+                const double lengthTermWeight;
 
                 const MyProbabilityDistribution& fgDistr;
                 const MyProbabilityDistribution& bgDistr;
 
                 const cvColorImage& image;
                 const Point translation;
+
+                const bool excludeOptPointsFromAreaComputation;
+                const PenalizationMode penalizationMode;
 
             };
         }
