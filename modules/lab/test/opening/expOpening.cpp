@@ -46,8 +46,8 @@ int main()
                         ODRPixels::NeighborhoodType::FourNeighborhood );
 
 
-    ODRPixels::OptimizationMode optModeExpand = ODRPixels::OptimizationMode::OM_DilationBoundary;
-    ODRPixels::OptimizationMode optModeCorrect = ODRPixels::OptimizationMode::OM_OriginalBoundary;
+    ODRPixels::OptimizationMode optModeExpand = ODRPixels::OptimizationMode::OM_CorrectConcavities;
+    ODRPixels::OptimizationMode optModeCorrect = ODRPixels::OptimizationMode::OM_CorrectConvexities;
 
     Point size = square.domain().upperBound() - square.domain().lowerBound() + Point(1,1);
 

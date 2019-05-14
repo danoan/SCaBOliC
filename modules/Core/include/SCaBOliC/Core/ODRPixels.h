@@ -90,10 +90,6 @@ namespace SCaBOliC
                                int length) const;
 
 
-            DigitalSet isolatedPoints(const Domain& domain,
-                                      const DigitalSet& original,
-                                      const DigitalSet& optRegion) const;
-
         private:
             ApplicationCenter ac;
             CountingMode cm;

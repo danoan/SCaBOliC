@@ -17,18 +17,26 @@ DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(co
 void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
                                    const DigitalSet &initialDS,
                                    const ODRModel &odrModel,
+                                   const ODRModel::OptimizationMode& optMode,
                                    const int *varValue,
                                    const std::unordered_map<Point, unsigned int> &pointToVar) const
 {
     const DigitalSet& optRegion = odrModel.optRegion;
-    outputDS.insert(initialDS.begin(),initialDS.end());
+
+    DigitalSet temp(outputDS.domain());
+    temp.insert(initialDS.begin(),initialDS.end());
     for (DigitalSet::ConstIterator it = optRegion.begin();
          it != optRegion.end(); ++it)
     {
         if (varValue[ pointToVar.at(*it) ] == 1) {
-            outputDS.insert(*it);
+            temp.insert(*it);
         }
     }
+
+    if(optMode==ODRModel::OptimizationMode::OM_CorrectConcavities) outputDS.assignFromComplement(temp);
+    else outputDS = temp;
+
+
 }
 
 double PixelSpaceHandle::pixelArea() const

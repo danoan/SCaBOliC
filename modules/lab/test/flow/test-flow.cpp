@@ -27,12 +27,12 @@ struct InputData
     {
         appCenter = ODRModel::ApplicationCenter::AC_PIXEL;
         cntMode = ODRModel::CountingMode::CM_PIXEL;
-        levels = 0;
-        ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
+        levels =1;
+        ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
-        optMode = ODRModel::OptimizationMode::OM_OriginalBoundary;
+        optMode = ODRModel::OptimizationMode::OM_CorrectConcavities;
         appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
@@ -145,13 +145,13 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     DigitalSet dsOut(domain);
     DigitalSet dsIn = odr.trustFRG;
 
-    odrPixels.handle()->solutionSet(dsOut,dsIn,odr,solution.labelsVector.data(),energy.vm().pim);
+    odrPixels.handle()->solutionSet(dsOut,dsIn,odr,id.optMode,solution.labelsVector.data(),energy.vm().pim);
     return dsOut;
 }
 
 void shapeTest(const InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::square(1.0);
+    DigitalSet square = DIPaCUS::Shapes::square(0.5);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);

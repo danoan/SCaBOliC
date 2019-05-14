@@ -14,11 +14,8 @@ ODRPixels::DTL2 ODRPixels::interiorDistanceTransform(const Domain& domain, const
 
 ODRPixels::DTL2 ODRPixels::exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
-    DigitalSet _d(domain);
-    _d.insert(original.begin(),original.end());
-
     DigitalSet d(domain);
-    d.assignFromComplement(_d);
+    d.assignFromComplement(original);
 
     return DTL2(domain, d, DGtal::Z2i::l2Metric);
 }
@@ -100,11 +97,6 @@ ODRPixels::DigitalSet ODRPixels::amLevel(const DTL2& distanceTransform,
 }
 
 
-ODRPixels::DigitalSet ODRPixels::isolatedPoints(const Domain& domain,
-                                     const DigitalSet& original,
-                                     const DigitalSet& optRegion) const
-{ return ODRUtils::isolatedPoints(domain,original,optRegion); }
-
 ODRPixels::ODRPixels(const ApplicationCenter appCenter,
                      const CountingMode cntMode,
                      double radius,
@@ -136,38 +128,31 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));
 
+    DigitalSet workingSet(domain);
     DigitalSet optRegion(domain);
     DigitalSet applicationRegion(domain);
 
-
     switch (optMode) {
-        case OptimizationMode::OM_OriginalBoundary: {
-            optRegion = omOriginalBoundary(domain,original);
+        case OptimizationMode::OM_CorrectConvexities:
+        {
+            workingSet = original;
             break;
         }
-        case OptimizationMode::OM_DilationBoundary: {
-            DTL2 exteriorTransform = exteriorDistanceTransform(domain,original);
-            optRegion = omDilationBoundary(exteriorTransform);
+        case OptimizationMode::OM_CorrectConcavities:
+        {
+            workingSet.assignFromComplement(original);
             break;
         }
     }
 
+    optRegion = omOriginalBoundary(domain,workingSet);
 
-    if(optMode==OptimizationMode::OM_DilationBoundary)
-    {
-        DigitalSet isolatedDS = isolatedPoints(domain,original,optRegion);
-        optRegion+=isolatedDS;
-    }
 
-    DigitalSet extendedOriginal(domain);
-    extendedOriginal.insert(original.begin(),original.end());
-    extendedOriginal.insert(optRegion.begin(),optRegion.end());
-
-    DTL2 interiorTransform = interiorDistanceTransform(domain,extendedOriginal);
-    DTL2 exteriorTransform = exteriorDistanceTransform(domain,extendedOriginal);
+    DTL2 interiorTransform = interiorDistanceTransform(domain,workingSet);
+    DTL2 exteriorTransform = exteriorDistanceTransform(domain,workingSet);
 
     DigitalSet trustFRG(domain);
-    DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
+    DIPaCUS::SetOperations::setDifference(trustFRG, workingSet, optRegion);
 
 
     DigitalSet trustBKG(domain);

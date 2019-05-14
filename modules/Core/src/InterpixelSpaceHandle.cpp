@@ -75,23 +75,28 @@ InterpixelSpaceHandle::DigitalSet InterpixelSpaceHandle::convertToPixelMode(cons
 void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
                                         const DigitalSet& initialDS,
                                         const ODRModel& odrModel,
+                                        const ODRModel::OptimizationMode& optMode,
                                         const int* varValue,
                                         const std::unordered_map<Point, unsigned int>& pointToVar) const
 {
     const DigitalSet& optRegion = odrModel.optRegion;
 
+    DigitalSet _tempInter(outputDS.domain());
+    _tempInter.insert(initialDS.begin(),initialDS.end());
 
-    DigitalSet tempDS(outputDS.domain());
-    tempDS.insert(initialDS.begin(),initialDS.end());
     for (DigitalSet::ConstIterator it = optRegion.begin();
          it != optRegion.end(); ++it)
     {
         if (varValue[ pointToVar.at(*it) ] == 1) {
-            tempDS.insert( (*it) );
+            _tempInter.insert( (*it) );
         }
     }
 
-    outputDS = convertToPixelMode(tempDS,this->cm);
+    DigitalSet _outputInter(_tempInter.domain());
+    if(optMode==ODRModel::OptimizationMode::OM_CorrectConcavities) _outputInter.assignFromComplement(_tempInter);
+    else _outputInter= _tempInter;
+
+    outputDS = convertToPixelMode(_outputInter,this->cm);
 }
 
 DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComputer(const DigitalSet& toIntersect) const

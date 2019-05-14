@@ -163,24 +163,22 @@ ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
 
 
 
+    DigitalSet workingSet(domain);
     DigitalSet optRegion(domain);
 
+
     switch (optMode) {
-        case OptimizationMode::OM_OriginalBoundary: {
-            optRegion = omOriginalBoundary(domain,original);
+        case OptimizationMode::OM_CorrectConvexities: {
+            workingSet = original;
             break;
         }
-        case OptimizationMode::OM_DilationBoundary: {
-            optRegion = omDilationBoundary(domain,original,dilationSE);
+        case OptimizationMode::OM_CorrectConcavities: {
+            workingSet.assignFromComplement(original);
             break;
         }
     }
 
-    if(optMode==OptimizationMode::OM_DilationBoundary)
-    {
-        DigitalSet isolatedDS = isolatedPoints(domain,original,optRegion);
-        optRegion+=isolatedDS;
-    }
+    optRegion = omOriginalBoundary(domain,workingSet);
 
     DigitalSet trustFRG = computeForeground(domain,original,optRegion,optMode);
     DigitalSet trustBKG = computeBackground(domain,trustFRG,optRegion);

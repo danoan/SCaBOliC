@@ -26,8 +26,8 @@ namespace SCaBOliC
             typedef DIPaCUS::Morphology::StructuringElement::Type StructuringElementType;
 
             enum OptimizationMode{
-                OM_OriginalBoundary,
-                OM_DilationBoundary
+                OM_CorrectConvexities,
+                OM_CorrectConcavities
             };
 
             enum ApplicationMode{

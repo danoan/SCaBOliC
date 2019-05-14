@@ -21,6 +21,7 @@ namespace SCaBOliC
             void solutionSet(DigitalSet& outputDS,
                              const DigitalSet& initialDS,
                              const ODRModel& odrModel,
+                             const ODRModel::OptimizationMode& optMode,
                              const int* varValue,
                              const std::unordered_map<Point, unsigned int>& pointToVar) const;
 

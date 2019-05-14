@@ -14,7 +14,7 @@ ODRUtils::DigitalSet ODRUtils::computeForeground(const Domain& domain,
     DigitalSet trustFRG(optRegion.domain());
     DIPaCUS::SetOperations::setDifference(trustFRG, extendedOriginal, optRegion);
 
-    if(om==OptimizationMode::OM_DilationBoundary)
+    if(om==OptimizationMode::OM_CorrectConcavities)
     {
         DigitalSet isolatedDS = isolatedPoints(domain,original, optRegion);
         trustFRG += isolatedDS;
