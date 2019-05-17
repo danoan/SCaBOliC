@@ -34,14 +34,18 @@ namespace SCaBOliC
 
                 int numVars(){return vm.numVars;}
 
-            private:
-                void initializeOptimizationData(const InputData& id,
-                                                const VariableMap& vm,
-                                                OptimizationData& od);
+                void update(const InputData& id,
+                            const VariableMap& vm,
+                            OptimizationData& od);
 
+            private:
                 void configureOptimizationData(const InputData& id,
                                                const VariableMap& vm,
                                                OptimizationData& od);
+
+                void initializeOptimizationData(const InputData& id,
+                                                const VariableMap& vm,
+                                                OptimizationData& od);
 
                 void setCoeffs(OptimizationData& od,
                                double& maxCtrb,

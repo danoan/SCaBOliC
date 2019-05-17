@@ -37,6 +37,7 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& bgDistr,
                           bool excludeOptPointsFromAreaComputation,
                           PenalizationMode penalizationMode,
+                          bool repeatedImprovement,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
@@ -51,6 +52,7 @@ namespace SCaBOliC
                                                         lengthTermWeight(lengthTermWeight),
                                                         excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
                                                         penalizationMode(penalizationMode),
+                                                        repeatedImprovement(repeatedImprovement),
                                                         translation(translation){}
 
             public:
@@ -69,6 +71,8 @@ namespace SCaBOliC
 
                 const bool excludeOptPointsFromAreaComputation;
                 const PenalizationMode penalizationMode;
+
+                bool repeatedImprovement;
 
             };
         }

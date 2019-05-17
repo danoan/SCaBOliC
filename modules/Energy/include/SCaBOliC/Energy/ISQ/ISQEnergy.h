@@ -43,7 +43,7 @@ namespace SCaBOliC
                       const SpaceHandleInterface* spaceHandle);
 
             template< template <typename,typename,typename,typename> class TQPBOSolver>
-            void solve(Solution& solution)
+            void solve(Solution& solution) const
             {
                 assert(solution.isValid());
 

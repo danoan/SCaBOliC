@@ -26,6 +26,25 @@ void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
+void SquaredCurvatureTerm::update(const InputData& id,
+                                  const VariableMap& vm,
+                                  OptimizationData& od)
+{
+    CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
+                            id.optimizationRegions.trustFRG,
+                            id.optimizationRegions.optRegion,
+                            this->spaceHandle,
+                            id.penalizationMode,
+                            id.excludeOptPointsFromAreaComputation);
+
+    double maxCtrb;
+    setCoeffs(od,
+              maxCtrb,
+              id,
+              cc,
+              vm);
+}
+
 
 void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
                                                      const VariableMap& vm,
@@ -45,14 +64,17 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
               cc,
               vm);
 
-    this->normalizationFactor = 1.0/maxCtrb;
-    this->weight = id.sqTermWeight;
+    if(!id.repeatedImprovement)
+    {
+        this->normalizationFactor = 1.0/maxCtrb;
+        this->weight = id.sqTermWeight;
 
-    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
-    this->constantTerm = cc.constantTerm()*this->normalizationFactor;
+        this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
+        this->constantTerm = cc.constantTerm()*this->normalizationFactor;
 
-    od.localUTM*=this->weight*this->normalizationFactor;
-    od.localPTM*=this->weight*this->normalizationFactor;
+        od.localUTM*=this->weight*this->normalizationFactor;
+        od.localPTM*=this->weight*this->normalizationFactor;
+    }
 }
 
 void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
