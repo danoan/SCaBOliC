@@ -7,7 +7,7 @@
 #include <DIPaCUS/derivates/Misc.h>
 #include <DIPaCUS/components/SetOperations.h>
 #include <DIPaCUS/components/Morphology.h>
-#include <SCaBOliC/Core/ODRModel.h>
+#include <SCaBOliC/Core/model/ODRModel.h>
 
 namespace SCaBOliC
 {

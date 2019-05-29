@@ -3,9 +3,10 @@
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DIPaCUS/derivates/Misc.h>
-#include <SCaBOliC/Core/ODRInterface.h>
+#include <SCaBOliC/Core/interface/ODRInterface.h>
 
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/model/IntersectionAttributes.h"
 #include "SCaBOliC/Energy/ISQ/InputData.h"
 
 namespace SCaBOliC

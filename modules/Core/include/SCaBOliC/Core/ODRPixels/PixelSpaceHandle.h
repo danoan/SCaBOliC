@@ -2,8 +2,8 @@
 #define SCABOLIC_PIXELSPACEHANDLE_H
 
 #include <DIPaCUS/derivates/Misc.h>
-#include "ODRModel.h"
-#include "SpaceHandleInterface.h"
+#include "SCaBOliC/Core/model/ODRModel.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -14,6 +14,7 @@ namespace SCaBOliC
         public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
+            typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
 
         public:
             PixelSpaceHandle(double radius, double gridStep):SpaceHandleInterface(radius,gridStep){}
@@ -28,7 +29,9 @@ namespace SCaBOliC
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
 
-            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet& toIntersect) const;
+            void intersectCoefficient(IntersectionAttributes& iAttr, DigitalBallIntersection& DBI, const Point& pt) const;
+            DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;
+
 
             double pixelArea() const;
 

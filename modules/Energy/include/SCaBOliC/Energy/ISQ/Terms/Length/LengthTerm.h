@@ -6,7 +6,7 @@
 #include <SCaBOliC/Energy/ISQ/InputData.h>
 #include <SCaBOliC/Energy/ISQ/VariableMap.h>
 
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {

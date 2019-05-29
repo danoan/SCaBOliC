@@ -85,8 +85,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
 {
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
-    DigitalSet temp(ODR.domain);
-    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->spaceHandle->intersectionComputer(ODR.optRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIO = this->spaceHandle->intersectionComputer(ODR.optRegion);
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
@@ -96,10 +95,9 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     maxCtrb=0;
     for(auto yit=ODR.applicationRegion.begin();yit!=ODR.applicationRegion.end();++yit)
     {
-        temp.clear();
-        DBIOptimization(temp, *yit);
+        auto iAttr = this->spaceHandle->intersectCoefficient(DBIO,*yit);
 
-        for (auto xjt = temp.begin(); xjt != temp.end(); ++xjt)
+        for (auto xjt = iAttr.intersectionPoints.begin(); xjt != iAttr.intersectionPoints.end(); ++xjt)
         {
             Index xj = iiv.at(*xjt);
 
@@ -108,7 +106,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
 
             auto ut = xjt;
             ++ut;
-            for(;ut!=temp.end();++ut)
+            for(;ut!=iAttr.intersectionPoints.end();++ut)
             {
                 addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
             }

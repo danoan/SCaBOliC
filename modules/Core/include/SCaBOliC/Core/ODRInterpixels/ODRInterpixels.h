@@ -1,8 +1,8 @@
 #ifndef SCABOLIC_ODRINTERPIXELS_H
 #define SCABOLIC_ODRINTERPIXELS_H
 
-#include "ODRInterface.h"
-#include "ODRUtils.h"
+#include "SCaBOliC/Core/interface/ODRInterface.h"
+#include "SCaBOliC/Core/ODRUtils.h"
 #include "InterpixelSpaceHandle.h"
 
 namespace SCaBOliC

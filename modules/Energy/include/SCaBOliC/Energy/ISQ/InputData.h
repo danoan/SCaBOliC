@@ -4,7 +4,7 @@
 #include <eigen3/Eigen/Sparse>
 #include <opencv2/core/mat.hpp>
 
-#include "SCaBOliC/Core/ODRModel.h"
+#include "SCaBOliC/Core/model/ODRModel.h"
 #include "SCaBOliC/Energy/ISQ/Terms/Data/IProbabilityDistribution.h"
 
 namespace SCaBOliC

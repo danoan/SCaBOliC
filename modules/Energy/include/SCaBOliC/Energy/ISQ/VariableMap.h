@@ -2,7 +2,7 @@
 #define SCABOLIC_ENERGY_VARIABLEMAP_H
 
 #include <DGtal/helpers/StdDefs.h>
-#include <SCaBOliC/Core/ODRModel.h>
+#include <SCaBOliC/Core/model/ODRModel.h>
 
 namespace SCaBOliC
 {

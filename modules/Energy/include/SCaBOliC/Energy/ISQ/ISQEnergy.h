@@ -15,7 +15,7 @@
 #include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
 #include <SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.h>
 
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {

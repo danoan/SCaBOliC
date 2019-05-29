@@ -1,4 +1,4 @@
-#include "SCaBOliC/Core/PixelSpaceHandle.h"
+#include "SCaBOliC/Core/ODRPixels/PixelSpaceHandle.h"
 
 using namespace SCaBOliC::Core;
 
@@ -8,6 +8,13 @@ PixelSpaceHandle::Point PixelSpaceHandle::neighborhoodFilter[5] = {PixelSpaceHan
                                                                    PixelSpaceHandle::Point(0,-1),
                                                                    PixelSpaceHandle::Point(0,0)};
 
+
+void PixelSpaceHandle::intersectCoefficient(IntersectionAttributes& iAttr,DigitalBallIntersection& DBI, const Point& pt) const
+{
+    iAttr.intersectionPoints.clear();
+    DBI(iAttr.intersectionPoints,pt);
+    iAttr.coefficient = iAttr.intersectionPoints.size();
+}
 
 DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(const DigitalSet &toIntersect) const
 {

@@ -2,8 +2,8 @@
 #define SCABOLIC_INTERPIXELSPACEHANDLE_H
 
 #include <DIPaCUS/derivates/Misc.h>
-#include "ODRModel.h"
-#include "SpaceHandleInterface.h"
+#include "SCaBOliC/Core/model/ODRModel.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -14,6 +14,7 @@ namespace SCaBOliC
         public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
+            typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
 
             typedef ODRModel::CountingMode CountingMode;
 
@@ -31,6 +32,7 @@ namespace SCaBOliC
                                                       cm(cm),
                                                       evenIteration(evenIteration){}
 
+
             void visit(DigitalSet& pixelDS,
                        std::set<Point>& visited,
                        DigitalSet::ConstIterator& it,
@@ -46,7 +48,9 @@ namespace SCaBOliC
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
 
-            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet& toIntersect) const;
+            void intersectCoefficient(IntersectionAttributes& iAttr, DigitalBallIntersection& DBI, const Point& pt) const;
+            DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;
+
 
             double pixelArea() const;
 

@@ -1,4 +1,4 @@
-#include "SCaBOliC/Core/ODRInterpixels.h"
+#include "SCaBOliC/Core/ODRInterpixels/ODRInterpixels.h"
 using namespace SCaBOliC::Core;
 
 bool ODRInterpixels::evenIteration = true;

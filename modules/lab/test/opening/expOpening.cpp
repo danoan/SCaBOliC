@@ -3,7 +3,7 @@
 
 #include <DIPaCUS/base/Shapes.h>
 
-#include "SCaBOliC/Core/ODRPixels.h"
+#include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
 #include "SCaBOliC/lab/Test/TestEnergyOptimization.h"
 #include "SCaBOliC/Energy/ISQ/InputData.h"
 

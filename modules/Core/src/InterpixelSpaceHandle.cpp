@@ -1,4 +1,4 @@
-#include "SCaBOliC/Core/InterpixelSpaceHandle.h"
+#include "SCaBOliC/Core/ODRInterpixels/InterpixelSpaceHandle.h"
 
 using namespace SCaBOliC::Core;
 
@@ -97,6 +97,14 @@ void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
     else _outputInter= _tempInter;
 
     outputDS = convertToPixelMode(_outputInter,this->cm);
+}
+
+
+void InterpixelSpaceHandle::intersectCoefficient(IntersectionAttributes& iAttr,DigitalBallIntersection& DBI, const Point& pt) const
+{
+    iAttr.intersectionPoints.clear();
+    DBI(iAttr.intersectionPoints,pt);
+    iAttr.coefficient = iAttr.intersectionPoints.size();
 }
 
 DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComputer(const DigitalSet& toIntersect) const

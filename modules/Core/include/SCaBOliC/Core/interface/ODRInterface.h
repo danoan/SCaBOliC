@@ -3,8 +3,8 @@
 
 #include <DGtal/helpers/StdDefs.h>
 #include "DIPaCUS/derivates/Misc.h"
-#include "ODRModel.h"
-#include "SpaceHandleInterface.h"
+#include "SCaBOliC/Core/model/ODRModel.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -26,7 +26,7 @@ namespace SCaBOliC
             virtual ODRModel createODR(OptimizationMode optMode,
                                        ApplicationMode appMode,
                                        const DigitalSet& original,
-                                       bool optRegionInApplication=false) const=0;
+                                       bool optRegionInApplication=false)const =0;
 
             virtual const SpaceHandleInterface* handle() const=0;
 

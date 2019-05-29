@@ -12,7 +12,6 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     c1 = 9.0 / pow(spaceHandle->radius, 6.0);
     c2 = 0;
 
-
     DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(trustForegroundRegion);
     DIPaCUS::Misc::DigitalBallIntersection DBIO = spaceHandle->intersectionComputer(optRegion);
 
@@ -20,12 +19,15 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     DigitalSet temp(domain);
     temp.clear();
 
+    SCaBOliC::Core::IntersectionAttributes iAttr(domain);
+
     double fgCount,optCount;
     for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it)
     {
-        DBI(temp, *it);
-        fgCount = temp.size();
-        temp.clear();
+        spaceHandle->intersectCoefficient(iAttr,DBI,*it);
+
+        fgCount = iAttr.coefficient;
+
 
         if(excludeOptPointsFromAreaComputation)
         {

@@ -10,9 +10,11 @@ add_library(scabolic-core ${LIBRARY_ACTION}
         src/display.cpp
         src/ODRPixels.cpp
         src/ODRInterpixels.cpp
+        src/ODRLinels.cpp
         src/ODRUtils.cpp
         src/PixelSpaceHandle.cpp
-        src/InterpixelSpaceHandle.cpp)
+        src/InterpixelSpaceHandle.cpp
+        src/LinelSpaceHandle.cpp)
 
 target_include_directories(scabolic-core PRIVATE
         include

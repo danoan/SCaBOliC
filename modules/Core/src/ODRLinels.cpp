@@ -1,8 +1,9 @@
-#include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
+#include <DGtal/helpers/StdDefs.h>
+#include "SCaBOliC/Core/ODRLinels/ODRLinels.h"
 
 using namespace SCaBOliC::Core;
 
-ODRPixels::DTL2 ODRPixels::interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
+ODRLinels::DTL2 ODRLinels::interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
     DigitalSet b = getBoundary(domain,original);
     DigitalSet d(domain);
@@ -12,7 +13,7 @@ ODRPixels::DTL2 ODRPixels::interiorDistanceTransform(const Domain& domain, const
     return DTL2(domain, d, DGtal::Z2i::l2Metric);
 }
 
-ODRPixels::DTL2 ODRPixels::exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const
+ODRLinels::DTL2 ODRLinels::exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
     DigitalSet d(domain);
     d.assignFromComplement(original);
@@ -20,7 +21,7 @@ ODRPixels::DTL2 ODRPixels::exteriorDistanceTransform(const Domain& domain, const
     return DTL2(domain, d, DGtal::Z2i::l2Metric);
 }
 
-ODRPixels::DigitalSet ODRPixels::level(const DTL2& dtL2, int lessThan, int greaterThan) const
+ODRLinels::DigitalSet ODRLinels::level(const DTL2& dtL2, int lessThan, int greaterThan) const
 {
     DigitalSet d(dtL2.domain());
     for(auto it=dtL2.domain().begin();it!=dtL2.domain().end();++it)
@@ -31,7 +32,7 @@ ODRPixels::DigitalSet ODRPixels::level(const DTL2& dtL2, int lessThan, int great
     return d;
 }
 
-ODRPixels::DigitalSet ODRPixels::getBoundary(const Domain& domain, const DigitalSet& ds) const
+ODRLinels::DigitalSet ODRLinels::getBoundary(const Domain& domain, const DigitalSet& ds) const
 {
     DigitalSet boundary(domain);
     if(nt==NeighborhoodType::FourNeighborhood)
@@ -45,29 +46,29 @@ ODRPixels::DigitalSet ODRPixels::getBoundary(const Domain& domain, const Digital
     return boundary;
 }
 
-ODRPixels::DigitalSet ODRPixels::omOriginalBoundary(const Domain& domain,
-                                         const DigitalSet& original) const
+ODRLinels::DigitalSet ODRLinels::omOriginalBoundary(const Domain& domain,
+                                                    const DigitalSet& original) const
 {
     return getBoundary(domain,original);
 }
 
-ODRPixels::DigitalSet ODRPixels::omDilationBoundary(const DTL2& dtL2) const
+ODRLinels::DigitalSet ODRLinels::omDilationBoundary(const DTL2& dtL2) const
 {
     return getBoundary(dtL2.domain(),level(dtL2,1));
 }
 
-ODRPixels::DigitalSet ODRPixels::amOriginalBoundary(const Domain& domain,
-                                         const DigitalSet& original) const
+ODRLinels::DigitalSet ODRLinels::amOriginalBoundary(const Domain& domain,
+                                                    const DigitalSet& original) const
 {
     return getBoundary(domain,original);
 }
 
 
-ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DTL2& interiorTransform,
-                                       const DTL2& exteriorTransform,
-                                       const unsigned int radius,
-                                       const LevelDefinition ld,
-                                       int length) const
+ODRLinels::DigitalSet ODRLinels::amAroundBoundary(const DTL2& interiorTransform,
+                                                  const DTL2& exteriorTransform,
+                                                  const unsigned int radius,
+                                                  const LevelDefinition ld,
+                                                  int length) const
 {
     DigitalSet ir = amLevel(interiorTransform,radius,ld,length);
     DigitalSet er = amLevel(exteriorTransform,radius,ld,length);
@@ -79,10 +80,10 @@ ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DTL2& interiorTransform,
     return ab;
 }
 
-ODRPixels::DigitalSet ODRPixels::amLevel(const DTL2& distanceTransform,
-                              const unsigned int radius,
-                              const LevelDefinition ld,
-                              int length) const
+ODRLinels::DigitalSet ODRLinels::amLevel(const DTL2& distanceTransform,
+                                         const unsigned int radius,
+                                         const LevelDefinition ld,
+                                         int length) const
 {
     DigitalSet temp(distanceTransform.domain());
     if(ld==LevelDefinition::LD_CloserFromCenter)
@@ -97,7 +98,7 @@ ODRPixels::DigitalSet ODRPixels::amLevel(const DTL2& distanceTransform,
 }
 
 
-ODRPixels::ODRPixels(const ApplicationCenter appCenter,
+ODRLinels::ODRLinels(const ApplicationCenter appCenter,
                      const CountingMode cntMode,
                      double radius,
                      double gridStep,
@@ -118,19 +119,25 @@ ODRPixels::ODRPixels(const ApplicationCenter appCenter,
 }
 
 
-ODRModel ODRPixels::createODR (OptimizationMode optMode,
+ODRModel ODRLinels::createODR (OptimizationMode optMode,
                                ApplicationMode appMode,
                                const DigitalSet& original,
-                               bool optRegionInApplication) const
+                               bool optRegionInApplication)
 {
     const double& radius = spaceHandle.scaledRadius();
 
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));
 
+    DGtal::Z2i::KSpace kspace;
+    kspace.init(domain.lowerBound(),domain.upperBound(),true);
+    Domain KDomain(kspace.lowerBound(),kspace.upperBound());
+
     DigitalSet workingSet(domain);
     DigitalSet optRegion(domain);
-    DigitalSet applicationRegion(domain);
+
+
+    DigitalSet applicationRegion(KDomain);
 
     switch (optMode) {
         case OptimizationMode::OM_CorrectConvexities:
@@ -166,34 +173,18 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary: {
-            applicationRegion.insert(optRegion.begin(),optRegion.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(interiorTransform,exteriorTransform,radius,this->ld,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amLevel(interiorTransform,radius,this->ld,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_ExternRange:
-        {
-            DigitalSet temp = amLevel(exteriorTransform,radius,this->ld,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
+            DGtal::Z2i::Curve curve;
+            DIPaCUS::Misc::computeBoundaryCurve(curve,original);
+
+            for(auto it=curve.begin();it!=curve.end();++it)
+                applicationRegion.insert(kspace.sCoords(*it));
+
             break;
         }
         default:
         {
             throw std::runtime_error("Invalid ODR configuration");
         }
-    }
-
-    if(optRegionInApplication)
-    {
-        applicationRegion.insert(optRegion.begin(),optRegion.end());
     }
 
 

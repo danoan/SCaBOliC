@@ -7,8 +7,10 @@
 
 #include <DGtal/helpers/StdDefs.h>
 
-#include "SCaBOliC/Core/ODRPixels.h"
-#include "SCaBOliC/Core/ODRModel.h"
+#include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
+#include "SCaBOliC/Core/ODRLinels/ODRLinels.h"
+
+#include "SCaBOliC/Core/model/ODRModel.h"
 #include "SCaBOliC/Energy/ISQ/ISQEnergy.h"
 #include "SCaBOliC/Energy/ISQ/InputData.h"
 #include "SCaBOliC/Energy/model/Solution.h"
@@ -41,7 +43,7 @@ struct InputData
         excludeOptPointsFromAreaComputation = false;
         penalizationMode = ISQ::InputData::PenalizationMode::No_Penalization;
 
-        optRegionInApplication = true;
+        optRegionInApplication = false;
 
         dataTerm = 0;
         sqTerm = 1.0;
@@ -116,8 +118,11 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 {
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
-    ODRPixels odrPixels(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
-    ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
+    ODRPixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
+
+//    ODRLinels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+//    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
@@ -134,7 +139,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             id.sqTerm,
                             id.lengthTerm);
 
-    ISQEnergy energy(isqInput,odrPixels.handle());
+    ISQEnergy energy(isqInput,odrFactory.handle());
 
 
     ISQEnergy::Solution solution(domain);
@@ -145,7 +150,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     DigitalSet dsOut(domain);
     DigitalSet dsIn = odr.trustFRG;
 
-    odrPixels.handle()->solutionSet(dsOut,dsIn,odr,id.optMode,solution.labelsVector.data(),energy.vm().pim);
+    odrFactory.handle()->solutionSet(dsOut,dsIn,odr,id.optMode,solution.labelsVector.data(),energy.vm().pim);
     return dsOut;
 }
 

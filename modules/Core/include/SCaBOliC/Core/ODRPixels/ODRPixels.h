@@ -10,9 +10,9 @@
 #include "DIPaCUS/components/Neighborhood.h"
 #include "DIPaCUS/derivates/Misc.h"
 
-#include "ODRModel.h"
-#include "ODRInterface.h"
-#include "ODRUtils.h"
+#include "SCaBOliC/Core/model/ODRModel.h"
+#include "SCaBOliC/Core/interface/ODRInterface.h"
+#include "SCaBOliC/Core/ODRUtils.h"
 #include "PixelSpaceHandle.h"
 
 namespace SCaBOliC

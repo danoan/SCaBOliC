@@ -7,7 +7,7 @@
 #include "DIPaCUS/derivates/Misc.h"
 
 #include "SCaBOliC/Energy/ISQ/VariableMap.h"
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 #include "CoefficientsComputer.h"
 

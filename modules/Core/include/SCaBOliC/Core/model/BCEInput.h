@@ -4,7 +4,7 @@
 #include <DGtal/helpers/StdDefs.h>
 #include <DGtal/images/ImageContainerBySTLVector.h>
 
-#include "ODRPixels.h"
+#include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
 
 namespace SCaBOliC
 {
