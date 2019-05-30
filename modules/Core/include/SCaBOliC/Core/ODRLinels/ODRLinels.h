@@ -56,9 +56,9 @@ namespace SCaBOliC
             ODRModel createODR(OptimizationMode optMode,
                                ApplicationMode appMode,
                                const DigitalSet& original,
-                               bool optRegionInApplication=false);
+                               bool optRegionInApplication=false) const;
 
-            SpaceHandleInterface* handle() {return &spaceHandle;};
+            const SpaceHandleInterface* handle() const {return &spaceHandle;};
 
         private:
             DTL2 interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const;

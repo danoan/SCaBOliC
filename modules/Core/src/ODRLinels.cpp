@@ -122,7 +122,7 @@ ODRLinels::ODRLinels(const ApplicationCenter appCenter,
 ODRModel ODRLinels::createODR (OptimizationMode optMode,
                                ApplicationMode appMode,
                                const DigitalSet& original,
-                               bool optRegionInApplication)
+                               bool optRegionInApplication) const
 {
     const double& radius = spaceHandle.scaledRadius();
 
@@ -131,7 +131,7 @@ ODRModel ODRLinels::createODR (OptimizationMode optMode,
 
     DGtal::Z2i::KSpace kspace;
     kspace.init(domain.lowerBound(),domain.upperBound(),true);
-    Domain KDomain(kspace.lowerBound(),kspace.upperBound());
+    Domain KDomain(kspace.lowerCell().preCell().coordinates,kspace.upperCell().preCell().coordinates);
 
     DigitalSet workingSet(domain);
     DigitalSet optRegion(domain);
@@ -177,7 +177,7 @@ ODRModel ODRLinels::createODR (OptimizationMode optMode,
             DIPaCUS::Misc::computeBoundaryCurve(curve,original);
 
             for(auto it=curve.begin();it!=curve.end();++it)
-                applicationRegion.insert(kspace.sCoords(*it));
+                applicationRegion.insert(kspace.sKCoords(*it));
 
             break;
         }
