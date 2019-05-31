@@ -9,11 +9,12 @@ PixelSpaceHandle::Point PixelSpaceHandle::neighborhoodFilter[5] = {PixelSpaceHan
                                                                    PixelSpaceHandle::Point(0,0)};
 
 
-void PixelSpaceHandle::intersectCoefficient(IntersectionAttributes& iAttr,DigitalBallIntersection& DBI, const Point& pt) const
+PixelSpaceHandle::Intersections PixelSpaceHandle::intersectCoefficient(DigitalBallIntersection& DBI, const Point& pt) const
 {
-    iAttr.intersectionPoints.clear();
-    DBI(iAttr.intersectionPoints,pt);
-    iAttr.coefficient = iAttr.intersectionPoints.size();
+    IntersectionAttributes::PointSet ps;
+    DBI(ps,pt);
+
+    return { IntersectionAttributes(ps.size(),ps) };
 }
 
 DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(const DigitalSet &toIntersect) const

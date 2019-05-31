@@ -15,6 +15,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
             typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
+            typedef std::vector<IntersectionAttributes> Intersections;
 
         public:
             SpaceHandleInterface(double radius,double gridStep):radius(radius),gridStep(gridStep){}
@@ -27,7 +28,7 @@ namespace SCaBOliC
                                      const std::unordered_map<Point, unsigned int>& pointToVar) const = 0;
 
 
-            virtual void intersectCoefficient(IntersectionAttributes& iAttr, DigitalBallIntersection& DBI,const Point& pt) const = 0;
+            virtual Intersections intersectCoefficient(DigitalBallIntersection& DBI,const Point& pt) const = 0;
             virtual DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const=0;
 
             virtual Point* neighBegin() const=0;

@@ -34,7 +34,7 @@ struct InputData
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
-        optMode = ODRModel::OptimizationMode::OM_CorrectConcavities;
+        optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
         appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
@@ -135,6 +135,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             bgDistr,
                             id.excludeOptPointsFromAreaComputation,
                             id.penalizationMode,
+                            false,
                             id.dataTerm,
                             id.sqTerm,
                             id.lengthTerm);

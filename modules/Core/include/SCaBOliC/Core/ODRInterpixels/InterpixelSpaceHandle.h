@@ -15,6 +15,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
             typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
+            typedef std::vector<IntersectionAttributes> Intersections;
 
             typedef ODRModel::CountingMode CountingMode;
 
@@ -48,7 +49,7 @@ namespace SCaBOliC
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
 
-            void intersectCoefficient(IntersectionAttributes& iAttr, DigitalBallIntersection& DBI, const Point& pt) const;
+            Intersections intersectCoefficient(DigitalBallIntersection& DBI, const Point& pt) const;
             DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;
 
 

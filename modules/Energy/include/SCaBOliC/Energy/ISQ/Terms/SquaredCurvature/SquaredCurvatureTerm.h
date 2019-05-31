@@ -27,6 +27,7 @@ namespace SCaBOliC
 
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
+                typedef SpaceHandleInterface::Intersections Intersections;
 
             public:
                 SquaredCurvatureTerm(const InputData& id,

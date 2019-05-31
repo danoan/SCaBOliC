@@ -14,7 +14,9 @@ namespace SCaBOliC
         public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
+            typedef DGtal::Z2i::KSpace KSpace;
             typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
+            typedef std::vector<IntersectionAttributes> Intersections;
 
         public:
             LinelSpaceHandle(double radius, double gridStep):SpaceHandleInterface(radius,gridStep){}
@@ -29,7 +31,7 @@ namespace SCaBOliC
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
 
-            void intersectCoefficient(IntersectionAttributes& iAttr,DigitalBallIntersection& DBI, const Point& kpt) const;
+            Intersections intersectCoefficient(DigitalBallIntersection& DBI, const Point& kpt) const;
             DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;
 
             double pixelArea() const;

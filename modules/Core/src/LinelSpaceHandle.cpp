@@ -9,27 +9,22 @@ LinelSpaceHandle::Point LinelSpaceHandle::neighborhoodFilter[5] = {LinelSpaceHan
                                                                    LinelSpaceHandle::Point(0,0)};
 
 
-void LinelSpaceHandle::intersectCoefficient(IntersectionAttributes& iAttr, DigitalBallIntersection& DBI, const Point& kpt) const
+LinelSpaceHandle::Intersections LinelSpaceHandle::intersectCoefficient(DigitalBallIntersection& DBI, const Point& kpt) const
 {
-    iAttr.intersectionPoints.clear();
+    IntersectionAttributes::PointSet psInner;
+    IntersectionAttributes::PointSet psOuter;
 
-    DGtal::Z2i::SCell linel = iAttr.kspace.sCell(kpt,true);
-    DGtal::Z2i::SCells pixels = iAttr.kspace.sUpperIncident(linel);
+    KSpace kspace;
+    kspace.init( kpt/2.0,kpt/2.0+Point(2,2),true);
+
+    DGtal::Z2i::SCell linel = kspace.sCell(kpt,true);
+    DGtal::Z2i::SCells pixels = kspace.sUpperIncident(linel);
 
     double v=0;
-    for(auto it=pixels.begin();it!=pixels.end();++it)
-    {
-        iAttr.intersectionPoints.clear();
-        DBI(iAttr.intersectionPoints,iAttr.kspace.sCoords(*it));
-        v+= iAttr.intersectionPoints.size();
-    }
+    DBI(psInner,kspace.sCoords(pixels[0]));
+    DBI(psOuter,kspace.sCoords(pixels[1]));
 
-    for(auto it=pixels.begin();it!=pixels.end();++it)
-    {
-        DBI(iAttr.intersectionPoints,iAttr.kspace.sCoords(*it));
-    }
-
-    iAttr.coefficient = v/2.0;
+    return { IntersectionAttributes(psInner.size()/2.0,psInner), IntersectionAttributes(psOuter.size()/2.0,psOuter) };
 }
 
 DIPaCUS::Misc::DigitalBallIntersection LinelSpaceHandle::intersectionComputer(const DigitalSet &toIntersect) const

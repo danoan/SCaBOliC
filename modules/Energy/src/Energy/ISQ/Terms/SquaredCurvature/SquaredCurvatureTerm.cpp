@@ -83,10 +83,13 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
                                      const CoefficientsComputer& cc,
                                      const VariableMap& vm)
 {
+    this->constantFactor = 9.0 / pow(this->spaceHandle->radius, 6.0);
+    this->constantTerm = 0;
+
+
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
     DIPaCUS::Misc::DigitalBallIntersection DBIO = this->spaceHandle->intersectionComputer(ODR.optRegion);
-    IntersectionAttributes iAttr(DBIO.domain());
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
@@ -96,22 +99,31 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     maxCtrb=0;
     for(auto yit=ODR.applicationRegion.begin();yit!=ODR.applicationRegion.end();++yit)
     {
-        this->spaceHandle->intersectCoefficient(iAttr,DBIO,*yit);
+        Intersections intersections = this->spaceHandle->intersectCoefficient(DBIO,*yit);
 
-        for (auto xjt = iAttr.intersectionPoints.begin(); xjt != iAttr.intersectionPoints.end(); ++xjt)
+        for(auto it=intersections.begin();it!=intersections.end();++it)
         {
-            Index xj = iiv.at(*xjt);
+            const IntersectionAttributes& iAttr = *it;
 
-            UTM(1,xj) += cc.retrieve(*yit).xi;
-            maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
-
-            auto ut = xjt;
-            ++ut;
-            for(;ut!=iAttr.intersectionPoints.end();++ut)
+            for (auto xjt = iAttr.intersectionPoints.begin(); xjt != iAttr.intersectionPoints.end(); ++xjt)
             {
-                addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
+                Index xj = iiv.at(*xjt);
+
+                UTM(1,xj) += cc.unary(*yit,*xjt);
+
+                maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
+
+                auto xkt = xjt;
+                ++xkt;
+                for(;xkt!=iAttr.intersectionPoints.end();++xkt)
+                {
+                    Index xk = iiv.at(*xkt);
+                    addCoeff(PTM,maxCtrb,xj,xk,cc.pairwise(*yit,*xjt,*xkt) );
+                }
             }
         }
+
+
     }
 
     for(auto iti=ODR.optRegion.begin();iti!=ODR.optRegion.end();++iti)

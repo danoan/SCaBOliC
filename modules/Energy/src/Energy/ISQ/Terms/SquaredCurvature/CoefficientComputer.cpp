@@ -9,36 +9,30 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            PenalizationMode penalization,
                                            bool excludeOptPointsFromAreaComputation)
 {
+    typedef SpaceHandleInterface::Intersections Intersections;
+
     c1 = 9.0 / pow(spaceHandle->radius, 6.0);
     c2 = 0;
 
-    DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(trustForegroundRegion);
-    DIPaCUS::Misc::DigitalBallIntersection DBIO = spaceHandle->intersectionComputer(optRegion);
+    DigitalSet trustPlusOpt = optRegion;
+    trustPlusOpt.insert(trustForegroundRegion.begin(),trustForegroundRegion.end());
 
-    Domain domain = trustForegroundRegion.domain();
-    DigitalSet temp(domain);
-    temp.clear();
+    DIPaCUS::Misc::DigitalBallIntersection DBITO = spaceHandle->intersectionComputer(trustPlusOpt);
 
-    SCaBOliC::Core::IntersectionAttributes iAttr(domain);
 
     double fgCount,optCount;
     for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it)
     {
-        spaceHandle->intersectCoefficient(iAttr,DBI,*it);
-
-        fgCount = iAttr.coefficient;
-
-
-        if(excludeOptPointsFromAreaComputation)
+        Intersections inters = spaceHandle->intersectCoefficient(DBITO,*it);
+        for(auto itI=inters.begin();itI!=inters.end();++itI)
         {
-            DBIO(temp,*it);
-            optCount = temp.size();
-            temp.clear();
-
-            insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
-        }else
-        {
-            insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount );
+            if(excludeOptPointsFromAreaComputation)
+            {
+                updateCoefficients(*itI,optRegion, (spaceHandle->pixelArea()-optCount)/2.0, *it);
+            }else
+            {
+                updateCoefficients(*itI,optRegion, spaceHandle->pixelArea()/2.0 ,*it );
+            }
         }
     }
 
@@ -58,20 +52,38 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
 
 }
 
-void CoefficientsComputer::insertConstant(const Point &p,
-                                          double halfBallArea,
-                                          double Ij)
+void CoefficientsComputer::updateCoefficients(const IntersectionAttributes& iAttr,
+                                              const DigitalSet& optRegion,
+                                              const double halfBallArea,
+                                              const Point& appPoint)
 {
-    CoefficientData ch;
+    PointSet optPoints;
+    const PointSet& iPoints = iAttr.intersectionPoints;
 
-    c2 += pow(halfBallArea, 2);
-    c2 += pow(Ij, 2);
-    c2 += -2 * halfBallArea * Ij;
+    for(auto it=iPoints.begin();it!=iPoints.end();++it)
+    {
+        if(optRegion(*it)) optPoints.insert(*it);
+    }
 
-    ch.xi = (1 - 2 * halfBallArea + 2 * Ij);
-    ch.xi_xj = 2;
+    double fgCount = iPoints.size()-optPoints.size();
+    _cd.constants[appPoint] = pow(halfBallArea, 2) + pow(fgCount, 2) -2 * halfBallArea * fgCount;
+    c2+=pow(halfBallArea, 2) + pow(fgCount, 2) -2 * halfBallArea * fgCount;
 
+    for(auto itJ=optPoints.begin();itJ!=optPoints.end();++itJ)
+    {
+        MyMultiIndex miUnary;
+        miUnary << appPoint << *itJ;
 
+        _cd.unary[miUnary] = (1-2*halfBallArea + 2*fgCount);
 
-    _cm[p] = ch;
+        auto itK = itJ;
+        ++itK;
+        for(;itK!=optPoints.end();++itK)
+        {
+            MyMultiIndex miPairwise;
+            miPairwise << appPoint << *itJ << *itK;
+
+            _cd.pairwise[miPairwise] = 2;
+        }
+    }
 }

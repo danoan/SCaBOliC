@@ -9,18 +9,14 @@ namespace SCaBOliC
     {
         struct IntersectionAttributes
         {
-            typedef DGtal::Z2i::DigitalSet DigitalSet;
-            typedef DGtal::Z2i::KSpace KSpace;
-            typedef DGtal::Z2i::Domain Domain;
+            typedef DGtal::Z2i::Point Point;
+            typedef std::set<Point> PointSet;
 
-            IntersectionAttributes(const Domain& domain):intersectionPoints(domain)
-            {
-                kspace.init(domain.lowerBound(),domain.upperBound(),true);
-            }
+            IntersectionAttributes(const double coefficient, const PointSet &intersectionPoints) : coefficient(
+                    coefficient), intersectionPoints(intersectionPoints) {}
 
-            double coefficient;
-            DigitalSet intersectionPoints;
-            KSpace kspace;
+            const double coefficient;
+            const PointSet intersectionPoints;
         };
     }
 }

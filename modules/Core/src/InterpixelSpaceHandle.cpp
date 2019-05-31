@@ -100,11 +100,12 @@ void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
 }
 
 
-void InterpixelSpaceHandle::intersectCoefficient(IntersectionAttributes& iAttr,DigitalBallIntersection& DBI, const Point& pt) const
+InterpixelSpaceHandle::Intersections InterpixelSpaceHandle::intersectCoefficient(DigitalBallIntersection& DBI, const Point& pt) const
 {
-    iAttr.intersectionPoints.clear();
-    DBI(iAttr.intersectionPoints,pt);
-    iAttr.coefficient = iAttr.intersectionPoints.size();
+    IntersectionAttributes::PointSet ps;
+    DBI(ps,pt);
+    
+    return { IntersectionAttributes(ps.size(),ps) };
 }
 
 DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComputer(const DigitalSet& toIntersect) const
