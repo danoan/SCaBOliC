@@ -1,5 +1,5 @@
-#ifndef SCABOLIC_ENERGY_ISQ_COEFFICIENTSCOMPUTER
-#define SCABOLIC_ENERGY_ISQ_COEFFICIENTSCOMPUTER
+#ifndef SCABOLIC_ENERGY_ISQ_LINELCOEFFICIENTSCOMPUTER
+#define SCABOLIC_ENERGY_ISQ_LINELCOEFFICIENTSCOMPUTER
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DIPaCUS/derivates/Misc.h>
@@ -18,7 +18,7 @@ namespace SCaBOliC
     {
         namespace ISQ
             {
-            class CoefficientsComputer: public ICoefficientsComputer
+            class LinelCoefficientsComputer: public ICoefficientsComputer
             {
             public:
                 typedef DGtal::Z2i::Point Point;
@@ -37,7 +37,7 @@ namespace SCaBOliC
 
             public:
 
-                CoefficientsComputer(const DigitalSet &applicationRegion,
+                LinelCoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
                                      const DigitalSet &optRegion,
                                      const SpaceHandleInterface* spaceHandle,
@@ -64,8 +64,16 @@ namespace SCaBOliC
                 inline double binaryPenalization() const{return p2;};
 
             private:
+                void optPointsCoefficients(const PointSet& psOpt,
+                                           const double halfBallArea,
+                                           const double fgCount,
+                                           const Point& appPoint);
 
-                void updateCoefficients(const IntersectionAttributes& iAttr,
+                PointSet optPoints(const DigitalSet& optRegion,
+                                    const IntersectionAttributes& iAttr);
+
+                void updateCoefficients(const IntersectionAttributes& iAttrFirst,
+                                        const IntersectionAttributes& iAttrSecond,
                                         const DigitalSet& optRegion,
                                         const double halfBallArea,
                                         const Point& appPoint);
@@ -86,4 +94,4 @@ namespace SCaBOliC
         }
     }
 }
-#endif //SCABOLIC_ENERGY_ISQ_COEFFICIENTSCOMPUTER
+#endif //SCABOLIC_ENERGY_ISQ_LINELCOEFFICIENTSCOMPUTER

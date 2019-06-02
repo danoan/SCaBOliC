@@ -54,7 +54,7 @@ namespace SCaBOliC
                 CM_PIXEL
             };
 
-            enum SpaceMode{Pixel,Interpixel};
+            enum SpaceMode{Pixel,Linel,Interpixel};
             enum NeighborhoodType{FourNeighborhood,EightNeighborhood};
 
 

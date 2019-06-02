@@ -10,6 +10,7 @@
 #include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 #include "CoefficientsComputer.h"
+#include "LinelCoefficientsComputer.h"
 
 
 namespace SCaBOliC
@@ -51,7 +52,7 @@ namespace SCaBOliC
                 void setCoeffs(OptimizationData& od,
                                double& maxCtrb,
                                const InputData& id,
-                               const CoefficientsComputer& cc,
+                               const ICoefficientsComputer& cc,
                                const VariableMap& vm);
 
                 void addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,

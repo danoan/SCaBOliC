@@ -30,6 +30,7 @@ namespace SCaBOliC
 
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
+            SpaceMode spaceMode() const{ return SpaceMode::Linel; }
 
             Intersections intersectCoefficient(DigitalBallIntersection& DBI, const Point& kpt) const;
             DIPaCUS::Misc::DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;

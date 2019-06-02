@@ -29,12 +29,14 @@ namespace SCaBOliC
 
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
+            SpaceMode spaceMode() const{ return SpaceMode::Pixel; }
 
             Intersections intersectCoefficient(DigitalBallIntersection& DBI, const Point& pt) const;
             DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;
 
 
             double pixelArea() const;
+            
 
         private:
             static Point neighborhoodFilter[5];

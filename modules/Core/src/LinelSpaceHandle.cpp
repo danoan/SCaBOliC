@@ -15,7 +15,7 @@ LinelSpaceHandle::Intersections LinelSpaceHandle::intersectCoefficient(DigitalBa
     IntersectionAttributes::PointSet psOuter;
 
     KSpace kspace;
-    kspace.init( kpt/2.0,kpt/2.0+Point(2,2),true);
+    kspace.init( kpt/2.0 - Point(4,4),kpt/2.0+Point(4,4),true);
 
     DGtal::Z2i::SCell linel = kspace.sCell(kpt,true);
     DGtal::Z2i::SCells pixels = kspace.sUpperIncident(linel);

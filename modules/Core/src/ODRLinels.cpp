@@ -114,7 +114,7 @@ ODRLinels::ODRLinels(const ApplicationCenter appCenter,
                                                 erosionSE(se),
                                                 spaceHandle(radius,gridStep)
 {
-    assert(appCenter==ApplicationCenter::AC_PIXEL);
+    assert(appCenter==ApplicationCenter::AC_LINEL);
     assert(cntMode==CountingMode::CM_PIXEL);
 }
 
