@@ -57,6 +57,8 @@ namespace SCaBOliC
                     return _cd.pairwise.at(mi);
                 }
 
+                inline CoefficientData data(){ return _cd; }
+
                 inline double scalingFactor() const { return c1; }
                 inline double constantTerm() const { return c1*c2; }
 

@@ -4,6 +4,7 @@
 #include <DIPaCUS/derivates/Misc.h>
 #include "SCaBOliC/Core/model/ODRModel.h"
 #include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/model/IntersectionAttributes.h"
 
 namespace SCaBOliC
 {
@@ -17,6 +18,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::KSpace KSpace;
             typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
             typedef std::vector<IntersectionAttributes> Intersections;
+            typedef ODRModel::SpaceMode  SpaceMode;
 
         public:
             LinelSpaceHandle(double radius, double gridStep):SpaceHandleInterface(radius,gridStep){}
