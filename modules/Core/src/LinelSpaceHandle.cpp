@@ -40,14 +40,20 @@ void LinelSpaceHandle::solutionSet(DigitalSet &outputDS,
                                    const int *varValue,
                                    const std::unordered_map<Point, unsigned int> &pointToVar) const
 {
-    const DigitalSet& optRegion = odrModel.optRegion;
+    //I assume that pixels in pointToVar are expresses in half integer coordinates (KSpace)
 
+    const DigitalSet& optRegion = odrModel.optRegion;
+    KSpace kspace;
+    kspace.init(optRegion.domain().lowerBound(),optRegion.domain().upperBound(),true);
+
+    KSpace::SCell pixelModel = kspace.sCell(Point(1,1),true);
     DigitalSet temp(outputDS.domain());
     temp.insert(initialDS.begin(),initialDS.end());
     for (DigitalSet::ConstIterator it = optRegion.begin();
          it != optRegion.end(); ++it)
     {
-        if (varValue[ pointToVar.at(*it) ] == 1) {
+        Point kCoords = kspace.sKCoords( kspace.sCell(*it,pixelModel) );
+        if (varValue[ pointToVar.at(kCoords) ] == 1) {
             temp.insert(*it);
         }
     }
