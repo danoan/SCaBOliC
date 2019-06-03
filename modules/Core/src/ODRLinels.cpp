@@ -175,7 +175,7 @@ ODRModel ODRLinels::createODR (OptimizationMode optMode,
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary:
         {
-            appPixels.insert(original.begin(),original.end());
+            appPixels.insert(optRegion.begin(),optRegion.end());
             break;
         }
         case ApplicationMode::AM_AroundBoundary:
