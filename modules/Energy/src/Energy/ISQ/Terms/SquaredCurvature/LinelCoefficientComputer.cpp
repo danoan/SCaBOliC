@@ -60,9 +60,13 @@ LinelCoefficientsComputer::PointSet LinelCoefficientsComputer::optPoints(const D
     PointSet psOpt;
     const PointSet& iPoints = iAttr.intersectionPoints;
 
+    //Store Khalimsky coordinates for linels (appRegion) and pixels(optRegion)
+    DGtal::Z2i::KSpace kspace;
+    kspace.init(optRegion.domain().lowerBound(),optRegion.domain().upperBound(),true);
+    DGtal::Z2i::SCell pixelModel = kspace.sCell(Point(1,1),true);
     for(auto it=iPoints.begin();it!=iPoints.end();++it)
     {
-        if(optRegion(*it)) psOpt.insert(*it);
+        if(optRegion(*it)) psOpt.insert( kspace.sKCoords( kspace.sCell(*it,pixelModel)) );
     }
 
     return psOpt;
