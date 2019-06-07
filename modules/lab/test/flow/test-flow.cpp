@@ -27,7 +27,7 @@ struct InputData
 {
     InputData()
     {
-        appCenter = ODRModel::ApplicationCenter::AC_PIXEL;
+        appCenter = ODRModel::ApplicationCenter::AC_LINEL;
         cntMode = ODRModel::CountingMode::CM_PIXEL;
         levels =1;
         ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
@@ -35,7 +35,7 @@ struct InputData
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
-        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
+        appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
 
         radius = 3;
         gridStep=1.0;
@@ -118,11 +118,11 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 {
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
-    ODRPixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
-    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
-
-//    ODRLinels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+//    ODRPixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
 //    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
+
+    ODRLinels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 

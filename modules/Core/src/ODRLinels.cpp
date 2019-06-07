@@ -170,18 +170,15 @@ ODRModel ODRLinels::createODR (OptimizationMode optMode,
 
     trustBKG.assignFromComplement(tempp);
 
-    DigitalSet appPixels(domain);
-
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary:
         {
-            appPixels.insert(optRegion.begin(),optRegion.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary:
-        {
-            DigitalSet temp = amAroundBoundary(interiorTransform,exteriorTransform,radius,this->ld,this->levels);
-            appPixels.insert(temp.begin(),temp.end());
+            DGtal::Z2i::Curve curve;
+            DIPaCUS::Misc::computeBoundaryCurve(curve,original);
+
+            for(auto it=curve.begin();it!=curve.end();++it)
+                applicationRegion.insert(kspace.sKCoords(*it));
+
             break;
         }
         default:
@@ -190,20 +187,7 @@ ODRModel ODRLinels::createODR (OptimizationMode optMode,
         }
     }
 
-    if(optRegionInApplication)
-    {
-        appPixels.insert(optRegion.begin(),optRegion.end());
-    }
 
-    DGtal::Z2i::KSpace::SCell pixelModel = kspace.sCell(Point(1,1),true);
-    for(auto it=appPixels.begin();it!=appPixels.end();++it)
-    {
-        auto scells = kspace.sLowerIncident( kspace.sCell(*it,pixelModel) );
-        for(auto itS=scells.begin();itS!=scells.end();++itS)
-        {
-            applicationRegion.insert( kspace.sKCoords(*itS) );
-        }
-    }
 
 
     return ODRModel(domain,

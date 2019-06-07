@@ -24,6 +24,7 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::Point Point;
                 typedef DGtal::Z2i::Domain Domain;
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
+                typedef DGtal::Z2i::KSpace KSpace;
 
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
                 typedef SCaBOliC::Core::IntersectionAttributes IntersectionAttributes;
@@ -46,14 +47,15 @@ namespace SCaBOliC
 
                 inline const double &unary(const Point& appPoint, const Point &p1) const
                 {
+                    //AppPoint arrives in Khalimsky Coordinates, but pixels arrives in Integer coordinates
                     MyMultiIndex mi;
-                    mi << appPoint << p1;
+                    mi << appPoint << this->kspace.sSpel(p1,true).preCell().coordinates;
                     return _cd.unary.at(mi);
                 }
                 inline const double &pairwise(const Point& appPoint, const Point &p1, const Point& p2) const
                 {
                     MyMultiIndex mi;
-                    mi << appPoint << p1 << p2;
+                    mi << appPoint << kspace.sSpel(p1,true).preCell().coordinates << kspace.sSpel(p2,true).preCell().coordinates;
                     return _cd.pairwise.at(mi);
                 }
 
@@ -82,6 +84,7 @@ namespace SCaBOliC
 
             private:
                 CoefficientData _cd;
+                KSpace kspace;
 
                 double c1;
                 double c2;

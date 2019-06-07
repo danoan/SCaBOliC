@@ -20,6 +20,9 @@ LinelSpaceHandle::Intersections LinelSpaceHandle::intersectCoefficient(DigitalBa
     DGtal::Z2i::SCell linel = kspace.sCell(kpt,true);
     DGtal::Z2i::SCells pixels = kspace.sUpperIncident(linel);
 
+    std::cout << pixels[0] << "  " << kspace.sCoords(pixels[0]) << std::endl;
+    std::cout << pixels[1] << "  " << kspace.sCoords(pixels[1]) << std::endl;
+
     double v=0;
     DBI(psInner,kspace.sCoords(pixels[0]));
     DBI(psOuter,kspace.sCoords(pixels[1]));

@@ -11,6 +11,8 @@ LinelCoefficientsComputer::LinelCoefficientsComputer(const DigitalSet &applicati
 {
     typedef SpaceHandleInterface::Intersections Intersections;
 
+    this->kspace.init(optRegion.domain().lowerBound(),optRegion.domain().upperBound(),true);
+
     c1 = 9.0 / pow(spaceHandle->radius, 6.0);
     c2 = 0;
 
@@ -61,12 +63,10 @@ LinelCoefficientsComputer::PointSet LinelCoefficientsComputer::optPoints(const D
     const PointSet& iPoints = iAttr.intersectionPoints;
 
     //Store Khalimsky coordinates for linels (appRegion) and pixels(optRegion)
-    DGtal::Z2i::KSpace kspace;
-    kspace.init(optRegion.domain().lowerBound(),optRegion.domain().upperBound(),true);
-    DGtal::Z2i::SCell pixelModel = kspace.sCell(Point(1,1),true);
+    DGtal::Z2i::SCell pixelModel = this->kspace.sCell(Point(1,1),true);
     for(auto it=iPoints.begin();it!=iPoints.end();++it)
     {
-        if(optRegion(*it)) psOpt.insert( kspace.sKCoords( kspace.sCell(*it,pixelModel)) );
+        if(optRegion(*it)) psOpt.insert( this->kspace.sKCoords( this->kspace.sCell(*it,pixelModel)) );
     }
 
     return psOpt;
@@ -104,7 +104,6 @@ void LinelCoefficientsComputer::updateCoefficients(const IntersectionAttributes&
 {
     PointSet optPointsFirst = optPoints(optRegion,iAttrFirst);
     PointSet optPointsSecond = optPoints(optRegion,iAttrSecond);
-
 
     double fgCount = iAttrFirst.intersectionPoints.size()-optPointsFirst.size() +
             iAttrSecond.intersectionPoints.size()-optPointsSecond.size();
