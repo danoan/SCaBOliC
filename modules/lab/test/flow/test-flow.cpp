@@ -34,7 +34,7 @@ struct InputData
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
-        optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
+        optMode = ODRModel::OptimizationMode::OM_CorrectConcavities;
         appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
 
         radius = 3;
@@ -94,7 +94,7 @@ InputData readInput(int argc, char* argv[])
         exit(1);
     }
 
-    while( (opt=getopt(argc,argv,"i:f:"))!=-1 )
+    while( (opt=getopt(argc,argv,"i:f:g:q:h:r:"))!=-1 )
     {
         switch(opt)
         {
@@ -106,6 +106,27 @@ InputData readInput(int argc, char* argv[])
             case 'f':
             {
                 id.imageFilepath=optarg;
+                break;
+            }
+            case 'g':
+            {
+                id.lengthTerm=std::atof(optarg);
+                break;
+            }
+            case 'q':
+            {
+                id.sqTerm=std::atof(optarg);
+                break;
+            }
+            case 'h':
+            {
+                id.gridStep=std::atof(optarg);
+                break;
+            }
+            case 'r':
+            {
+                id.radius=std::atof(optarg);
+                break;
             }
         }
     }
@@ -155,9 +176,9 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     return dsOut;
 }
 
-void shapeTest(const InputData& id)
+void shapeTest(InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::square(0.5);
+    DigitalSet square = DIPaCUS::Shapes::square(0.25);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);
@@ -168,6 +189,9 @@ void shapeTest(const InputData& id)
     int it=0;
     while(it<id.iterations)
     {
+        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
+        else id.optMode = ODRModel::OM_CorrectConvexities;
+
         workSet = flow(workSet,id,domain);
         ++it;
     }
