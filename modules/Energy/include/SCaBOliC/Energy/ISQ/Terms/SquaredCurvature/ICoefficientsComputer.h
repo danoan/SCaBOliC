@@ -23,6 +23,8 @@ namespace SCaBOliC
 
                 virtual double unaryPenalization() const=0;
                 virtual double binaryPenalization() const=0;
+
+                virtual ~ICoefficientsComputer(){};
             };
         }
     }

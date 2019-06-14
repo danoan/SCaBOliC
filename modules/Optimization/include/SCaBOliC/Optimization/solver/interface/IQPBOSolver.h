@@ -31,6 +31,8 @@ namespace SCaBOliC
                                Labels& labels,
                                int max_num_iterations) = 0;
 
+            virtual ~IQPBOSolver(){free(mapping);};
+
         protected:
             void fillLabels(int& unlabelled,
                             Labels& labels);
