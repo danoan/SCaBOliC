@@ -26,101 +26,43 @@ void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
-void SquaredCurvatureTerm::update(const InputData& id,
-                                  const VariableMap& vm,
-                                  OptimizationData& od)
-{
-    ICoefficientsComputer *cc;
-
-    if(this->spaceHandle->spaceMode()==SpaceHandleInterface::SpaceMode::Linel)
-    {
-        cc = new LinelCoefficientsComputer(id.optimizationRegions.applicationRegion,
-                                      id.optimizationRegions.trustFRG,
-                                      id.optimizationRegions.optRegion,
-                                      this->spaceHandle,
-                                      id.penalizationMode,
-                                      id.excludeOptPointsFromAreaComputation);
-    }else
-    {
-        cc = new CoefficientsComputer(id.optimizationRegions.applicationRegion,
-                                      id.optimizationRegions.trustFRG,
-                                      id.optimizationRegions.optRegion,
-                                      this->spaceHandle,
-                                      id.penalizationMode,
-                                      id.excludeOptPointsFromAreaComputation);
-    }
-
-
-    double maxCtrb;
-    setCoeffs(od,
-              maxCtrb,
-              id,
-              *cc,
-              vm);
-
-    delete cc;
-}
-
-
 void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
                                                      const VariableMap& vm,
                                                      OptimizationData& od)
 {
-    ICoefficientsComputer *cc;
-
-    if(this->spaceHandle->spaceMode()==SpaceHandleInterface::SpaceMode::Linel)
-    {
-        cc = new LinelCoefficientsComputer(id.optimizationRegions.applicationRegion,
-                                           id.optimizationRegions.trustFRG,
-                                           id.optimizationRegions.optRegion,
-                                           this->spaceHandle,
-                                           id.penalizationMode,
-                                           id.excludeOptPointsFromAreaComputation);
-    }else
-    {
-        cc = new CoefficientsComputer(id.optimizationRegions.applicationRegion,
-                                      id.optimizationRegions.trustFRG,
-                                      id.optimizationRegions.optRegion,
-                                      this->spaceHandle,
-                                      id.penalizationMode,
-                                      id.excludeOptPointsFromAreaComputation);
-    }
+    CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
+                            id.optimizationRegions.trustFRG,
+                            id.optimizationRegions.optRegion,
+                            this->spaceHandle,
+                            id.excludeOptPointsFromAreaComputation);
 
     double maxCtrb;
     setCoeffs(od,
               maxCtrb,
               id,
-              *cc,
+              cc,
               vm);
 
-    if(!id.repeatedImprovement)
-    {
-        this->normalizationFactor = 1.0/maxCtrb;
-        this->weight = id.sqTermWeight;
+    this->normalizationFactor = 1.0/maxCtrb;
+    this->weight = id.sqTermWeight;
 
-        this->constantFactor = cc->scalingFactor()*this->normalizationFactor;;
-        this->constantTerm = cc->constantTerm()*this->normalizationFactor;
+    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
+    this->constantTerm = cc.constantTerm()*this->normalizationFactor;
 
-        od.localUTM*=this->weight*this->normalizationFactor;
-        od.localPTM*=this->weight*this->normalizationFactor;
-    }
-
-    delete cc;
+    od.localUTM*=this->weight*this->normalizationFactor;
+    od.localPTM*=this->weight*this->normalizationFactor;
 }
 
 void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
                                      double& maxCtrb,
                                      const InputData& id,
-                                     const ICoefficientsComputer& cc,
+                                     const CoefficientsComputer& cc,
                                      const VariableMap& vm)
 {
-    this->constantFactor = 9.0 / pow(this->spaceHandle->radius, 6.0);
-    this->constantTerm = 0;
-
-
     const InputData::OptimizationDigitalRegions& ODR = id.optimizationRegions;
 
-    DIPaCUS::Misc::DigitalBallIntersection DBIO = this->spaceHandle->intersectionComputer(ODR.optRegion);
+    DigitalSet temp(ODR.domain);
+    DIPaCUS::Misc::DigitalBallIntersection DBIOptimization = this->spaceHandle->intersectionComputer(ODR.optRegion);
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
@@ -130,50 +72,25 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     maxCtrb=0;
     for(auto yit=ODR.applicationRegion.begin();yit!=ODR.applicationRegion.end();++yit)
     {
-        Intersections intersections = this->spaceHandle->intersectCoefficient(DBIO,*yit);
+        temp.clear();
+        DBIOptimization(temp, *yit);
 
-        for(auto it=intersections.begin();it!=intersections.end();++it)
+        for (auto xjt = temp.begin(); xjt != temp.end(); ++xjt)
         {
-            const IntersectionAttributes& iAttr = *it;
+            Index xj = iiv.at(*xjt);
 
-            for (auto xjt = iAttr.intersectionPoints.begin(); xjt != iAttr.intersectionPoints.end(); ++xjt)
+            UTM(1,xj) += cc.retrieve(*yit).xi;
+            maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
+
+            auto ut = xjt;
+            ++ut;
+            for(;ut!=temp.end();++ut)
             {
-                Index xj = iiv.at(*xjt);
-
-                UTM(1,xj) += cc.unary(*yit,*xjt);
-
-                maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
-
-                auto xkt = xjt;
-                ++xkt;
-                for(;xkt!=iAttr.intersectionPoints.end();++xkt)
-                {
-                    Index xk = iiv.at(*xkt);
-                    addCoeff(PTM,maxCtrb,xj,xk,cc.pairwise(*yit,*xjt,*xkt) );
-                }
-            }
-        }
-
-
-    }
-
-    if(id.penalizationMode!=InputData::No_Penalization)
-    {
-        for(auto iti=ODR.optRegion.begin();iti!=ODR.optRegion.end();++iti)
-        {
-            Index xi = iiv.at(*iti);
-            UTM(1,xi) += id.penalizationWeight*cc.unaryPenalization();
-
-            auto itj = iti;
-            ++itj;
-            for(;itj!=ODR.optRegion.end();++itj)
-            {
-                Index xj = iiv.at(*itj);
-                this->crescentOrder(xi,xj);
-                PTM.coeffRef(xi,xj) += id.penalizationWeight*cc.binaryPenalization();
+                addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
             }
         }
     }
+
 
 }
 

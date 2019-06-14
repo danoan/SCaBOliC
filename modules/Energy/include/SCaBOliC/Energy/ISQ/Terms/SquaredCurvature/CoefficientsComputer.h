@@ -6,19 +6,15 @@
 #include <SCaBOliC/Core/interface/ODRInterface.h>
 
 #include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
-#include "SCaBOliC/Core/model/IntersectionAttributes.h"
 #include "SCaBOliC/Energy/ISQ/InputData.h"
-#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/ICoefficientsComputer.h"
-#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/CoefficientData.h"
-#include "SCaBOliC/Energy/base/MultiIndex.h"
 
 namespace SCaBOliC
 {
     namespace Energy
     {
         namespace ISQ
-            {
-            class CoefficientsComputer: public ICoefficientsComputer
+        {
+            class CoefficientsComputer
             {
             public:
                 typedef DGtal::Z2i::Point Point;
@@ -26,14 +22,16 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
 
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
-                typedef SCaBOliC::Core::IntersectionAttributes IntersectionAttributes;
-                typedef IntersectionAttributes::PointSet PointSet;
 
                 typedef unsigned int Index;
-                typedef SCaBOliC::Core::MultiIndex<Point> MyMultiIndex;
 
+                struct CoefficientData
+                {
+                    double xi;
+                    double xi_xj;
+                };
 
-                typedef SCaBOliC::Energy::ISQ::InputData::PenalizationMode PenalizationMode;
+                typedef std::unordered_map<Point,CoefficientData> ConstantsMap;
 
             public:
 
@@ -41,37 +39,20 @@ namespace SCaBOliC
                                      const DigitalSet &trustForegroundRegion,
                                      const DigitalSet &optRegion,
                                      const SpaceHandleInterface* spaceHandle,
-                                     PenalizationMode penalization,
                                      bool excludeOptPointsFromAreaComputation);
 
-                inline const double &unary(const Point& appPoint, const Point &p1) const
-                {
-                    MyMultiIndex mi;
-                    mi << appPoint << p1;
-                    return _cd.unary.at(mi);
-                }
-                inline const double &pairwise(const Point& appPoint, const Point &p1, const Point& p2) const
-                {
-                    MyMultiIndex mi;
-                    mi << appPoint << p1 << p2;
-                    return _cd.pairwise.at(mi);
-                }
+                inline const CoefficientData &retrieve(const Point &p) const { return _cm.at(p); }
 
                 inline double scalingFactor() const { return c1; }
                 inline double constantTerm() const { return c1*c2; }
 
-                inline double unaryPenalization() const{return p1;};
-                inline double binaryPenalization() const{return p2;};
+            private:
+                void insertConstant(const Point &p,
+                                    double halfBallArea,
+                                    double Ij);
 
             private:
-
-                void updateCoefficients(const IntersectionAttributes& iAttr,
-                                        const DigitalSet& optRegion,
-                                        const double halfBallArea,
-                                        const Point& appPoint);
-
-            private:
-                CoefficientData _cd;
+                ConstantsMap _cm;
 
                 double c1;
                 double c2;

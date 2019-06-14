@@ -28,17 +28,6 @@ void DataTerm::initializeOptimizationData(const InputData& id,
     od.localPTM.setZero();
 }
 
-void DataTerm::update(const InputData& id,
-                      const VariableMap& vm,
-                      OptimizationData& od)
-{
-    double maxCtrb;
-    setCoeffs(od,
-              maxCtrb,
-              id,
-              vm);
-}
-
 void DataTerm::configureOptimizationData(const InputData& id,
                                          const VariableMap& vm,
                                          OptimizationData& od)
@@ -52,14 +41,11 @@ void DataTerm::configureOptimizationData(const InputData& id,
               id,
               vm);
 
-    if(!id.repeatedImprovement)
-    {
-        this->normalizationFactor = 1.0/maxCtrb;
-        this->weight = id.dataTermWeight;
+    this->normalizationFactor = 1.0/maxCtrb;
+    this->weight = id.dataTermWeight;
 
-        od.localUTM*=this->weight*this->normalizationFactor;
-        od.localPTM*=this->weight*this->normalizationFactor;
-    }
+    od.localUTM*=this->weight*this->normalizationFactor;
+    od.localPTM*=this->weight*this->normalizationFactor;
 }
 
 

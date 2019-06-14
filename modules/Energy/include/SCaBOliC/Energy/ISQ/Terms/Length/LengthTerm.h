@@ -29,9 +29,6 @@ namespace SCaBOliC
 
                 int numVars(){return vm.numVars;}
 
-                void update(const InputData& id,
-                            const VariableMap& vm,
-                            OptimizationData& od);
 
             private:
                 void initializeOptimizationData(const InputData& id,

@@ -13,8 +13,7 @@ add_library(scabolic-energy ${LIBRARY_ACTION}
         src/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.cpp
         src/Energy/ISQ/Terms/Length/LengthTerm.cpp
         src/Energy/base/EnergyTerm.cpp
-        src/Energy/ISQ/ISQEnergy.cpp
-        src/Energy/ISQ/Terms/SquaredCurvature/LinelCoefficientComputer.cpp)
+        src/Energy/ISQ/ISQEnergy.cpp)
 
 add_dependencies(scabolic-energy scabolic-core scabolic-optimization scabolic-utils)
 

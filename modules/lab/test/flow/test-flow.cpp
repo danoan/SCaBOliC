@@ -8,7 +8,6 @@
 #include <DGtal/helpers/StdDefs.h>
 
 #include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
-#include "SCaBOliC/Core/ODRLinels/ODRLinels.h"
 
 #include "SCaBOliC/Core/model/ODRModel.h"
 #include "SCaBOliC/Energy/ISQ/ISQEnergy.h"
@@ -27,12 +26,9 @@ struct InputData
 {
     InputData()
     {
-        appCenter = ODRModel::ApplicationCenter::AC_LINEL;
-        cntMode = ODRModel::CountingMode::CM_PIXEL;
         levels =1;
         ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
-        se = DIPaCUS::Morphology::StructuringElement::RECT;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConcavities;
         appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
@@ -41,7 +37,6 @@ struct InputData
         gridStep=1.0;
 
         excludeOptPointsFromAreaComputation = false;
-        penalizationMode = ISQ::InputData::PenalizationMode::No_Penalization;
 
         optRegionInApplication = false;
 
@@ -52,8 +47,6 @@ struct InputData
         outputFolder = "";
     }
 
-    ODRModel::ApplicationCenter appCenter;
-    ODRModel::CountingMode cntMode;
     int levels;
     ODRModel::LevelDefinition ld;
     ODRModel::NeighborhoodType nt;
@@ -139,10 +132,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 {
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
-//    ODRPixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
-//    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
-
-    ODRLinels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+    ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt);
     ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
@@ -155,8 +145,6 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             fgDistr,
                             bgDistr,
                             id.excludeOptPointsFromAreaComputation,
-                            id.penalizationMode,
-                            false,
                             id.dataTerm,
                             id.sqTerm,
                             id.lengthTerm);

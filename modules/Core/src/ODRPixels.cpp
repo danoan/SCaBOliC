@@ -97,25 +97,15 @@ ODRPixels::DigitalSet ODRPixels::amLevel(const DTL2& distanceTransform,
 }
 
 
-ODRPixels::ODRPixels(const ApplicationCenter appCenter,
-                     const CountingMode cntMode,
-                     double radius,
+ODRPixels::ODRPixels(double radius,
                      double gridStep,
                      const int levels,
                      LevelDefinition ld,
-                     const NeighborhoodType nt,
-                     StructuringElementType se):ac(appCenter),
-                                                cm(cntMode),
-                                                levels(levels),
+                     const NeighborhoodType nt):levels(levels),
                                                 nt(nt),
                                                 ld(ld),
-                                                dilationSE(se),
-                                                erosionSE(se),
                                                 spaceHandle(radius,gridStep)
-{
-    assert(appCenter==ApplicationCenter::AC_PIXEL);
-    assert(cntMode==CountingMode::CM_PIXEL);
-}
+{}
 
 
 ODRModel ODRPixels::createODR (OptimizationMode optMode,

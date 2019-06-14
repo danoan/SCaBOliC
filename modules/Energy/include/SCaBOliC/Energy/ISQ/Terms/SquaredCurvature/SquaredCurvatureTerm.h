@@ -10,7 +10,6 @@
 #include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 #include "CoefficientsComputer.h"
-#include "LinelCoefficientsComputer.h"
 
 
 namespace SCaBOliC
@@ -28,7 +27,6 @@ namespace SCaBOliC
 
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
-                typedef SpaceHandleInterface::Intersections Intersections;
 
             public:
                 SquaredCurvatureTerm(const InputData& id,
@@ -36,9 +34,6 @@ namespace SCaBOliC
 
                 int numVars(){return vm.numVars;}
 
-                void update(const InputData& id,
-                            const VariableMap& vm,
-                            OptimizationData& od);
 
             private:
                 void configureOptimizationData(const InputData& id,
@@ -52,7 +47,7 @@ namespace SCaBOliC
                 void setCoeffs(OptimizationData& od,
                                double& maxCtrb,
                                const InputData& id,
-                               const ICoefficientsComputer& cc,
+                               const CoefficientsComputer& cc,
                                const VariableMap& vm);
 
                 void addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,

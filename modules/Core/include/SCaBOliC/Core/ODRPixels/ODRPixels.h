@@ -33,7 +33,6 @@ namespace SCaBOliC
             typedef ODRModel::CountingMode CountingMode;
             typedef ODRModel::NeighborhoodType NeighborhoodType;
             typedef ODRModel::LevelDefinition  LevelDefinition;
-            typedef ODRModel::StructuringElementType StructuringElementType;
 
             typedef DIPaCUS::Neighborhood::FourNeighborhoodPredicate FourNeighborhood;
             typedef DIPaCUS::Neighborhood::EightNeighborhoodPredicate EightNeighborhood;
@@ -43,14 +42,11 @@ namespace SCaBOliC
 
 
         public:
-            ODRPixels(const ApplicationCenter appCenter,
-                      const CountingMode cntMode,
-                      double radius,
+            ODRPixels(double radius,
                       double gridStep,
                       const int levels,
                       LevelDefinition ld,
-                      const NeighborhoodType nt,
-                      StructuringElementType se);
+                      const NeighborhoodType nt);
 
 
             ODRModel createODR(OptimizationMode optMode,
@@ -91,14 +87,9 @@ namespace SCaBOliC
 
 
         private:
-            ApplicationCenter ac;
-            CountingMode cm;
             int levels;
             LevelDefinition ld;
             NeighborhoodType nt;
-
-
-            StructuringElementType dilationSE,erosionSE;
 
             PixelSpaceHandle spaceHandle;
         };

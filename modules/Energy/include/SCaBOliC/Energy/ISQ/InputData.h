@@ -36,23 +36,17 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           bool excludeOptPointsFromAreaComputation,
-                          PenalizationMode penalizationMode,
-                          bool repeatedImprovement,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
-                          double penalizationWeight=0.0,
                           Point translation=Point(0,0)):optimizationRegions(ODR),
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
                                                         dataTermWeight(dataTermWeight),
-                                                        penalizationWeight(penalizationWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
                                                         excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
-                                                        penalizationMode(penalizationMode),
-                                                        repeatedImprovement(repeatedImprovement),
                                                         translation(translation){}
 
             public:
@@ -61,7 +55,7 @@ namespace SCaBOliC
                 const double dataTermWeight;
                 const double sqTermWeight;
                 const double lengthTermWeight;
-                const double penalizationWeight;
+
 
                 const MyProbabilityDistribution& fgDistr;
                 const MyProbabilityDistribution& bgDistr;
@@ -70,9 +64,6 @@ namespace SCaBOliC
                 const Point translation;
 
                 const bool excludeOptPointsFromAreaComputation;
-                const PenalizationMode penalizationMode;
-
-                bool repeatedImprovement;
 
             };
         }
