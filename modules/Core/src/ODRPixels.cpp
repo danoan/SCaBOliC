@@ -4,12 +4,7 @@ using namespace SCaBOliC::Core;
 
 ODRPixels::DTL2 ODRPixels::interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
-    DigitalSet b = getBoundary(domain,original);
-    DigitalSet d(domain);
-    d.insert(original.begin(),original.end());
-    for(auto it=b.begin();it!=b.end();++it) d.erase(*it);
-
-    return DTL2(domain, d, DGtal::Z2i::l2Metric);
+    return DTL2(domain, original, DGtal::Z2i::l2Metric);
 }
 
 ODRPixels::DTL2 ODRPixels::exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const
@@ -69,7 +64,7 @@ ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DTL2& interiorTransform,
                                        const LevelDefinition ld,
                                        int length) const
 {
-    DigitalSet ir = amLevel(interiorTransform,radius,ld,length-1);
+    DigitalSet ir = amLevel(interiorTransform,radius,ld,length);
     DigitalSet er = amLevel(exteriorTransform,radius,ld,length);
 
     DigitalSet ab(ir.domain());
