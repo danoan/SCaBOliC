@@ -69,7 +69,7 @@ ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DTL2& interiorTransform,
                                        const LevelDefinition ld,
                                        int length) const
 {
-    DigitalSet ir = amLevel(interiorTransform,radius,ld,length);
+    DigitalSet ir = amLevel(interiorTransform,radius,ld,length-1);
     DigitalSet er = amLevel(exteriorTransform,radius,ld,length);
 
     DigitalSet ab(ir.domain());
