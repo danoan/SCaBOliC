@@ -109,7 +109,7 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
                                bool optRegionInApplication) const
 {
 //    const double& radius = spaceHandle.scaledRadius();
-    const double& radius = spaceHandle.radius();
+    const double& radius = spaceHandle.radius;
 
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));

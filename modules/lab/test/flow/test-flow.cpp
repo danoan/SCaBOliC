@@ -31,7 +31,7 @@ struct InputData
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
-        appMode = ODRModel::ApplicationMode::AM_Optimi;
+        appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
 
         radius = 3;
         gridStep=1.0;
