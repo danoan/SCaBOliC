@@ -27,11 +27,11 @@ struct InputData
     InputData()
     {
         levels =1;
-        ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
+        ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
-        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
+        appMode = ODRModel::ApplicationMode::AM_Optimi;
 
         radius = 3;
         gridStep=1.0;
@@ -42,7 +42,7 @@ struct InputData
 
         dataTerm = 0;
         sqTerm = 1.0;
-        lengthTerm = 0.1;
+        lengthTerm = 0.0;
 
         outputFolder = "";
     }
@@ -183,8 +183,8 @@ void shapeTest(InputData& id)
         cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
 
 
-        if(it%2==0) id.optMode = ODRModel::OM_CorrectConvexities;
-        else id.optMode = ODRModel::OM_CorrectConcavities;
+        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
+        else id.optMode = ODRModel::OM_CorrectConvexities;
 
         workSet = flow(workSet,id,domain);
         ++it;
@@ -195,7 +195,7 @@ void shapeTest(InputData& id)
 
 }
 
-void imageTest(const InputData& id)
+void imageTest(InputData& id)
 {
 
     cv::Mat img = cv::imread(id.imageFilepath,CV_8UC1);
@@ -204,19 +204,23 @@ void imageTest(const InputData& id)
     DIPaCUS::Representation::CVMatToDigitalSet(imgDS,img,1);
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
+    boost::filesystem::create_directories(id.outputFolder);
     int it=0;
     while(it<id.iterations)
     {
+
+        cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
+        DIPaCUS::Representation::digitalSetToCVMat(imgOut,imgDS);
+        cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
+
+        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
+        else id.optMode = ODRModel::OM_CorrectConvexities;
+
         imgDS = flow(imgDS,id,domain);
         ++it;
     }
 
 
-    boost::filesystem::create_directories(id.outputFolder);
-
-    cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
-    DIPaCUS::Representation::digitalSetToCVMat(imgOut,imgDS);
-    cv::imwrite(id.outputFolder + "/square.png",imgOut);
 }
 
 int main(int argc, char* argv[])
