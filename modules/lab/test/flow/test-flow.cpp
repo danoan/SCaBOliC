@@ -27,11 +27,11 @@ struct InputData
     InputData()
     {
         levels =1;
-        ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
+        ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
-        appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
+        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
         gridStep=1.0;
