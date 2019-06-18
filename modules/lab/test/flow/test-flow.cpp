@@ -30,8 +30,8 @@ struct InputData
         ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
-        optMode = ODRModel::OptimizationMode::OM_CorrectConcavities;
-        appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
+        optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
+        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
         gridStep=1.0;
@@ -42,7 +42,7 @@ struct InputData
 
         dataTerm = 0;
         sqTerm = 1.0;
-        lengthTerm = 0.0;
+        lengthTerm = 0.1;
 
         outputFolder = "";
     }
@@ -174,21 +174,25 @@ void shapeTest(InputData& id)
 
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
+    boost::filesystem::create_directories(id.outputFolder);
     int it=0;
     while(it<id.iterations)
     {
-        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-        else id.optMode = ODRModel::OM_CorrectConvexities;
+        cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
+        DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
+        cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
+
+
+        if(it%2==0) id.optMode = ODRModel::OM_CorrectConvexities;
+        else id.optMode = ODRModel::OM_CorrectConcavities;
 
         workSet = flow(workSet,id,domain);
         ++it;
     }
 
-    boost::filesystem::create_directories(id.outputFolder);
 
-    cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
-    DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
-    cv::imwrite(id.outputFolder + "/square.png",imgOut);
+
+
 }
 
 void imageTest(const InputData& id)

@@ -77,15 +77,15 @@ ODRPixels::DigitalSet ODRPixels::amAroundBoundary(const DTL2& interiorTransform,
 ODRPixels::DigitalSet ODRPixels::amLevel(const DTL2& distanceTransform,
                               const unsigned int radius,
                               const LevelDefinition ld,
-                              int length) const
+                              int levelNum) const
 {
     DigitalSet temp(distanceTransform.domain());
     if(ld==LevelDefinition::LD_CloserFromCenter)
     {
-        temp = level(distanceTransform,length);
+        temp = level(distanceTransform,levelNum,levelNum-1);
     }else if(ld==LevelDefinition::LD_FartherFromCenter)
     {
-        temp = level(distanceTransform,radius,radius-length);
+        temp = level(distanceTransform,radius-levelNum+1,radius-levelNum);
     }
 
     return temp;
