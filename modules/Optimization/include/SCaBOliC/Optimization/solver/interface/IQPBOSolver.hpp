@@ -20,17 +20,6 @@ IQPBOSolver<Unary,Graph,EnergyTable,Labels>::IQPBOSolver(const Unary &U,
         qpbo->AddUnaryTerm( i,U(0,i),U(1,i) );
     }
 
-    typedef std::pair<Index,Index> IndexPair;
-    struct Temp
-    {
-        Temp(){}
-        Temp(double e11):e11(e11),included(false){}
-
-        double e11;
-        bool included;
-    };
-    std::map<IndexPair,Temp> tempMap;
-
     for( int j=0;j<numVariables;++j )
     {
         for (typename Graph::InnerIterator it(
@@ -39,46 +28,14 @@ IQPBOSolver<Unary,Graph,EnergyTable,Labels>::IQPBOSolver(const Unary &U,
             Index i1 = it.row();
             Index i2 = it.col();
 
-            IndexPair ip(i1,i2);
-            tempMap[ip] = Temp( it.value() );
+            qpbo->AddPairwiseTerm(
+                    static_cast<typename QPBO<Scalar>::NodeId>(i1),
+                    static_cast<typename QPBO<Scalar>::NodeId>(i2),
+                    0,0,0,
+                    G.coeff(i1,i2)
+            );
         }
     }
-
-    for(auto it=ET.begin();it!=ET.end();++it)
-    {
-        const IndexPair& ip = it->first;
-        double e11 = it->second.e11;
-        if( tempMap.find(ip)!=tempMap.end())
-        {
-            tempMap[ip].included=true;
-            e11 += tempMap[ip].e11;
-        }
-
-        qpbo->AddPairwiseTerm(
-                static_cast<typename QPBO<Scalar>::NodeId>(ip.first),
-                static_cast<typename QPBO<Scalar>::NodeId>(ip.second),
-                it->second.e00,
-                it->second.e01,
-                it->second.e10,
-                e11
-        );
-
-    }
-
-    for(auto it=tempMap.begin();it!=tempMap.end();++it)
-    {
-        if(it->second.included) continue;
-        const IndexPair& ip = it->first;
-
-        qpbo->AddPairwiseTerm(
-                static_cast<typename QPBO<Scalar>::NodeId>(ip.first),
-                static_cast<typename QPBO<Scalar>::NodeId>(ip.second),
-                0,0,0,
-                it->second.e11
-        );
-
-    }
-
 
 }
 

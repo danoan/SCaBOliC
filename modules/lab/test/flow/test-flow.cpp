@@ -166,7 +166,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::square(0.25);
+    DigitalSet square = DIPaCUS::Shapes::square(0.5,0,0,20);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);
