@@ -21,9 +21,6 @@ void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
                                                      od.numVars);
     od.localUTM.setZero();
 
-    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,
-                                                        od.numVars);
-    od.localPTM.setZero();
 }
 
 void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
@@ -50,7 +47,15 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
     this->constantTerm = cc.constantTerm()*this->normalizationFactor;
 
     od.localUTM*=this->weight*this->normalizationFactor;
-    od.localPTM*=this->weight*this->normalizationFactor;
+
+    for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+    {
+        OptimizationData::BooleanConfigurations& bc = it->second;
+        bc.e00*=this->weight*this->normalizationFactor;
+        bc.e01*=this->weight*this->normalizationFactor;
+        bc.e10*=this->weight*this->normalizationFactor;
+        bc.e11*=this->weight*this->normalizationFactor;
+    }
 }
 
 void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
@@ -66,8 +71,6 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
 
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
-    OptimizationData::PairwiseTermsMatrix &PTM = od.localPTM;
-
 
     maxCtrb=0;
     for(auto yit=ODR.applicationRegion.begin();yit!=ODR.applicationRegion.end();++yit)
@@ -86,7 +89,11 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             ++ut;
             for(;ut!=temp.end();++ut)
             {
-                addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
+                IndexPair ip = od.makePair(xj,iiv.at(*ut));
+                if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
+                od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj;
+
+                maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }
         }
     }

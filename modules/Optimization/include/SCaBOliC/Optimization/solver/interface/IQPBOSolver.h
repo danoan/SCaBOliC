@@ -12,22 +12,21 @@ namespace SCaBOliC
 {
     namespace Optimization
     {
-        template<typename Unary,typename Graph,typename EnergyTable,typename Labels>
+        template<typename Unary,typename EnergyTable,typename Labels>
         class IQPBOSolver
         {
         public:
             typedef typename Unary::Scalar Scalar;
             typedef typename Unary::Index Index;
+            typedef std::pair<Index,Index> IndexPair;
 
         public:
             IQPBOSolver(const Unary& U,
-                       const Graph& G,
                         const EnergyTable& ET);
 
             virtual void solve(Scalar& energyValue,
                                int& unlabelled,
                                const Unary& U,
-                               const Graph& G,
                                Labels& labels,
                                int max_num_iterations) = 0;
 
@@ -38,7 +37,7 @@ namespace SCaBOliC
                             Labels& labels);
             
             void invertLabels(Labels& labels);
-            double computeEnergy(const Unary& U, const Graph& G, const Labels& labels);
+            double computeEnergy(const Unary& U, const EnergyTable& ET, const Labels& labels);
 
         protected:
             int numVariables;
