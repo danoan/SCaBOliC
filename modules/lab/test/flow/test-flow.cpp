@@ -7,6 +7,8 @@
 
 #include <DGtal/helpers/StdDefs.h>
 
+#include "DIPaCUS/components/Morphology.h"
+
 #include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
 
 #include "SCaBOliC/Core/model/ODRModel.h"
@@ -186,7 +188,9 @@ void shapeTest(InputData& id)
         if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
         else id.optMode = ODRModel::OM_CorrectConvexities;
 
-        workSet = flow(workSet,id,domain);
+        DigitalSet flowDS = flow(workSet,id,domain);
+        workSet.insert(flowDS.begin(),flowDS.end());
+
         ++it;
     }
 

@@ -36,6 +36,7 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           bool excludeOptPointsFromAreaComputation,
+                          bool shrinkingMode,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
@@ -43,6 +44,7 @@ namespace SCaBOliC
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
+                                                        shrinkingMode(shrinkingMode),
                                                         dataTermWeight(dataTermWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
@@ -64,6 +66,7 @@ namespace SCaBOliC
                 const Point translation;
 
                 const bool excludeOptPointsFromAreaComputation;
+                const bool shrinkingMode;
 
             };
         }

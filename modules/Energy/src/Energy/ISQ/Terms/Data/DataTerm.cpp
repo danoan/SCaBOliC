@@ -22,10 +22,6 @@ void DataTerm::initializeOptimizationData(const InputData& id,
     od.localUTM = OptimizationData::UnaryTermsMatrix(2,
                                                      od.numVars);
     od.localUTM.setZero();
-
-    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,
-                                                        od.numVars);
-    od.localPTM.setZero();
 }
 
 void DataTerm::configureOptimizationData(const InputData& id,
@@ -45,7 +41,15 @@ void DataTerm::configureOptimizationData(const InputData& id,
     this->weight = id.dataTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;
-    od.localPTM*=this->weight*this->normalizationFactor;
+
+    for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+    {
+        OptimizationData::BooleanConfigurations& bc = it->second;
+        bc.e00*=this->weight*this->normalizationFactor;
+        bc.e01*=this->weight*this->normalizationFactor;
+        bc.e10*=this->weight*this->normalizationFactor;
+        bc.e11*=this->weight*this->normalizationFactor;
+    }
 }
 
 
@@ -69,8 +73,16 @@ void DataTerm::setCoeffs(OptimizationData& od,
         xi = vm.pim.at(*it);
 
         //Recall solution is inverted at the end.
-        od.localUTM(0,xi) = -log( id.fgDistr(row,col) );
-        od.localUTM(1,xi) = -log( id.bgDistr(row,col) );
+        if(id.shrinkingMode)//Shrinking mode
+        {
+            od.localUTM(0,xi) = -log( id.fgDistr(row,col) );
+            od.localUTM(1,xi) = -log( id.bgDistr(row,col) );
+        }
+        else//Expanding mode
+        {
+            od.localUTM(1,xi) = -log( id.fgDistr(row,col) );
+            od.localUTM(0,xi) = -log( id.bgDistr(row,col) );
+        }
 
 
         cvColorType v = image.at<cvColorType>(row,col);
@@ -89,7 +101,6 @@ void DataTerm::setCoeffs(OptimizationData& od,
         maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;
         maxCtrb = fabs(od.localUTM(0,xi))>maxCtrb?fabs(od.localUTM(0,xi)):maxCtrb;
     }
-
 }
 
 void DataTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,
