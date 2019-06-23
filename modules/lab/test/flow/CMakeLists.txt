@@ -18,6 +18,7 @@ target_link_libraries(test-flow
         -lscabolic-core
         -lscabolic-utils
         -ldipacus-derivates
+        -ldipacus-components
         -ldipacus-base
         -lboost_filesystem
         -lboost_system
