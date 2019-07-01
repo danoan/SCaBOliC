@@ -28,8 +28,8 @@ struct InputData
 {
     InputData()
     {
-        levels =1;
-        ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
+        levels =4;
+        ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
@@ -41,6 +41,7 @@ struct InputData
         excludeOptPointsFromAreaComputation = false;
 
         optRegionInApplication = false;
+        shrinkingMode = false;
 
         dataTerm = 0;
         sqTerm = 1.0;
@@ -64,6 +65,7 @@ struct InputData
     ISQ::InputData::PenalizationMode penalizationMode;
 
     bool optRegionInApplication;
+    bool shrinkingMode;
 
     double dataTerm;
     double sqTerm;
@@ -147,6 +149,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             fgDistr,
                             bgDistr,
                             id.excludeOptPointsFromAreaComputation,
+                            id.shrinkingMode,
                             id.dataTerm,
                             id.sqTerm,
                             id.lengthTerm);
@@ -168,7 +171,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::square(0.5,0,0,20);
+    DigitalSet square = DIPaCUS::Shapes::triangle(0.5,0,0,20);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);
@@ -188,8 +191,7 @@ void shapeTest(InputData& id)
         if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
         else id.optMode = ODRModel::OM_CorrectConvexities;
 
-        DigitalSet flowDS = flow(workSet,id,domain);
-        workSet.insert(flowDS.begin(),flowDS.end());
+        workSet = flow(workSet,id,domain);
 
         ++it;
     }
