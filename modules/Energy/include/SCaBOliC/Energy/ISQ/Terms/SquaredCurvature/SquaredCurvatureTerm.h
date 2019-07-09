@@ -7,7 +7,7 @@
 #include "DIPaCUS/derivates/Misc.h"
 
 #include "SCaBOliC/Energy/ISQ/VariableMap.h"
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 #include "CoefficientsComputer.h"
 
@@ -26,7 +26,6 @@ namespace SCaBOliC
                 typedef unsigned int Index;
 
                 typedef DGtal::Z2i::DigitalSet DigitalSet;
-
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
             public:
@@ -35,14 +34,15 @@ namespace SCaBOliC
 
                 int numVars(){return vm.numVars;}
 
-            private:
-                void initializeOptimizationData(const InputData& id,
-                                                const VariableMap& vm,
-                                                OptimizationData& od);
 
+            private:
                 void configureOptimizationData(const InputData& id,
                                                const VariableMap& vm,
                                                OptimizationData& od);
+
+                void initializeOptimizationData(const InputData& id,
+                                                const VariableMap& vm,
+                                                OptimizationData& od);
 
                 void setCoeffs(OptimizationData& od,
                                double& maxCtrb,

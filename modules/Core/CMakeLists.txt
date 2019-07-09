@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-core)
 
-add_library(scabolic-core SHARED
+set(LIBRARY_ACTION "STATIC")
+if(${CREATE_SHARED_LIBRARIES})
+    set(LIBRARY_ACTION "SHARED")
+endif()
+
+add_library(scabolic-core ${LIBRARY_ACTION}
         src/display.cpp
         src/ODRPixels.cpp
-        src/ODRInterpixels.cpp
         src/ODRUtils.cpp
-        src/PixelSpaceHandle.cpp
-        src/InterpixelSpaceHandle.cpp)
+        src/PixelSpaceHandle.cpp)
 
 target_include_directories(scabolic-core PRIVATE
         include
@@ -21,7 +24,8 @@ target_link_libraries(scabolic-core
         ${DGTAL_LIBRARIES})
 
 install(TARGETS scabolic-core
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX})

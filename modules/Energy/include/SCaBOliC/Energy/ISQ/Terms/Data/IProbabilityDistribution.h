@@ -15,6 +15,7 @@ namespace SCaBOliC
 
             public:
                 virtual TValue operator()(Index row, Index col) const=0;
+                virtual ~IProbabilityDistribution(){};
 
             };
         }

@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.2)
 project(lib-scabolic-energy)
 
-add_library(scabolic-energy SHARED
+set(LIBRARY_ACTION "STATIC")
+if(${CREATE_SHARED_LIBRARIES})
+    set(LIBRARY_ACTION "SHARED")
+endif()
+
+add_library(scabolic-energy ${LIBRARY_ACTION}
         src/Energy/ISQ/Terms/SquaredCurvature/CoefficientComputer.cpp
         src/Energy/ISQ/VariableMap.cpp
         src/Energy/ISQ/Terms/Data/DataTerm.cpp
@@ -34,5 +39,6 @@ install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 install(TARGETS scabolic-energy
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 

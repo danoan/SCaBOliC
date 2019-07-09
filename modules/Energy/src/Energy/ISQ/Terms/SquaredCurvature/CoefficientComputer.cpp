@@ -1,50 +1,60 @@
 #include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/CoefficientsComputer.h"
-#include "DGtal/io/boards/Board2D.h"
+
 using namespace SCaBOliC::Energy::ISQ;
 
 CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            const DigitalSet &trustForegroundRegion,
-                                           int radius,
-                                           const SpaceHandleInterface* spaceHandle):R(radius)
+                                           const DigitalSet &optRegion,
+                                           const SpaceHandleInterface* spaceHandle,
+                                           bool excludeOptPointsFromAreaComputation)
 {
+    c1 = 9.0 / pow(spaceHandle->radius, 6.0);
+    c2 = 0;
 
 
-    DigitalSet tempBall( Domain( 2*Point(-R,-R), 2*Point(R,R) ) );
-    tempBall=DIPaCUS::Shapes::ball(1.0,0,0,R);
+    DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(trustForegroundRegion);
+    DIPaCUS::Misc::DigitalBallIntersection DBIO = spaceHandle->intersectionComputer(optRegion);
 
-    W = 0;
-//    C = (PI * R * R) / 2.0;
-//    C = tempBall.size() / 2.0;
-    C = spaceHandle->pixelArea(radius)/2.0;
-
-    F = 9.0 / pow(R, 6.0);
-
-
-    DIPaCUS::Misc::DigitalBallIntersection DBI = spaceHandle->intersectionComputer(radius, trustForegroundRegion);
     Domain domain = trustForegroundRegion.domain();
     DigitalSet temp(domain);
+    temp.clear();
 
-    for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it) {
-        temp.clear();
+    double fgCount,optCount;
+    for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it)
+    {
         DBI(temp, *it);
-        insertConstant(*it, temp);
+        fgCount = temp.size();
+        temp.clear();
+
+        if(excludeOptPointsFromAreaComputation)
+        {
+            DBIO(temp,*it);
+            optCount = temp.size();
+            temp.clear();
+
+            insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
+        }else
+        {
+            insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount );
+        }
     }
 
 }
 
 void CoefficientsComputer::insertConstant(const Point &p,
-                                          DigitalSet &ds)
+                                          double halfBallArea,
+                                          double Ij)
 {
-    double Ij = ds.size();
-
     CoefficientData ch;
 
-    W += pow(C, 2);
-    W += pow(Ij, 2);
-    W += -2 * C * Ij;
+    c2 += pow(halfBallArea, 2);
+    c2 += pow(Ij, 2);
+    c2 += -2 * halfBallArea * Ij;
 
-    ch.xi = 1 - 2 * C + 2 * Ij;
+    ch.xi = (1 - 2 * halfBallArea + 2 * Ij);
     ch.xi_xj = 2;
+
+
 
     _cm[p] = ch;
 }

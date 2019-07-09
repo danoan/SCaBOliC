@@ -7,7 +7,7 @@
 #include "SCaBOliC/Energy/ISQ/InputData.h"
 #include "SCaBOliC/Energy/ISQ/VariableMap.h"
 
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -34,6 +34,7 @@ namespace SCaBOliC
                          const SpaceHandleInterface* spaceHandle);
 
                 int numVars(){return vm.numVars;}
+
 
             private:
                 void initializeOptimizationData(const InputData& id,

@@ -23,6 +23,7 @@ set(DIPACUS_LIBS_DIR /usr/local/lib CACHE PATH "DIPaCUS libraries location path.
 set(GEOC_INCLUDE_DIRS /usr/local/include/geoc CACHE PATH "geoc include location path.")
 
 set(BUILD_TESTS OFF CACHE BOOL "Build tests.")
+set(CREATE_SHARED_LIBRARIES OFF CACHE BOOL "Create shared libraries. If off, create static libraries.")
 
 link_directories(${CMAKE_BINARY_DIR}/modules/Optimization
         ${CMAKE_BINARY_DIR}/modules/Core
@@ -37,5 +38,5 @@ add_subdirectory(modules/Energy)
 add_subdirectory(modules/Utils)
 
 if(${BUILD_TESTS})
-    add_subdirectory(lab)
+    add_subdirectory(modules/lab/test/flow)
 endif()

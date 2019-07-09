@@ -21,10 +21,6 @@ void LengthTerm::initializeOptimizationData(const InputData& id,
     od.localUTM = OptimizationData::UnaryTermsMatrix(2,
                                                      od.numVars);
     od.localUTM.setZero();
-
-    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,
-                                                        od.numVars);
-    od.localPTM.setZero();
 }
 
 void LengthTerm::configureOptimizationData(const InputData& id,
@@ -44,19 +40,15 @@ void LengthTerm::configureOptimizationData(const InputData& id,
     this->weight = id.lengthTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;
-    od.localPTM*=this->weight*this->normalizationFactor;
 
     for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
     {
-        const IndexPair& ip = it->first;
-        BooleanConfigurations& bc = it->second;
-
-        bc.e00 *= this->weight*this->normalizationFactor;
-        bc.e01 *= this->weight*this->normalizationFactor;
-        bc.e10 *= this->weight*this->normalizationFactor;
-        bc.e11 *= this->weight*this->normalizationFactor;
+        OptimizationData::BooleanConfigurations& bc = it->second;
+        bc.e00*=this->weight*this->normalizationFactor;
+        bc.e01*=this->weight*this->normalizationFactor;
+        bc.e10*=this->weight*this->normalizationFactor;
+        bc.e11*=this->weight*this->normalizationFactor;
     }
-
 }
 
 
@@ -83,6 +75,8 @@ void LengthTerm::setCoeffs(OptimizationData& od,
         for(auto itp=this->spaceHandle->neighBegin();itp!=this->spaceHandle->neighEnd();++itp)
         {
             neigh = *it + *itp;
+            if(!ODR.domain.isInside(neigh)) continue;
+            
             if(ODR.trustFRG(neigh))
             {
                 od.localUTM(1,xi) += 1;
@@ -93,13 +87,16 @@ void LengthTerm::setCoeffs(OptimizationData& od,
             {
                 yi = vm.pim.at(neigh);
 
-                od.localUTM(0,xi) += 1;
-                od.localUTM(0,yi) += 1;
+                od.localUTM(1,xi) += 1;
+                od.localUTM(1,yi) += 1;
 
                 maxCtrb = fabs(od.localUTM(0,yi))>maxCtrb?fabs(od.localUTM(0,yi)):maxCtrb;
 
                 IndexPair ip = od.makePair(xi,yi);
-                od.localTable[ ip ] = BooleanConfigurations(-2,0,0,0);
+                if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
+                od.localTable[ip].e11 += -2;
+
+                maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }
 
             maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;

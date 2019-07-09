@@ -22,10 +22,6 @@ void DataTerm::initializeOptimizationData(const InputData& id,
     od.localUTM = OptimizationData::UnaryTermsMatrix(2,
                                                      od.numVars);
     od.localUTM.setZero();
-
-    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,
-                                                        od.numVars);
-    od.localPTM.setZero();
 }
 
 void DataTerm::configureOptimizationData(const InputData& id,
@@ -45,8 +41,15 @@ void DataTerm::configureOptimizationData(const InputData& id,
     this->weight = id.dataTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;
-    od.localPTM*=this->weight*this->normalizationFactor;
 
+    for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+    {
+        OptimizationData::BooleanConfigurations& bc = it->second;
+        bc.e00*=this->weight*this->normalizationFactor;
+        bc.e01*=this->weight*this->normalizationFactor;
+        bc.e10*=this->weight*this->normalizationFactor;
+        bc.e11*=this->weight*this->normalizationFactor;
+    }
 }
 
 
@@ -70,33 +73,34 @@ void DataTerm::setCoeffs(OptimizationData& od,
         xi = vm.pim.at(*it);
 
         //Recall solution is inverted at the end.
-        od.localUTM(0,xi) = -log( id.fgDistr(row,col) );
-        od.localUTM(1,xi) = -log( id.bgDistr(row,col) );
+        if(id.shrinkingMode)//Shrinking mode
+        {
+            od.localUTM(0,xi) = -log( id.fgDistr(row,col) );
+            od.localUTM(1,xi) = -log( id.bgDistr(row,col) );
+        }
+        else//Expanding mode
+        {
+            od.localUTM(1,xi) = -log( id.fgDistr(row,col) );
+            od.localUTM(0,xi) = -log( id.bgDistr(row,col) );
+        }
 
 
         cvColorType v = image.at<cvColorType>(row,col);
         cvColorType vn;
-        double homogeneity=0;
 
         for(auto itp = this->spaceHandle->neighBegin(); itp!=this->spaceHandle->neighEnd();++itp)
         {
             Point neigh = ODR.toImageCoordinates(*it) + ODR.toImageCoordinates(*itp);
-            if(neigh(0)<0 || neigh(1)<0) continue;
-            if(neigh(0)>image.cols || neigh(1)>image.rows) continue;
+            if(!ODR.domain.isInside(neigh)) continue;
+            
             if(!ODR.trustFRG(neigh)) continue;
 
             vn = image.at<cvColorType>( (image.rows-1) - ( neigh(1)+translation(1) ),neigh(0)+translation(0));
-
-            homogeneity += exp( - (0.1 +(v-vn).dot(v-vn)/195075.0) );
         }
-
-        //Again, think opposite way
-        //od.localUTM(1,xi)+= homogeneity;
 
         maxCtrb = fabs(od.localUTM(1,xi))>maxCtrb?fabs(od.localUTM(1,xi)):maxCtrb;
         maxCtrb = fabs(od.localUTM(0,xi))>maxCtrb?fabs(od.localUTM(0,xi)):maxCtrb;
     }
-
 }
 
 void DataTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,

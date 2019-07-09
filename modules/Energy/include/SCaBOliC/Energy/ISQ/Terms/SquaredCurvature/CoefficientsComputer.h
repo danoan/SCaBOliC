@@ -3,16 +3,17 @@
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DIPaCUS/derivates/Misc.h>
-#include <SCaBOliC/Core/ODRInterface.h>
+#include <SCaBOliC/Core/interface/ODRInterface.h>
 
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
+#include "SCaBOliC/Energy/ISQ/InputData.h"
 
 namespace SCaBOliC
 {
     namespace Energy
     {
         namespace ISQ
-            {
+        {
             class CoefficientsComputer
             {
             public:
@@ -36,26 +37,29 @@ namespace SCaBOliC
 
                 CoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
-                                     int radius,
-                                     const SpaceHandleInterface* spaceHandle);
+                                     const DigitalSet &optRegion,
+                                     const SpaceHandleInterface* spaceHandle,
+                                     bool excludeOptPointsFromAreaComputation);
 
                 inline const CoefficientData &retrieve(const Point &p) const { return _cm.at(p); }
 
-                inline double factor() const { return F; }
-                inline double constantTerm() const { return W; }
+                inline double scalingFactor() const { return c1; }
+                inline double constantTerm() const { return c1*c2; }
 
             private:
                 void insertConstant(const Point &p,
-                                    DigitalSet &ds);
+                                    double halfBallArea,
+                                    double Ij);
 
             private:
                 ConstantsMap _cm;
 
-                double R;
-                double C;
-                double F;
+                double c1;
+                double c2;
 
-                double W;
+                double p1;
+                double p2;
+
             public:
                 static constexpr double PI = 3.141592653589793;
             };

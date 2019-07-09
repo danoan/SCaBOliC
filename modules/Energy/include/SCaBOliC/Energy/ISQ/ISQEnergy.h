@@ -15,7 +15,7 @@
 #include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
 #include <SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.h>
 
-#include "SCaBOliC/Core/SpaceHandleInterface.h"
+#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
 namespace SCaBOliC
 {
@@ -42,13 +42,12 @@ namespace SCaBOliC
             ISQEnergy(const InputData& id,
                       const SpaceHandleInterface* spaceHandle);
 
-            template< template <typename,typename,typename,typename> class TQPBOSolver>
-            void solve(Solution& solution)
+            template< template <typename,typename,typename> class TQPBOSolver>
+            void solve(Solution& solution) const
             {
                 assert(solution.isValid());
 
                 typedef TQPBOSolver<UnaryTermsMatrix,
-                PairwiseTermsMatrix,
                 EnergyTable,
                 LabelsVector> MyQPBOSolver;
 
@@ -56,7 +55,6 @@ namespace SCaBOliC
                              solution.energyValuePriorInversion,
                              solution.unlabeled,
                              energy.od.localUTM,
-                             energy.od.localPTM,
                              energy.od.localTable,
                              solution.labelsVector,
                              10);
