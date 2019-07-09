@@ -12,6 +12,10 @@ add_library(scabolic-core ${LIBRARY_ACTION}
         src/ODRUtils.cpp
         src/PixelSpaceHandle.cpp)
 
+if(${USE_LOCAL_REPOSITORIES})
+    add_dependencies(scabolic-core dipacus)
+endif()
+
 target_include_directories(scabolic-core PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}

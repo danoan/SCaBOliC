@@ -5,6 +5,10 @@ project(SCaBOliC)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+if(${USE_LOCAL_REPOSITORIES})
+    include(ext-projects/ExtProjects.cmake)
+endif()
+
 find_package(DGtal REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -17,10 +21,10 @@ set(BOOST_LIBS_DIR /usr/local/lib CACHE PATH "Boost libraries location path." )
 
 set(EIGEN_INCLUDE_DIRS /usr/local/include/eigen3 CACHE PATH "Eigen include location path." )
 
-set(DIPACUS_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext/include CACHE PATH "DIPaCUS include location path.")
-set(DIPACUS_LIBS_DIR /usr/local/lib CACHE PATH "DIPaCUS libraries location path.")
+set(DIPACUS_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext-projects/build/include CACHE PATH "DIPaCUS include location path.")
+set(DIPACUS_LIBS_DIR ${CMAKE_SOURCE_DIR}/ext-projects/build/lib CACHE PATH "DIPaCUS libraries location path.")
 
-set(GEOC_INCLUDE_DIRS /usr/local/include/geoc CACHE PATH "geoc include location path.")
+set(GEOC_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/ext-projects/build/include CACHE PATH "geoc include location path.")
 
 set(BUILD_TESTS OFF CACHE BOOL "Build tests.")
 set(CREATE_SHARED_LIBRARIES OFF CACHE BOOL "Create shared libraries. If off, create static libraries.")
@@ -38,5 +42,5 @@ add_subdirectory(modules/Energy)
 add_subdirectory(modules/Utils)
 
 if(${BUILD_TESTS})
-    add_subdirectory(modules/lab/test/flow)
+    add_subdirectory(lab/test)
 endif()

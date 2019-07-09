@@ -1,6 +1,7 @@
-.idea/
-cmake-build-debug/
-ext/
-ext_build/
-output/
-update.sh
+.idea
+cmake-build-debug
+cmake-build-release
+ext-projects/build
+ext-projects/source
+output
+local
