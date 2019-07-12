@@ -12,7 +12,7 @@ add_library(scabolic-core ${LIBRARY_ACTION}
         src/ODRUtils.cpp
         src/PixelSpaceHandle.cpp)
 
-if(${USE_LOCAL_REPOSITORIES})
+if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(scabolic-core dipacus)
 endif()
 

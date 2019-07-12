@@ -1,9 +1,15 @@
 cmake_minimum_required(VERSION 3.2)
-project(test-flow)
+project(example-flow)
 
-add_executable(test-flow test-flow.cpp)
-add_dependencies(test-flow scabolic-optimization scabolic-core scabolic-energy)
-target_include_directories(test-flow PRIVATE
+add_executable(example-flow example-flow.cpp)
+
+if(${USE_REMOTE_REPOSITORIES})
+    add_dependencies(example-flow dipacus scabolic-optimization scabolic-core scabolic-energy)
+else()
+    add_dependencies(example-flow scabolic-optimization scabolic-core scabolic-energy)
+endif()
+
+target_include_directories(example-flow PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/modules/Core/include
@@ -12,7 +18,7 @@ target_include_directories(test-flow PRIVATE
         ${CMAKE_SOURCE_DIR}/modules/Utils/include
         ${DGTAL_INCLUDE_DIRS})
 
-target_link_libraries(test-flow
+target_link_libraries(example-flow
         -lscabolic-optimization
         -lscabolic-energy
         -lscabolic-core

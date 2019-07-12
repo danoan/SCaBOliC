@@ -15,7 +15,7 @@ add_library(scabolic-energy ${LIBRARY_ACTION}
         src/Energy/base/EnergyTerm.cpp
         src/Energy/ISQ/ISQEnergy.cpp)
 
-if(${USE_LOCAL_REPOSITORIES})
+if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(scabolic-energy dipacus geoc scabolic-core scabolic-optimization scabolic-utils)
 else()
     add_dependencies(scabolic-energy scabolic-core scabolic-optimization scabolic-utils)
