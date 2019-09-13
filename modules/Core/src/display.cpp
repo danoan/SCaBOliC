@@ -27,10 +27,13 @@ namespace SCaBOliC
                 board << ODR.optRegion;
 
                 board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Red, DGtal::Color::Red));
-                board << ODR.applicationRegion;
+                board << ODR.applicationRegionIn << ODR.applicationRegionOut;
+
+                DigitalSet appRegion = ODR.applicationRegionOut;
+                appRegion += ODR.applicationRegionIn;
 
                 DigitalSet optAppIntersection(ODR.optRegion.domain());
-                DIPaCUS::SetOperations::setIntersection(optAppIntersection,ODR.optRegion,ODR.applicationRegion);
+                DIPaCUS::SetOperations::setIntersection(optAppIntersection,ODR.optRegion,appRegion);
 
                 board << DGtal::CustomStyle(specificStyle, new DGtal::CustomColors(DGtal::Color::Yellow, DGtal::Color::Yellow));
                 board << optAppIntersection;

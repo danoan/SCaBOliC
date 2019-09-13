@@ -3,14 +3,16 @@ project(lib-scabolic-energy)
 
 set(LIBRARY_ACTION "STATIC")
 if(${CREATE_SHARED_LIBRARIES})
-    set(LIBRARY_ACTION "SHARED")
+    set(LIBRARY_ACTION "SHARED" src/Energy/ISQ/Terms/SquaredCurvature/max/SQIn.cpp src/Energy/ISQ/Terms/SquaredCurvature/max/SQOut.cpp)
 endif()
 
 add_library(scabolic-energy ${LIBRARY_ACTION}
-        src/Energy/ISQ/Terms/SquaredCurvature/CoefficientComputer.cpp
         src/Energy/ISQ/VariableMap.cpp
         src/Energy/ISQ/Terms/Data/DataTerm.cpp
-        src/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.cpp
+        src/Energy/ISQ/Terms/SquaredCurvature/jmiv/JMIVSquaredCurvatureTerm.cpp
+        src/Energy/ISQ/Terms/SquaredCurvature/max/MaxSquaredCurvatureTerm.cpp
+        src/Energy/ISQ/Terms/SquaredCurvature/max/SQIn.cpp
+        src/Energy/ISQ/Terms/SquaredCurvature/max/SQOut.cpp
         src/Energy/ISQ/Terms/Length/LengthTerm.cpp
         src/Energy/base/EnergyTerm.cpp
         src/Energy/ISQ/ISQEnergy.cpp)

@@ -72,17 +72,8 @@ void DataTerm::setCoeffs(OptimizationData& od,
 
         xi = vm.pim.at(*it);
 
-        //Recall solution is inverted at the end.
-        if(id.shrinkingMode)//Shrinking mode
-        {
-            od.localUTM(0,xi) = -log( id.fgDistr(row,col) );
-            od.localUTM(1,xi) = -log( id.bgDistr(row,col) );
-        }
-        else//Expanding mode
-        {
-            od.localUTM(1,xi) = -log( id.fgDistr(row,col) );
-            od.localUTM(0,xi) = -log( id.bgDistr(row,col) );
-        }
+        od.localUTM(1,xi) = -log( id.fgDistr(row,col) );
+        od.localUTM(0,xi) = -log( id.bgDistr(row,col) );
 
 
         cvColorType v = image.at<cvColorType>(row,col);

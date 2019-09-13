@@ -116,7 +116,8 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     DigitalSet workingSet(domain);
     DigitalSet optRegion(domain);
-    DigitalSet applicationRegion(domain);
+    DigitalSet applicationRegionIn(domain);
+    DigitalSet applicationRegionOut(domain);
 
     switch (optMode) {
         case OptimizationMode::OM_CorrectConvexities:
@@ -131,11 +132,14 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
         }
     }
 
-    optRegion = omOriginalBoundary(domain,workingSet);
-
 
     DTL2 interiorTransform = interiorDistanceTransform(domain,workingSet);
     DTL2 exteriorTransform = exteriorDistanceTransform(domain,workingSet);
+
+    //optRegion = omOriginalBoundary(domain,workingSet);
+    optRegion = level(interiorTransform,1,0);
+    optRegion += level(exteriorTransform,1,0);
+
 
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::setDifference(trustFRG, workingSet, optRegion);
@@ -152,23 +156,24 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary: {
-            applicationRegion.insert(optRegion.begin(),optRegion.end());
+            applicationRegionIn.insert(optRegion.begin(),optRegion.end());
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
             DigitalSet temp = amAroundBoundary(interiorTransform,exteriorTransform,radius,this->ld,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
+            applicationRegionIn = amLevel(interiorTransform,radius,this->ld,this->levels);
+            applicationRegionOut = amLevel(exteriorTransform,radius,this->ld,this->levels);
             break;
         }
         case ApplicationMode::AM_InternRange:{
             DigitalSet temp = amLevel(interiorTransform,radius,this->ld,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
+            applicationRegionIn.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_ExternRange:
         {
             DigitalSet temp = amLevel(exteriorTransform,radius,this->ld,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
+            applicationRegionIn.insert(temp.begin(),temp.end());
             break;
         }
         default:
@@ -179,7 +184,7 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
 
     if(optRegionInApplication)
     {
-        applicationRegion.insert(optRegion.begin(),optRegion.end());
+        applicationRegionIn.insert(optRegion.begin(),optRegion.end());
     }
 
 
@@ -189,7 +194,8 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
                     optRegion,
                     trustFRG,
                     trustBKG,
-                    applicationRegion,
+                    applicationRegionIn,
+                    applicationRegionOut,
                     [](Point p){ return p; });
 }
 

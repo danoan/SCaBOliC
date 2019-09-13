@@ -64,13 +64,15 @@ namespace SCaBOliC
                      const DigitalSet& optRegion,
                      const DigitalSet& trustFRG,
                      const DigitalSet& trustBKG,
-                     const DigitalSet& applicationRegion,
+                     const DigitalSet& applicationRegionIn,
+                     const DigitalSet& applicationRegionOut,
                      const ToImageCoordinates toImageCoordinates):domain(domain),
                                                original(original),
                                                optRegion(optRegion),
                                                trustFRG(trustFRG),
                                                trustBKG(trustBKG),
-                                               applicationRegion(applicationRegion),
+                                               applicationRegionIn(applicationRegionIn),
+                                               applicationRegionOut(applicationRegionOut),
                                                toImageCoordinates(toImageCoordinates){}
 
 
@@ -84,7 +86,9 @@ namespace SCaBOliC
             const DigitalSet optRegion;
             const DigitalSet trustFRG;
             const DigitalSet trustBKG;
-            const DigitalSet applicationRegion;
+            //const DigitalSet applicationRegion;
+            const DigitalSet applicationRegionIn;
+            const DigitalSet applicationRegionOut;
 
             const ToImageCoordinates toImageCoordinates;
         };

@@ -171,7 +171,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::triangle(0.5,0,0,20);
+    DigitalSet square = DIPaCUS::Shapes::flower(0.5,0,0,20);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);
@@ -188,8 +188,10 @@ void shapeTest(InputData& id)
         cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
 
 
-        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-        else id.optMode = ODRModel::OM_CorrectConvexities;
+//        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
+//        else id.optMode = ODRModel::OM_CorrectConvexities;
+
+        id.optMode = ODRModel::OM_CorrectConvexities;
 
         workSet = flow(workSet,id,domain);
 
