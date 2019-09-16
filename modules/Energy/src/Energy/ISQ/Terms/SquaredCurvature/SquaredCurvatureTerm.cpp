@@ -1,8 +1,8 @@
-#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/max/MaxSquaredCurvatureTerm.h"
+#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.h"
 
 using namespace SCaBOliC::Energy::ISQ;
 
-MaxSquaredCurvatureTerm::MaxSquaredCurvatureTerm(const InputData &id,
+SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
                                                  const SpaceHandleInterface* spaceHandle):vm(id.optimizationRegions)
 {
     od.numVars = vm.numVars;

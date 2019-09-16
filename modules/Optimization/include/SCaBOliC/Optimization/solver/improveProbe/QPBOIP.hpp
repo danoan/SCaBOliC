@@ -16,7 +16,6 @@ QPBOIP<Unary,EnergyTable,Labels>::QPBOIP(Scalar &energyValue,
     this->fillLabels(unlabelled,labels);
     energyValuePriorInversion = this->computeEnergy(U,ET,labels);
 
-    this->invertLabels(labels);
     energyValue = this->computeEnergy(U,ET,labels);
 }
 

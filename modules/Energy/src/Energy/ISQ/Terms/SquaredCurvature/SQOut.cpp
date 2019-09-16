@@ -1,4 +1,4 @@
-#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/max/SQOut.h"
+#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/SQOut.h"
 
 using namespace SCaBOliC::Energy::ISQ;
 

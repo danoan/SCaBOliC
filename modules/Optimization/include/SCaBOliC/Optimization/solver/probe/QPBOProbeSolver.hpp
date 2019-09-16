@@ -15,8 +15,7 @@ QPBOProbeSolver<Unary,EnergyTable,Labels>::QPBOProbeSolver(Scalar& energyValue,
     this->solve(energyValue,unlabelled,U,labels,max_num_iterations);
     this->fillLabels(unlabelled,labels);
     energyValuePriorInversion = this->computeEnergy(U,ET,labels);
-
-    //this->invertLabels(labels);
+    
     energyValue = this->computeEnergy(U,ET,labels);
 }
 

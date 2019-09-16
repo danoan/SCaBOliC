@@ -103,12 +103,10 @@ ODRPixels::ODRPixels(double radius,
 {}
 
 
-ODRModel ODRPixels::createODR (OptimizationMode optMode,
-                               ApplicationMode appMode,
+ODRModel ODRPixels::createODR (ApplicationMode appMode,
                                const DigitalSet& original,
                                bool optRegionInApplication) const
 {
-//    const double& radius = spaceHandle.scaledRadius();
     const double& radius = spaceHandle.radius;
 
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
@@ -119,19 +117,9 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     DigitalSet applicationRegionIn(domain);
     DigitalSet applicationRegionOut(domain);
 
-    switch (optMode) {
-        case OptimizationMode::OM_CorrectConvexities:
-        {
-            workingSet = original;
-            break;
-        }
-        case OptimizationMode::OM_CorrectConcavities:
-        {
-            workingSet.assignFromComplement(original);
-            break;
-        }
-    }
 
+    workingSet = original;
+    
 
     DTL2 interiorTransform = interiorDistanceTransform(domain,workingSet);
     DTL2 exteriorTransform = exteriorDistanceTransform(domain,workingSet);

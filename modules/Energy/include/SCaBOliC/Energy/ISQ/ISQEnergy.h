@@ -8,8 +8,7 @@
 #include <SCaBOliC/Energy/ISQ/InputData.h>
 #include <SCaBOliC/Energy/ISQ/VariableMap.h>
 #include <SCaBOliC/Energy/ISQ/Terms/Data/DataTerm.h>
-#include <SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/jmiv/JMIVSquaredCurvatureTerm.h>
-#include <SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/max/MaxSquaredCurvatureTerm.h>
+#include <SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/SquaredCurvatureTerm.h>
 
 #include <SCaBOliC/Optimization/solver/simple/QPBOSimpleSolver.h>
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
@@ -84,7 +83,7 @@ namespace SCaBOliC
             ISQ::DataTerm dt;
             ISQ::LengthTerm lt;
             //ISQ::JMIVSquaredCurvatureTerm sqt;
-            ISQ::MaxSquaredCurvatureTerm sqt;
+            ISQ::SquaredCurvatureTerm sqt;
 
             MyEnergyTerm energy;
         };

@@ -9,8 +9,8 @@
 #include "SCaBOliC/Energy/ISQ/VariableMap.h"
 #include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
-#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/max/SQIn.h"
-#include "SCaBOliC/Energy/ISQ/Terms/SquaredCurvature/max/SQOut.h"
+#include "SQIn.h"
+#include "SQOut.h"
 
 
 namespace SCaBOliC
@@ -19,7 +19,7 @@ namespace SCaBOliC
     {
         namespace ISQ
         {
-            class MaxSquaredCurvatureTerm:public EnergyTerm
+            class SquaredCurvatureTerm:public EnergyTerm
             {
 
             public:
@@ -31,7 +31,7 @@ namespace SCaBOliC
                 typedef SCaBOliC::Core::SpaceHandleInterface SpaceHandleInterface;
 
             public:
-                MaxSquaredCurvatureTerm(const InputData& id,
+                SquaredCurvatureTerm(const InputData& id,
                                      const SpaceHandleInterface* spaceHandle);
 
                 int numVars(){return vm.numVars;}

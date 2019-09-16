@@ -27,10 +27,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::DistanceTransformation<DGtal::Z2i::Space, DigitalSet, DGtal::Z2i::L2Metric> DTL2;
 
-            typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
-            typedef ODRModel::ApplicationCenter ApplicationCenter;
-            typedef ODRModel::CountingMode CountingMode;
             typedef ODRModel::NeighborhoodType NeighborhoodType;
             typedef ODRModel::LevelDefinition  LevelDefinition;
 
@@ -49,8 +46,7 @@ namespace SCaBOliC
                       const NeighborhoodType nt);
 
 
-            ODRModel createODR(OptimizationMode optMode,
-                               ApplicationMode appMode,
+            ODRModel createODR(ApplicationMode appMode,
                                const DigitalSet& original,
                                bool optRegionInApplication=false) const;
 

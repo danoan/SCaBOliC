@@ -32,7 +32,6 @@ struct InputData
         ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
-        optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
         appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 5;
@@ -41,7 +40,6 @@ struct InputData
         excludeOptPointsFromAreaComputation = false;
 
         optRegionInApplication = false;
-        shrinkingMode = false;
 
         dataTerm = 0;
         sqTerm = 1.0;
@@ -55,7 +53,6 @@ struct InputData
     ODRModel::NeighborhoodType nt;
     DIPaCUS::Morphology::StructuringElement::Type se;
 
-    ODRModel::OptimizationMode optMode;
     ODRModel::ApplicationMode appMode;
 
     double radius;
@@ -65,7 +62,6 @@ struct InputData
     ISQ::InputData::PenalizationMode penalizationMode;
 
     bool optRegionInApplication;
-    bool shrinkingMode;
 
     double dataTerm;
     double sqTerm;
@@ -137,7 +133,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
     ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt);
-    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
+    ODRModel odr = odrFactory.createODR(id.appMode,ds,id.optRegionInApplication);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
@@ -149,7 +145,6 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             fgDistr,
                             bgDistr,
                             id.excludeOptPointsFromAreaComputation,
-                            id.shrinkingMode,
                             id.dataTerm,
                             id.sqTerm,
                             id.lengthTerm);
@@ -165,7 +160,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     DigitalSet dsOut(domain);
     DigitalSet dsIn = odr.trustFRG;
 
-    odrFactory.handle()->solutionSet(dsOut,dsIn,odr,id.optMode,solution.labelsVector.data(),energy.vm().pim);
+    odrFactory.handle()->solutionSet(dsOut,dsIn,odr,solution.labelsVector.data(),energy.vm().pim);
     return dsOut;
 }
 
@@ -187,11 +182,6 @@ void shapeTest(InputData& id)
         DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
         cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
 
-
-//        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-//        else id.optMode = ODRModel::OM_CorrectConvexities;
-
-        id.optMode = ODRModel::OM_CorrectConvexities;
 
         workSet = flow(workSet,id,domain);
 
@@ -220,9 +210,6 @@ void imageTest(InputData& id)
         cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
         DIPaCUS::Representation::digitalSetToCVMat(imgOut,imgDS);
         cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
-
-        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-        else id.optMode = ODRModel::OM_CorrectConvexities;
 
         imgDS = flow(imgDS,id,domain);
         ++it;
