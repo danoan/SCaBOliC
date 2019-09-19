@@ -57,12 +57,12 @@ void SQIn::setCoeffs(OptimizationData& od,
         temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();
         temp.clear(); DBIOptimization(temp, *yit);
 
+        this->constantTerm += -pow(fgCount,2);
         for (auto xjt = temp.begin(); xjt != temp.end(); ++xjt)
         {
             Index xj = iiv.at(*xjt);
 
             UTM(1,xj) += -(2 + 2*fgCount);
-            this->constantTerm += -pow(fgCount,2);
             this->maxCtrb = fabs(UTM(1,xj))>this->maxCtrb?fabs(UTM(1,xj)):this->maxCtrb;
 
             auto ut = xjt;
