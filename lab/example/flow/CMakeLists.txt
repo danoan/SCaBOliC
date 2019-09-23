@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.2)
 project(example-flow)
 
-add_library(example-lib-flow src/Flow.cpp)
+set(LIBRARY_ACTION "STATIC")
+if(${CREATE_SHARED_LIBRARIES})
+    set(LIBRARY_ACTION "SHARED")
+endif()
+add_library(example-lib-flow ${LIBRARY_ACTION} src/Flow.cpp)
 
 if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(example-lib-flow dipacus scabolic-optimization scabolic-core scabolic-energy)
@@ -20,7 +24,7 @@ target_include_directories(example-lib-flow PRIVATE
         ${DGTAL_INCLUDE_DIRS})
 
 target_link_libraries(example-lib-flow
-        -lexample-input
+        -lexample-lib-input
         -lscabolic-optimization
         -lscabolic-energy
         -lscabolic-core

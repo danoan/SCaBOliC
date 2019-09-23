@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.2)
 project(example-input)
 
-add_library(example-lib-input src/InputReader.cpp)
+set(LIBRARY_ACTION "STATIC")
+if(${CREATE_SHARED_LIBRARIES})
+    set(LIBRARY_ACTION "SHARED")
+endif()
+add_library(example-lib-input ${LIBRARY_ACTION} src/InputReader.cpp)
 
 if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(example-lib-input dipacus scabolic-optimization scabolic-core scabolic-energy)

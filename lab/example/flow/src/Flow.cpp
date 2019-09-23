@@ -46,7 +46,7 @@ namespace SCaBOliC
 
         void shapeFlow(InputData& id,CallbackFlow cbf)
         {
-            DigitalSet square = DIPaCUS::Shapes::flower(0.5,0,0,20);
+            DigitalSet square = DIPaCUS::Shapes::square(id.gridStep,0,0,20);
 
             Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
             DigitalSet workSet(domain);
