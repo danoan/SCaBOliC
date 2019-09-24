@@ -59,12 +59,12 @@ void SQOut::setCoeffs(OptimizationData& od,
         temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();
         temp.clear(); DBIOptimization(temp, *yit);
 
-        this->constantTerm += -pow(area-fgCount,2);
+        this->constantTerm += -pow(area-fgCount,2)*id.outerBallCoef;
         for (auto xjt = temp.begin(); xjt != temp.end(); ++xjt)
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += -(2-2*area +2*fgCount);
+            UTM(1,xj) += -(2-2*area +2*fgCount)*id.outerBallCoef;
             this->maxCtrb = fabs(UTM(1,xj))>this->maxCtrb?fabs(UTM(1,xj)):this->maxCtrb;
 
             auto ut = xjt;
@@ -73,7 +73,7 @@ void SQOut::setCoeffs(OptimizationData& od,
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
-                od.localTable[ip].e11 += -2;
+                od.localTable[ip].e11 += -2*id.outerBallCoef;
 
                 this->maxCtrb = fabs(od.localTable[ip].e11)>this->maxCtrb?fabs(od.localTable[ip].e11):this->maxCtrb;
             }

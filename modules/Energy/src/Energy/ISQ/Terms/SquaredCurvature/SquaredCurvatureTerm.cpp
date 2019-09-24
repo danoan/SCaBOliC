@@ -21,7 +21,7 @@ SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
     this->normalizationFactor = 1.0/maxCtrb;
     this->weight = id.sqTermWeight;
 
-    this->constantFactor *=this->normalizationFactor;;
+    this->constantFactor *=this->normalizationFactor;
     this->constantTerm *=this->normalizationFactor;
 
     od.localUTM*=this->weight*this->normalizationFactor;
