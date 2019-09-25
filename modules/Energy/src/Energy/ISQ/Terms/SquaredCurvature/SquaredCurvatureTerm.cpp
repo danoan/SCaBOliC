@@ -13,6 +13,9 @@ SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
     SQIn sqIn(id,spaceHandle);
     SQOut sqOut(id,spaceHandle);
 
+    this->constantTerm=0;
+    this->constantFactor=1;
+
     (*this) + sqIn;
     (*this) + sqOut;
 

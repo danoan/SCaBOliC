@@ -4,6 +4,7 @@ using namespace SCaBOliC::Energy;
 
 EnergyTerm& EnergyTerm::operator+(const EnergyTerm& other)
 {
+    this->constantTerm += other.constantTerm;
     od.localUTM += other.od.localUTM;
     od.localPTM += other.od.localPTM;
 
