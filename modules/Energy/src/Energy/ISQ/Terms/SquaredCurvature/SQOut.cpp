@@ -64,7 +64,7 @@ void SQOut::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += -(2-2*area +2*fgCount)*id.outerBallCoef;
+            UTM(1,xj) += -(1-2*area +2*fgCount)*id.outerBallCoef;
             this->maxCtrb = fabs(UTM(1,xj))>this->maxCtrb?fabs(UTM(1,xj)):this->maxCtrb;
 
             auto ut = xjt;

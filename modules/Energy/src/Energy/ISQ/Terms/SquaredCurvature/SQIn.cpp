@@ -62,7 +62,7 @@ void SQIn::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += -(2 + 2*fgCount)*id.innerBallCoef;
+            UTM(1,xj) += -(1 + 2*fgCount)*id.innerBallCoef;
             this->maxCtrb = fabs(UTM(1,xj))>this->maxCtrb?fabs(UTM(1,xj)):this->maxCtrb;
 
             auto ut = xjt;
