@@ -15,6 +15,9 @@ add_library(scabolic-optimization ${LIBRARY_ACTION}
 target_include_directories(scabolic-optimization PRIVATE
         include)
 
+set_target_properties(scabolic-optimization PROPERTIES
+        VERSION ${VERSION_SCABOLIC_OPTIMIZATION})
+
 install(TARGETS scabolic-optimization
         DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
         ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

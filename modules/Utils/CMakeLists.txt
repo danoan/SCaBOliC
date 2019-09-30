@@ -13,6 +13,9 @@ if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(scabolic-utils dipacus geoc)
 endif()
 
+set_target_properties(scabolic-utils PROPERTIES
+        VERSION ${VERSION_SCABOLIC_UTILS})
+
 target_include_directories(scabolic-utils PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}

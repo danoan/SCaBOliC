@@ -22,6 +22,9 @@ else()
     add_dependencies(scabolic-energy scabolic-core scabolic-optimization scabolic-utils)
 endif()
 
+set_target_properties(scabolic-energy PROPERTIES
+        VERSION ${VERSION_SCABOLIC_ENERGY})
+
 
 target_include_directories(scabolic-energy PRIVATE
         include
