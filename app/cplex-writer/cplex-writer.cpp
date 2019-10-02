@@ -92,6 +92,52 @@ void writeFormulation(const std::string& outputFilePath,const ISQEnergy& energy)
 
 }
 
+double delta(int j, const ISQEnergy& energy, const ISQEnergy::Solution::LabelsVector& labelsVector)
+{
+    const OptimizationData& od = energy.energy.od;
+
+    ISQEnergy::Solution::LabelsVector labelsVectorJ1,labelsVectorJ0;
+    labelsVectorJ1 = labelsVector;
+    labelsVectorJ0 = labelsVector;
+
+    labelsVectorJ1(j) = 1;
+    labelsVectorJ0(j) = 0;
+
+    double f1 = Utils::computeEnergy(od.localUTM,od.localTable,labelsVectorJ1);
+    double f0 = Utils::computeEnergy(od.localUTM,od.localTable,labelsVectorJ0);
+
+    return f1 - f0;
+}
+
+ISQEnergy::Solution::LabelsVector greedy(const ISQEnergy& energy)
+{
+    ISQEnergy::Solution::LabelsVector lv(energy.numVars());
+    lv.setZero();
+    for(int i=0;i<energy.numVars();++i)
+    {
+        if(delta(i,energy,lv)<0) lv[i] = 1;
+        else lv[i] = 0;
+    }
+
+    return lv;
+}
+
+
+ISQEnergy::Solution::LabelsVector unarySol(const ISQEnergy& energy)
+{
+    ISQEnergy::Solution::LabelsVector lv(energy.numVars());
+    const OptimizationData::UnaryTermsMatrix& U = energy.energy.od.localUTM;
+
+    lv.setZero();
+    for(int i=0;i<energy.numVars();++i)
+    {
+        if(U(1,i)<0) lv[i] = 1;
+        else lv[i] = 0;
+    }
+
+    return lv;
+}
+
 int main(int argc, char* argv[])
 {
     InputReader::Data id = InputReader::readInput(argc,argv);
@@ -116,6 +162,15 @@ int main(int argc, char* argv[])
     ISQEnergy::Solution solution(shape.domain(),energy.numVars());
     solution.labelsVector.setOnes();
     double energyValue = Utils::computeEnergy( energy.energy.od.localUTM,energy.energy.od.localTable,solution.labelsVector);
+
+    auto gSol = unarySol(energy);
+    int ones=0;
+    for(int i=0;i<gSol.size();++i)
+    {
+        std::cout << i << ":" << gSol[i] << std::endl;
+        if(gSol[i]==1) ones+=1;
+    }
+    std::cout << ones << std::endl;
 
     writeFormulation(id.outputFilepath,energy);
 

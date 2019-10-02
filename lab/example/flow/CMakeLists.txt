@@ -8,9 +8,9 @@ endif()
 add_library(example-lib-flow ${LIBRARY_ACTION} src/Flow.cpp)
 
 if(${USE_REMOTE_REPOSITORIES})
-    add_dependencies(example-lib-flow dipacus scabolic-optimization scabolic-core scabolic-energy)
+    add_dependencies(example-lib-flow example-lib-input dipacus scabolic-optimization scabolic-core scabolic-energy)
 else()
-    add_dependencies(example-lib-flow scabolic-optimization scabolic-core scabolic-energy)
+    add_dependencies(example-lib-flow example-lib-input scabolic-optimization scabolic-core scabolic-energy)
 endif()
 
 target_include_directories(example-lib-flow PRIVATE
