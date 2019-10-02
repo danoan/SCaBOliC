@@ -19,7 +19,7 @@ PixelSpaceHandle::Intersections PixelSpaceHandle::intersectCoefficient(DigitalBa
 
 DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(const DigitalSet &toIntersect) const
 {
-    return DIPaCUS::Misc::DigitalBallIntersection(this->radius/*this->scaledRadius()*/,toIntersect);
+    return DIPaCUS::Misc::DigitalBallIntersection(this->scaledRadius(),toIntersect);
 }
 
 void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
@@ -45,6 +45,6 @@ void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
 
 double PixelSpaceHandle::pixelArea() const
 {
-    DigitalSet tempBall = DIPaCUS::Shapes::ball(1.0/*this->gridStep*/,0,0,this->radius);
+    DigitalSet tempBall = DIPaCUS::Shapes::ball(this->gridStep,0,0,this->radius);
     return tempBall.size();
 }

@@ -24,7 +24,5 @@ target_link_libraries(python-writer
         -lscabolic-energy
         -lboost_filesystem
         -lboost_system
-        ${GUROBI_HOME}/lib/libgurobi_c++.a
-        ${GUROBI_HOME}/lib/libgurobi81.so
         ${OpenCV_LIBS}
         ${DGTAL_LIBRARIES})

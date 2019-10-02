@@ -107,7 +107,8 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
                                const DigitalSet& original,
                                bool optRegionInApplication) const
 {
-    const double& radius = spaceHandle.radius;
+    const double& radius = spaceHandle.scaledRadius();
+    const double& levels = this->levels/spaceHandle.gridStep;
 
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));
@@ -148,19 +149,19 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(interiorTransform,exteriorTransform,radius,this->ld,this->levels);
-            applicationRegionIn = amLevel(interiorTransform,radius,this->ld,this->levels);
-            applicationRegionOut = amLevel(exteriorTransform,radius,this->ld,this->levels);
+            DigitalSet temp = amAroundBoundary(interiorTransform,exteriorTransform,radius,this->ld,levels);
+            applicationRegionIn = amLevel(interiorTransform,radius,this->ld,levels);
+            applicationRegionOut = amLevel(exteriorTransform,radius,this->ld,levels);
             break;
         }
         case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amLevel(interiorTransform,radius,this->ld,this->levels);
+            DigitalSet temp = amLevel(interiorTransform,radius,this->ld,levels);
             applicationRegionIn.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_ExternRange:
         {
-            DigitalSet temp = amLevel(exteriorTransform,radius,this->ld,this->levels);
+            DigitalSet temp = amLevel(exteriorTransform,radius,this->ld,levels);
             applicationRegionIn.insert(temp.begin(),temp.end());
             break;
         }

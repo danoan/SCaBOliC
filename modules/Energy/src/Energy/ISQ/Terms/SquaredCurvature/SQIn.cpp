@@ -48,13 +48,14 @@ void SQIn::setCoeffs(OptimizationData& od,
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
 
+    double gridAdjustement = pow(this->spaceHandle->gridStep,2);
     this->constantFactor = 1.0;
     this->maxCtrb=0;
 
     int fgCount;
     for(auto yit=ODR.applicationRegionIn.begin();yit!=ODR.applicationRegionIn.end();++yit)
     {
-        temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();
+        temp.clear(); DBITrust(temp, *yit); fgCount = temp.size()*gridAdjustement;
         temp.clear(); DBIOptimization(temp, *yit);
 
         this->constantTerm += -pow(fgCount,2)*id.innerBallCoef;

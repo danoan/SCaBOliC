@@ -49,6 +49,7 @@ void SQOut::setCoeffs(OptimizationData& od,
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
 
+    double gridAdjustement = pow(this->spaceHandle->gridStep,2);
     this->constantFactor = 1.0;
     this->maxCtrb=0;
 
@@ -56,7 +57,7 @@ void SQOut::setCoeffs(OptimizationData& od,
     double area = this->spaceHandle->pixelArea();
     for(auto yit=ODR.applicationRegionOut.begin();yit!=ODR.applicationRegionOut.end();++yit)
     {
-        temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();
+        temp.clear(); DBITrust(temp, *yit); fgCount = temp.size()*gridAdjustement;
         temp.clear(); DBIOptimization(temp, *yit);
 
         this->constantTerm += -pow(area-fgCount,2)*id.outerBallCoef;
