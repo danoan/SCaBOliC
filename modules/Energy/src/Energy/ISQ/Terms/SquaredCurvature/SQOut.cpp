@@ -54,18 +54,18 @@ void SQOut::setCoeffs(OptimizationData& od,
     this->maxCtrb=0;
 
     double fgCount;
-    double area = this->spaceHandle->pixelArea()*gridAdjustement;
+    double area = this->spaceHandle->pixelArea();
     for(auto yit=ODR.applicationRegionOut.begin();yit!=ODR.applicationRegionOut.end();++yit)
     {
-        temp.clear(); DBITrust(temp, *yit); fgCount = temp.size()*gridAdjustement;
+        temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();
         temp.clear(); DBIOptimization(temp, *yit);
 
-        this->constantTerm += -pow(area-fgCount,2)*id.outerBallCoef;
+        this->constantTerm += -pow( (area-fgCount)*gridAdjustement,2)*id.outerBallCoef;
         for (auto xjt = temp.begin(); xjt != temp.end(); ++xjt)
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += -(1-2*area +2*fgCount)*id.outerBallCoef;
+            UTM(1,xj) += -(1-2*area +2*fgCount)*gridAdjustement*id.outerBallCoef;
             this->maxCtrb = fabs(UTM(1,xj))>this->maxCtrb?fabs(UTM(1,xj)):this->maxCtrb;
 
             auto ut = xjt;
@@ -74,7 +74,7 @@ void SQOut::setCoeffs(OptimizationData& od,
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
-                od.localTable[ip].e11 += -2*id.outerBallCoef;
+                od.localTable[ip].e11 += -2*gridAdjustement*id.outerBallCoef;
 
                 this->maxCtrb = fabs(od.localTable[ip].e11)>this->maxCtrb?fabs(od.localTable[ip].e11):this->maxCtrb;
             }
