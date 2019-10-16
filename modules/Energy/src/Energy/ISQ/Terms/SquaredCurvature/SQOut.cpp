@@ -53,8 +53,8 @@ void SQOut::setCoeffs(OptimizationData& od,
     this->constantFactor = 1.0;
     this->maxCtrb=0;
 
-    int fgCount;
-    double area = this->spaceHandle->pixelArea();
+    double fgCount;
+    double area = this->spaceHandle->pixelArea()*gridAdjustement;
     for(auto yit=ODR.applicationRegionOut.begin();yit!=ODR.applicationRegionOut.end();++yit)
     {
         temp.clear(); DBITrust(temp, *yit); fgCount = temp.size()*gridAdjustement;

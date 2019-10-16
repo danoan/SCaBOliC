@@ -36,7 +36,7 @@ namespace SCaBOliC
                 iterations = 10;
             }
 
-            int levels;
+            double levels;
             ODRModel::LevelDefinition ld;
             ODRModel::NeighborhoodType nt;
 

@@ -41,7 +41,7 @@ namespace SCaBOliC
         public:
             ODRPixels(double radius,
                       double gridStep,
-                      const int levels,
+                      const double levels,
                       LevelDefinition ld,
                       const NeighborhoodType nt);
 
@@ -83,7 +83,7 @@ namespace SCaBOliC
 
 
         private:
-            int levels;
+            double levels;
             LevelDefinition ld;
             NeighborhoodType nt;
 

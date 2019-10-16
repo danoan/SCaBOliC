@@ -46,7 +46,7 @@ namespace SCaBOliC
                     }
                     case 'l':
                     {
-                        id.levels = std::atoi(optarg);
+                        id.levels = std::atof(optarg);
                         break;
                     }
                     case 'a':

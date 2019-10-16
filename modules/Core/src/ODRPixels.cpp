@@ -94,7 +94,7 @@ ODRPixels::DigitalSet ODRPixels::amLevel(const DTL2& distanceTransform,
 
 ODRPixels::ODRPixels(double radius,
                      double gridStep,
-                     const int levels,
+                     const double levels,
                      LevelDefinition ld,
                      const NeighborhoodType nt):levels(levels),
                                                 nt(nt),
