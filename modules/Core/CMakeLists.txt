@@ -14,6 +14,12 @@ add_library(scabolic-core ${LIBRARY_ACTION}
         src/PixelSpaceHandle.cpp
         src/InterpixelSpaceHandle.cpp)
 
+if(${USE_REMOTE_REPOSITORIES})
+    add_dependencies(scabolic-core dipacus)
+else()
+
+endif()
+
 target_include_directories(scabolic-core PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}

@@ -25,21 +25,18 @@ struct InputData
 {
     InputData()
     {
-        appCenter = ODRModel::ApplicationCenter::AC_PIXEL;
+        appCenter = ODRModel::ApplicationCenter::AC_LINEL;
         cntMode = ODRModel::CountingMode::CM_PIXEL;
-        levels =1;
-        ld = ODRModel::LevelDefinition::LD_FartherFromCenter;
+        levels =0;
+        ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
         se = DIPaCUS::Morphology::StructuringElement::RECT;
 
-        optMode = ODRModel::OptimizationMode::OM_CorrectConcavities;
+        optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
         appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
         gridStep=1.0;
-
-        excludeOptPointsFromAreaComputation = false;
-        penalizationMode = ISQ::InputData::PenalizationMode::No_Penalization;
 
         optRegionInApplication = true;
 
@@ -62,9 +59,6 @@ struct InputData
 
     double radius;
     double gridStep;
-
-    bool excludeOptPointsFromAreaComputation;
-    ISQ::InputData::PenalizationMode penalizationMode;
 
     bool optRegionInApplication;
 
@@ -116,8 +110,9 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 {
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
-    ODRPixels odrPixels(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
-    ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
+    //ODRPixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+    ODRInterpixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
+    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
@@ -128,16 +123,14 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             colorImage,
                             fgDistr,
                             bgDistr,
-                            id.excludeOptPointsFromAreaComputation,
-                            id.penalizationMode,
                             id.dataTerm,
                             id.sqTerm,
                             id.lengthTerm);
 
-    ISQEnergy energy(isqInput,odrPixels.handle());
+    ISQEnergy energy(isqInput,odrFactory.handle());
 
 
-    ISQEnergy::Solution solution(domain);
+    ISQEnergy::Solution solution(odr.domain);
     solution.init(energy.numVars());
     solution.labelsVector.setZero();
     energy.template solve<QPBOImproveSolver>(solution);
@@ -145,7 +138,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     DigitalSet dsOut(domain);
     DigitalSet dsIn = odr.trustFRG;
 
-    odrPixels.handle()->solutionSet(dsOut,dsIn,odr,id.optMode,solution.labelsVector.data(),energy.vm().pim);
+    odrFactory.handle()->solutionSet(dsOut,dsIn,odr,id.optMode,solution.labelsVector.data(),energy.vm().pim);
     return dsOut;
 }
 
@@ -162,15 +155,16 @@ void shapeTest(const InputData& id)
     int it=0;
     while(it<id.iterations)
     {
+        cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
+        DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
+        cv::imwrite(id.outputFolder + "/" + std::to_string(it) + ".png",imgOut);
         workSet = flow(workSet,id,domain);
         ++it;
     }
 
     boost::filesystem::create_directories(id.outputFolder);
 
-    cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
-    DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
-    cv::imwrite(id.outputFolder + "/square.png",imgOut);
+
 }
 
 void imageTest(const InputData& id)

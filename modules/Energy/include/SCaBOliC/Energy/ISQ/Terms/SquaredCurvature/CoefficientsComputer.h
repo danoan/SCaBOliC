@@ -40,9 +40,7 @@ namespace SCaBOliC
                 CoefficientsComputer(const DigitalSet &applicationRegion,
                                      const DigitalSet &trustForegroundRegion,
                                      const DigitalSet &optRegion,
-                                     const SpaceHandleInterface* spaceHandle,
-                                     PenalizationMode penalization,
-                                     bool excludeOptPointsFromAreaComputation);
+                                     const SpaceHandleInterface* spaceHandle);
 
                 inline const CoefficientData &retrieve(const Point &p) const { return _cm.at(p); }
 

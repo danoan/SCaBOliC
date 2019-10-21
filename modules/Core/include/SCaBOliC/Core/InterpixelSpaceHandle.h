@@ -26,10 +26,8 @@ namespace SCaBOliC
         public:
             InterpixelSpaceHandle(double radius,
                                   double gridStep,
-                                  const CountingMode& cm,
-                                  bool evenIteration):SpaceHandleInterface(radius,gridStep),
-                                                      cm(cm),
-                                                      evenIteration(evenIteration){}
+                                  const CountingMode& cm):SpaceHandleInterface(radius,gridStep),
+                                                      cm(cm){}
 
             void visit(DigitalSet& pixelDS,
                        std::set<Point>& visited,
@@ -62,7 +60,6 @@ namespace SCaBOliC
             static Point neighborhoodFilter[5];
 
             CountingMode cm;
-            bool evenIteration;
         };
     }
 }

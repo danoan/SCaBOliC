@@ -34,9 +34,7 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
     CoefficientsComputer cc(id.optimizationRegions.applicationRegion,
                             id.optimizationRegions.trustFRG,
                             id.optimizationRegions.optRegion,
-                            this->spaceHandle,
-                            id.penalizationMode,
-                            id.excludeOptPointsFromAreaComputation);
+                            this->spaceHandle);
 
     double maxCtrb;
     setCoeffs(od,
@@ -90,21 +88,6 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             {
                 addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
             }
-        }
-    }
-
-    for(auto iti=ODR.optRegion.begin();iti!=ODR.optRegion.end();++iti)
-    {
-        Index xi = iiv.at(*iti);
-        UTM(1,xi) += id.penalizationWeight*cc.unaryPenalization();
-
-        auto itj = iti;
-        ++itj;
-        for(;itj!=ODR.optRegion.end();++itj)
-        {
-            Index xj = iiv.at(*itj);
-            this->crescentOrder(xi,xj);
-            PTM.coeffRef(xi,xj) += id.penalizationWeight*cc.binaryPenalization();
         }
     }
 

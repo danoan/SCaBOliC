@@ -33,10 +33,7 @@ void InterpixelSpaceHandle::visit(DigitalSet& pixelDS,
 
         Point toInsert;
         if(cm==CountingMode::CM_PIXEL)
-            if(this->evenIteration)
-                toInsert = (se.interpixel - Point(1,1) )/2;
-            else
-                toInsert = (se.interpixel + Point(1,1) )/2;
+            toInsert = (se.interpixel + Point(1,1) )/2;
         else
             toInsert = se.interpixel/2;
 
@@ -81,43 +78,28 @@ void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
 {
     const DigitalSet& optRegion = odrModel.optRegion;
 
-    DigitalSet _tempInter(outputDS.domain());
-    _tempInter.insert(initialDS.begin(),initialDS.end());
+    DigitalSet compInitial(initialDS.domain());
+    compInitial.assignFromComplement(initialDS);
+
+    if(optMode==ODRModel::OptimizationMode::OM_CorrectConvexities) for(auto p:initialDS) outputDS.insert( odrModel.toImageCoordinates(p) );
+    else for(auto p:compInitial) outputDS.insert( odrModel.toImageCoordinates(p) );
 
     for (DigitalSet::ConstIterator it = optRegion.begin();
          it != optRegion.end(); ++it)
     {
         if (varValue[ pointToVar.at(*it) ] == 1) {
-            _tempInter.insert( (*it) );
+            outputDS.insert( odrModel.toImageCoordinates( *it) );
         }
     }
-
-    DigitalSet _outputInter(_tempInter.domain());
-    if(optMode==ODRModel::OptimizationMode::OM_CorrectConcavities) _outputInter.assignFromComplement(_tempInter);
-    else _outputInter= _tempInter;
-
-    outputDS = convertToPixelMode(_outputInter,this->cm);
 }
 
 DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComputer(const DigitalSet& toIntersect) const
 {
-    return DIPaCUS::Misc::DigitalBallIntersection(2*this->scaledRadius(),toIntersect);
+    return DIPaCUS::Misc::DigitalBallIntersection(2*this->radius,toIntersect);
 }
 
 double InterpixelSpaceHandle::pixelArea() const
 {
-    DigitalSet tempBall = DIPaCUS::Shapes::ball(this->gridStep,0,0,2*this->radius);
-
-    int area = 0;
-    for(auto it=tempBall.begin();it!=tempBall.end();++it)
-    {
-        if((*it)(0)%2!=0 && (*it)(1)%2!=0)
-        {
-            ++area;
-        }
-    }
-
-    return area;
-
+    DIPaCUS::Shapes::ball(1.0,0,0,this->radius).size();
 }
 

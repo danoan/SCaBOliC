@@ -1,6 +1,7 @@
 #ifndef SCABOLIC_ODRINTERPIXELS_H
 #define SCABOLIC_ODRINTERPIXELS_H
 
+#include <DGtal/geometry/volumes/distance/DistanceTransformation.h>
 #include "ODRInterface.h"
 #include "ODRUtils.h"
 #include "InterpixelSpaceHandle.h"
@@ -15,6 +16,7 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Domain Domain;
             typedef DGtal::Z2i::Point Point;
+            typedef DGtal::DistanceTransformation<DGtal::Z2i::Space, DigitalSet, DGtal::Z2i::L2Metric> DTL2;
 
             typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
@@ -46,8 +48,7 @@ namespace SCaBOliC
                            const int levels,
                            LevelDefinition ld,
                            const NeighborhoodType nt,
-                           StructuringElementType se,
-                           bool manualEvenIteration=evenIteration);
+                           StructuringElementType se);
 
 
             ODRModel createODR(OptimizationMode optMode,
@@ -58,41 +59,35 @@ namespace SCaBOliC
             const SpaceHandleInterface* handle() const;
 
         private:
-            DigitalSet omOriginalBoundary(const Domain& domain,const DigitalSet& original) const
-            {
-                if(nt==NeighborhoodType::FourNeighborhood)
-                {
-                    return ODRUtils::omOriginalBoundary<FourNeighborhood>(domain,original);
-                } else
-                {
-                    return ODRUtils::omOriginalBoundary<EightNeighborhood>(domain,original);
-                }
-            }
+            void convertToInterpixel(DigitalSet& dsInterpixel, const DigitalSet& dsPixel) const;
 
-            DigitalSet omDilationBoundary(const Domain& domain,
-                                          const DigitalSet& original,
-                                          const StructuringElementType& st) const
-            {
-                if(nt==NeighborhoodType::FourNeighborhood)
-                {
-                    return ODRUtils::omDilationBoundary<FourNeighborhood>(domain,original,st);
-                } else
-                {
-                    return ODRUtils::omDilationBoundary<EightNeighborhood>(domain,original,st);
-                }
-            }
+            DTL2 interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const;
+
+            DTL2 exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const;
+
+            DigitalSet level(const DTL2& dtL2, int lessThan, int greaterThan=0) const;
+
+            DigitalSet getBoundary(const Domain& domain, const DigitalSet& ds) const;
+
+            DigitalSet omOriginalBoundary(const Domain& domain,
+                                          const DigitalSet& original) const;
+
+            DigitalSet omDilationBoundary(const DTL2& dtL2) const;
 
             DigitalSet amOriginalBoundary(const Domain& domain,
-                                          const DigitalSet& original) const
-            {
-                if(nt==NeighborhoodType::FourNeighborhood)
-                {
-                    return ODRUtils::amOriginalBoundary<FourNeighborhood>(domain,original);
-                } else
-                {
-                    return ODRUtils::amOriginalBoundary<EightNeighborhood>(domain,original);
-                }
-            }
+                                          const DigitalSet& original) const;
+
+
+            DigitalSet amAroundBoundary(const DTL2& interiorTransform,
+                                        const DTL2& exteriorTransform,
+                                        const unsigned int radius,
+                                        const LevelDefinition ld,
+                                        int length) const;
+
+            DigitalSet amLevel(const DTL2& distanceTransform,
+                               const unsigned int radius,
+                               const LevelDefinition ld,
+                               int length) const;
 
 
             DigitalSet computeForeground(const Domain& domain,
@@ -105,38 +100,6 @@ namespace SCaBOliC
                                          const DigitalSet& trustFRG,
                                          const DigitalSet& optRegion) const
             { return ODRUtils::computeBackground(domain,trustFRG,optRegion); }
-
-            DigitalSet amAroundBoundary(const Domain& domain,
-                                        const DigitalSet& original,
-                                        const DigitalSet& optRegion,
-                                        const unsigned int radius,
-                                        const LevelDefinition ld,
-                                        const StructuringElementType st,
-                                        int length) const
-            { return ODRUtils::amAroundBoundary(domain,original,optRegion,radius,ld,st,length); }
-
-            DigitalSet amInternRange(const Domain& domain,
-                                     const DigitalSet& original,
-                                     const DigitalSet& optRegion,
-                                     const unsigned int radius,
-                                     const LevelDefinition ld,
-                                     const StructuringElementType st,
-                                     int length) const
-            { return ODRUtils::amInternRange(domain,original,optRegion,radius,ld,st,length); }
-
-            DigitalSet amExternRange(const Domain& domain,
-                                     const DigitalSet& original,
-                                     const DigitalSet& optRegion,
-                                     const unsigned int radius,
-                                     const LevelDefinition ld,
-                                     const StructuringElementType st,
-                                     int length) const
-            { return ODRUtils::amExternRange(domain,original,optRegion,radius,ld,st,length); }
-
-            DigitalSet isolatedPoints(const Domain& domain,
-                                      const DigitalSet& original,
-                                      const DigitalSet& optRegion) const
-            { return ODRUtils::isolatedPoints(domain,original,optRegion); }
 
 
             DigitalSet computeApplicationRegionForPixel(const Domain& domain,
@@ -155,14 +118,11 @@ namespace SCaBOliC
                                                         const ApplicationMode appMode,
                                                         bool optRegionInApplication) const;
 
-            DigitalSet convertToLinels(const DigitalSet& pixelAppRegion,
-                                       ApplicationMode appMode,
-                                       bool optRegionInApplication) const;
+            DigitalSet convertToLinels(const DigitalSet& pixelAppRegion) const;
 
 
         private:
             static Point neighborhoodFilter[5];
-            static bool evenIteration;
 
             ApplicationCenter ac;
             CountingMode cm;

@@ -5,9 +5,7 @@ using namespace SCaBOliC::Energy::ISQ;
 CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
                                            const DigitalSet &trustForegroundRegion,
                                            const DigitalSet &optRegion,
-                                           const SpaceHandleInterface* spaceHandle,
-                                           PenalizationMode penalization,
-                                           bool excludeOptPointsFromAreaComputation)
+                                           const SpaceHandleInterface* spaceHandle)
 {
     c1 = 9.0 / pow(spaceHandle->radius, 6.0);
     c2 = 0;
@@ -27,32 +25,10 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
         fgCount = temp.size();
         temp.clear();
 
-        if(excludeOptPointsFromAreaComputation)
-        {
-            DBIO(temp,*it);
-            optCount = temp.size();
-            temp.clear();
-
-            insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
-        }else
-        {
-            insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount );
-        }
+        insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount );
     }
 
-    if(penalization==PenalizationMode::Penalize_Ones)
-    {
-        p1 = 1;
-        p2 = 2;
-    }else if(penalization==PenalizationMode::Penalize_Zeros)
-    {
-        p1 = 1-2*optRegion.size();
-        p2 = 2;
-    }else
-    {
-        p1 = 0;
-        p2 = 0;
-    }
+
 
 }
 

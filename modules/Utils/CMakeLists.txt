@@ -9,6 +9,12 @@ endif()
 add_library(scabolic-utils ${LIBRARY_ACTION}
         src/Utils.cpp)
 
+if(${USE_REMOTE_REPOSITORIES})
+    add_dependencies(scabolic-utils dipacus geoc)
+else()
+
+endif()
+
 target_include_directories(scabolic-utils PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}

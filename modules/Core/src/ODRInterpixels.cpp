@@ -1,8 +1,6 @@
 #include "SCaBOliC/Core/ODRInterpixels.h"
 using namespace SCaBOliC::Core;
 
-bool ODRInterpixels::evenIteration = true;
-
 ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const CountingMode cntMode,
                                double radius,
@@ -10,8 +8,7 @@ ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                const int levels,
                                LevelDefinition ld,
                                const NeighborhoodType nt,
-                               StructuringElementType se,
-                               bool manualEvenIteration) :ac(appCenter),
+                               StructuringElementType se) :ac(appCenter),
                                                           cm(cntMode),
                                                           levels(levels),
                                                           nt(nt),
@@ -19,97 +16,105 @@ ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
                                                           dilationSE(se),
                                                           erosionSE(se)
 {
-    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_PIXEL,true));
-    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_PIXEL,false));
-    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_POINTEL,true));
-    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_POINTEL,false));
+    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_PIXEL));
 
-    evenIteration = manualEvenIteration;
 }
 
 const SpaceHandleInterface* ODRInterpixels::handle() const
 {
-    if(this->cm==CountingMode::CM_PIXEL)
-    {
-        if(this->evenIteration) return &handles.at(0);
-        else return &handles.at(1);
-    }
-    else
-    {
-        if(this->evenIteration) return &handles.at(2);
-        else return &handles.at(3);
-    }
+    return &handles.at(0);
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::doubleDS(const DigitalSet& ds)
+
+ODRInterpixels::DTL2 ODRInterpixels::interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
-    const Domain& domain = ds.domain();
-
-    DIPaCUS::Representation::Image2D sImage(domain);
-    DIPaCUS::Representation::digitalSetToImage(sImage,ds);
-
-    Point transformingPoint;
-    if(evenIteration) transformingPoint = Point(1,1);
-    else transformingPoint = Point(-1,-1);
-
-    Domain doubleDomain( domain.lowerBound()*2 - Point(1,1),domain.upperBound()*2 + Point(1,1) );
-    DigitalSet kds(doubleDomain);
-
-
-    std::stack<Point> s;
-    std::unordered_set<Point> visited;
-
-    for(auto it=ds.begin();it!=ds.end();++it)
-    {
-        kds.insert( (*it)*2 + transformingPoint );
-        s.push( (*it)*2 + transformingPoint );
-    }
-
-
-    DigitalSet filledKDS(kds.domain());
-    filledKDS.insert(kds.begin(),kds.end());
-
-    Point filterIP[4] = {Point(2,0),Point(0,2),Point(-2,0),Point(0,-2)};
-    Point filterP[8] = {Point(1,0),Point(0,1),Point(-1,0),Point(0,-1),
-                        Point(1,1),Point(-1,1),Point(-1,-1),Point(1,-1)};
-
-    while(!s.empty())
-    {
-        Point curr = s.top();
-        s.pop();
-
-        if(visited.find(curr)!=visited.end()) continue;
-        visited.insert(curr);
-
-        for(int j=0;j<8;++j)
-        {
-            Point np = curr+filterP[j];
-            if(np(0) < filledKDS.domain().lowerBound()(0) || np(1) < filledKDS.domain().lowerBound()(1)) continue;
-            if(np(0) > filledKDS.domain().upperBound()(0) || np(1) > filledKDS.domain().upperBound()(1)) continue;
-
-            filledKDS.insert(np);
-
-        }
-
-
-
-        for(int i=0;i<4;++i)
-        {
-            Point np = curr + filterIP[i];
-
-            if(np(0) < kds.domain().lowerBound()(0) || np(1) < kds.domain().lowerBound()(1)) continue;
-            if(np(0) > kds.domain().upperBound()(0) || np(1) > kds.domain().upperBound()(1)) continue;
-
-            if(kds(np))
-            {
-                s.push(np);
-            }
-        }
-    }
-
-
-    return filledKDS;
+    return DTL2(domain, original, DGtal::Z2i::l2Metric);
 }
+
+ODRInterpixels::DTL2 ODRInterpixels::exteriorDistanceTransform(const Domain& domain, const DigitalSet& original) const
+{
+    DigitalSet d(domain);
+    d.assignFromComplement(original);
+
+    return DTL2(domain, d, DGtal::Z2i::l2Metric);
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::level(const DTL2& dtL2, int lessThan, int greaterThan) const
+{
+    DigitalSet d(dtL2.domain());
+    for(auto it=dtL2.domain().begin();it!=dtL2.domain().end();++it)
+    {
+        if(dtL2(*it)<=lessThan && dtL2(*it)>greaterThan) d.insert(*it);
+    }
+
+    return d;
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::getBoundary(const Domain& domain, const DigitalSet& ds) const
+{
+    DigitalSet boundary(domain);
+    if(nt==NeighborhoodType::FourNeighborhood)
+    {
+        DIPaCUS::Misc::digitalBoundary<FourNeighborhood>(boundary,ds);
+    } else
+    {
+        DIPaCUS::Misc::digitalBoundary<EightNeighborhood>(boundary,ds);
+    }
+
+    return boundary;
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::omOriginalBoundary(const Domain& domain,
+                                                    const DigitalSet& original) const
+{
+    return getBoundary(domain,original);
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::omDilationBoundary(const DTL2& dtL2) const
+{
+    return getBoundary(dtL2.domain(),level(dtL2,1));
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::amOriginalBoundary(const Domain& domain,
+                                                    const DigitalSet& original) const
+{
+    return getBoundary(domain,original);
+}
+
+
+ODRInterpixels::DigitalSet ODRInterpixels::amAroundBoundary(const DTL2& interiorTransform,
+                                                  const DTL2& exteriorTransform,
+                                                  const unsigned int radius,
+                                                  const LevelDefinition ld,
+                                                  int length) const
+{
+    DigitalSet ir = amLevel(interiorTransform,radius,ld,length);
+    DigitalSet er = amLevel(exteriorTransform,radius,ld,length);
+
+    DigitalSet ab(ir.domain());
+    ab.insert(ir.begin(),ir.end());
+    ab.insert(er.begin(),er.end());
+
+    return ab;
+}
+
+ODRInterpixels::DigitalSet ODRInterpixels::amLevel(const DTL2& distanceTransform,
+                                         const unsigned int radius,
+                                         const LevelDefinition ld,
+                                         int length) const
+{
+    DigitalSet temp(distanceTransform.domain());
+    if(ld==LevelDefinition::LD_CloserFromCenter)
+    {
+        temp = level(distanceTransform,length);
+    }else if(ld==LevelDefinition::LD_FartherFromCenter)
+    {
+        temp = level(distanceTransform,radius,radius-length);
+    }
+
+    return temp;
+}
+
 
 ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds)
 {
@@ -147,239 +152,117 @@ ODRInterpixels::DigitalSet ODRInterpixels::filterLinels(DigitalSet& ds)
     return filtered;
 }
 
+void ODRInterpixels::convertToInterpixel(DigitalSet& dsInterpixel, const DigitalSet& dsPixel) const
+{
+    for(auto p:dsPixel) dsInterpixel.insert( 2*p + Point(1,1) );
+}
+
 ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
                                     ApplicationMode appMode,
                                     const DigitalSet& original,
                                     bool optRegionInApplication) const
 {
     if(this->ld==LevelDefinition::LD_FartherFromCenter) throw std::runtime_error("FartherFromCenter not implemented in interpixels models.");
-    evenIteration = !evenIteration;
 
-    const double& radius = handle()->scaledRadius();
+    const double& radius = handle()->radius;
 
-    Point ballBorder = 4*Point(radius,radius);
-    Domain domain(original.domain().lowerBound() - ballBorder,
-                  original.domain().upperBound() + ballBorder);
+    Point ballBorder = 2*Point(radius+levels,radius+levels);
+    DigitalSet fstQuadrantOriginal = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(original,ballBorder);
+
+    Point lb,ub;
+    original.computeBoundingBox(lb,ub);
+    Point translation = ballBorder - lb;
+
+    Domain pixelDomain(fstQuadrantOriginal.domain().lowerBound(),
+                       fstQuadrantOriginal.domain().upperBound());
+
+    Domain interpixelDomain(pixelDomain.lowerBound(),
+                            2*pixelDomain.upperBound() + Point(1,1));
 
 
-
-    DigitalSet workingSet(domain);
-    DigitalSet optRegion(domain);
+    DigitalSet _workingSet(pixelDomain);
+    DigitalSet _optRegion(pixelDomain);
+    DigitalSet optRegion(interpixelDomain);
 
 
     switch (optMode) {
         case OptimizationMode::OM_CorrectConvexities: {
-            workingSet = original;
+            _workingSet = fstQuadrantOriginal;
             break;
         }
         case OptimizationMode::OM_CorrectConcavities: {
-            workingSet.assignFromComplement(original);
+            _workingSet.assignFromComplement(fstQuadrantOriginal);
             break;
         }
     }
 
-    optRegion = omOriginalBoundary(domain,workingSet);
+    DTL2 interiorTransform = interiorDistanceTransform(pixelDomain,_workingSet);
+    DTL2 exteriorTransform = exteriorDistanceTransform(pixelDomain,_workingSet);
 
-    DigitalSet trustFRG = computeForeground(domain,original,optRegion,optMode);
-    DigitalSet trustBKG = computeBackground(domain,trustFRG,optRegion);
+    _optRegion = amAroundBoundary(interiorTransform,exteriorTransform,radius,ld,this->levels);
 
+    DigitalSet applicationRegionPx(interpixelDomain);
+    convertToInterpixel(applicationRegionPx,_optRegion);
+    DigitalSet applicationRegion = convertToLinels(applicationRegionPx);
 
-    DigitalSet _optRegion = doubleDS(optRegion);
-    DigitalSet _trustFRG = doubleDS(trustFRG);
-    DigitalSet _trustBKG = doubleDS(trustBKG);
-    DigitalSet _applicationRegion(_optRegion.domain());
-
-    if(this->ac == ApplicationCenter::AC_LINEL)
+    DGtal::Z2i::Curve curve;
+    DIPaCUS::Misc::computeBoundaryCurve(curve,fstQuadrantOriginal);
+    DGtal::Z2i::KSpace kspace;
+    kspace.init(pixelDomain.lowerBound(),pixelDomain.upperBound(),true);
+    for(auto l:curve)
     {
-        _applicationRegion = computeApplicationRegionForLinel(domain,optRegion,original,trustFRG,radius,this->ld,appMode,optRegionInApplication);
-    }else
-    {
-        _applicationRegion = computeApplicationRegionForPixel(domain,optRegion,original,radius,this->ld,appMode);
-    }
-
-
-    std::function<DigitalSet(DigitalSet&)> appCntFilterApplication;
-    std::function<DigitalSet(DigitalSet&)> appCntFilterOthers;
-
-    switch(this->ac)
-    {
-        case ApplicationCenter::AC_PIXEL:
+        for(auto p:kspace.sUpperIncident(l))
         {
-            appCntFilterApplication = filterPixels;
-            break;
-        }
-        case ApplicationCenter::AC_POINTEL:
-        {
-            appCntFilterApplication = filterPointels;
-            break;
-        }
-        case ApplicationCenter::AC_LINEL:
-        {
-            appCntFilterApplication = filterLinels;
-            break;
+            _optRegion.insert( kspace.sCoords(p) );
         }
     }
+
+    for(auto l:curve) applicationRegion.insert(l.preCell().coordinates);
+
+    DigitalSet _trustFRG = computeForeground(pixelDomain,fstQuadrantOriginal,_optRegion,optMode);
+    DigitalSet _trustBKG = computeBackground(pixelDomain,fstQuadrantOriginal,_optRegion);
+    DigitalSet trustFRG(interpixelDomain);
+    DigitalSet trustBKG(interpixelDomain);
+
+    convertToInterpixel(optRegion,_optRegion);
+    convertToInterpixel(trustFRG,_trustFRG);
+    convertToInterpixel(trustBKG,_trustBKG);
+
 
     ODRModel::ToImageCoordinates toImgCoordinates;
 
-    switch(this->cm)
-    {
-        case CountingMode::CM_PIXEL:
-        {
-            appCntFilterOthers = filterPixels;
-            if(evenIteration)
-                toImgCoordinates = [](Point p)->Point{return (p-Point(1,1))/2 ;};
-            else
-                toImgCoordinates = [](Point p)->Point{return (p+Point(1,1))/2 ;};
-            break;
-        }
-        case CountingMode::CM_POINTEL:
-        {
-            appCntFilterOthers = filterPointels;
-            toImgCoordinates = [](Point p)->Point{return p/2;};
-            break;
-        }
-
-    }
+    toImgCoordinates = [translation](Point p)->Point{return (p-Point(1,1))/2 - translation ;};
 
 
-
-    return ODRModel(_optRegion.domain(),
+    return ODRModel(interpixelDomain,
                     original,
-                    appCntFilterOthers(_optRegion),
-                    appCntFilterOthers(_trustFRG),
-                    appCntFilterOthers(_trustBKG),
-                    appCntFilterApplication(_applicationRegion),
+                    optRegion,
+                    trustFRG,
+                    trustBKG,
+                    applicationRegion,
                     toImgCoordinates
     );
 }
 
-ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForPixel(const Domain& domain,
-                                                                            const DigitalSet& optRegion,
-                                                                            const DigitalSet& original,
-                                                                            unsigned int radius,
-                                                                            const LevelDefinition ld,
-                                                                            const ApplicationMode appMode) const
+
+ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pixelAppRegion) const
 {
-    DigitalSet applicationRegion(domain);
-    switch (appMode) {
-        case ApplicationMode::AM_OptimizationBoundary: {
-            applicationRegion.insert(optRegion.begin(),optRegion.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary: {
-            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,ld,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        default:
-        {
-            throw std::runtime_error("Invalid ODR configuration");
-        }
-    }
+    DGtal::Z2i::KSpace kspace;
+    Domain domain = pixelAppRegion.domain();
+    kspace.init(domain.lowerBound(),domain.upperBound(),true);
 
-    return doubleDS(applicationRegion);
-}
-
-ODRInterpixels::DigitalSet ODRInterpixels::computeApplicationRegionForLinel(const Domain& domain,
-                                                                            const DigitalSet& optRegion,
-                                                                            const DigitalSet& original,
-                                                                            const DigitalSet& trustFRG,
-                                                                            unsigned int radius,
-                                                                            const LevelDefinition ld,
-                                                                            const ApplicationMode appMode,
-                                                                            bool optRegionInApplication) const
-{
-    DigitalSet applicationRegion(domain);
-    applicationRegion.insert(optRegion.begin(),optRegion.end());
-    applicationRegion.insert(trustFRG.begin(),trustFRG.end());
-    switch (appMode) {
-        case ApplicationMode::AM_OptimizationBoundary: {
-            break;
-        }
-        case ApplicationMode::AM_InternRange:{
-            DigitalSet temp = amInternRange(domain,original,optRegion,radius,ld,erosionSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundIntern:{
-            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,ld,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        case ApplicationMode::AM_AroundBoundary:{
-            DigitalSet temp = amAroundBoundary(domain,original,optRegion,radius,ld,dilationSE,this->levels);
-            applicationRegion.insert(temp.begin(),temp.end());
-            break;
-        }
-        default:
-        {
-            throw std::runtime_error("Invalid ODR configuration");
-        }
-    }
-
-
-
-    return convertToLinels(applicationRegion,appMode,optRegionInApplication);
-}
-
-ODRInterpixels::DigitalSet ODRInterpixels::convertToLinels(const DigitalSet& pixelAppRegion,
-                                                           ApplicationMode appMode,
-                                                           bool optRegionInApplication) const
-{
-    Point lb = pixelAppRegion.domain().lowerBound();
-    Point ub = pixelAppRegion.domain().upperBound();
-
-    Domain interDomain( lb*2 - Point(1,1), ub*2 + Point(1,1));
-    DigitalSet interAppRegion(interDomain);
-    DigitalSet appTemp = pixelAppRegion;
-
-    int countLevels;
-    int skip;
-
-    if(appMode==ApplicationMode::AM_AroundIntern)
+    DigitalSet linelSet(domain);
+    DGtal::Z2i::SCell pixelModel = kspace.sCell( Point(1,1),true);
+    for(auto p:pixelAppRegion)
     {
-        countLevels = this->levels*2+1;
-        skip = optRegionInApplication?0:this->levels+1;
-    }else if(appMode==ApplicationMode::AM_InternRange)
-    {
-        countLevels = this->levels+1;
-        skip= appMode==ApplicationMode::AM_OptimizationBoundary || optRegionInApplication?0:this->levels+1;
-    }
-    else if(appMode==ApplicationMode::AM_AroundBoundary)
-    {
-        countLevels = this->levels*2+1;
-        skip = optRegionInApplication?0:this->levels+1;
-    }
-
-    do{
-        if(countLevels!=skip)
+        auto linels = kspace.sLowerIncident( kspace.sCell(p,true) );
+        for( auto l: linels)
         {
-            Curve boundaryCurve;
-            DIPaCUS::Misc::computeBoundaryCurve(boundaryCurve,appTemp);
-            for(auto it=boundaryCurve.begin();it!=boundaryCurve.end();++it)
-            {
-                Point pt = it->preCell().coordinates;
-                if(evenIteration==false) pt+= Point(-2,-2);
-                interAppRegion.insert( pt );
-            }
+            linelSet.insert( kspace.sKCoords(l) );
         }
 
-        DigitalSet tempBoundary(appTemp.domain());
-        if(this->nt==NeighborhoodType::FourNeighborhood)
-            DIPaCUS::Misc::digitalBoundary<EightNeighborhood>(tempBoundary,appTemp);
-        else
-            DIPaCUS::Misc::digitalBoundary<FourNeighborhood>(tempBoundary,appTemp);
+    }
 
-        DigitalSet tempEroded(appTemp.domain());
-        DIPaCUS::SetOperations::setDifference(tempEroded,appTemp,tempBoundary);
-
-        appTemp = tempEroded;
-        --countLevels;
-
-    }while(appMode!=ApplicationMode::AM_OptimizationBoundary && countLevels>0);
-
-
-    return interAppRegion;
+    return linelSet;
 }
 
