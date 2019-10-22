@@ -2,7 +2,6 @@
 #define SCABOLIC_ENERGY_IENERGYTERM_H
 
 #include <SCaBOliC/Energy/model/OptimizationData.h>
-#include <SCaBOliC/Core/ODRPixels.h>
 #include <SCaBOliC/Core/ODRInterpixels.h>
 
 namespace SCaBOliC

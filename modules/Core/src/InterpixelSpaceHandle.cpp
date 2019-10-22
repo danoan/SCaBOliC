@@ -8,67 +8,6 @@ InterpixelSpaceHandle::Point InterpixelSpaceHandle::neighborhoodFilter[5] = {Int
                                                                              InterpixelSpaceHandle::Point(0,-2),
                                                                              InterpixelSpaceHandle::Point(0,0)};
 
-void InterpixelSpaceHandle::visit(DigitalSet& pixelDS,
-                                  std::set<Point>& visited,
-                                  DigitalSet::ConstIterator& it,
-                                  const DigitalSet& ds) const
-{
-    Point filterInterpixelMode[4] = {Point(0,2),Point(2,0),Point(0,-2),Point(-2,0)};
-    std::stack<StackElement> s;
-    Point sp = *it;
-    while(decideSeed(sp))
-    {
-        ++it;
-        sp =  *it;
-    };
-
-    s.push(StackElement(sp));
-    while(!s.empty())
-    {
-        StackElement se = s.top();
-        s.pop();
-
-        if(visited.find(se.interpixel)!=visited.end()) continue;
-        visited.insert(se.interpixel);
-
-        Point toInsert;
-        if(cm==CountingMode::CM_PIXEL)
-            toInsert = (se.interpixel + Point(1,1) )/2;
-        else
-            toInsert = se.interpixel/2;
-
-        pixelDS.insert(toInsert);
-
-        for(int i=0;i<4;++i)
-        {
-            Point npIP = se.interpixel + filterInterpixelMode[i];
-
-            if(npIP(0) < ds.domain().lowerBound()(0) || npIP(1) < ds.domain().lowerBound()(1)) continue;
-            if(npIP(0) > ds.domain().upperBound()(0) || npIP(1) > ds.domain().upperBound()(1)) continue;
-
-            if(ds(npIP))
-            {
-                s.push(StackElement(npIP));
-            }
-        }
-    }
-}
-
-InterpixelSpaceHandle::DigitalSet InterpixelSpaceHandle::convertToPixelMode(const DigitalSet& ds,
-                                                                            CountingMode cm) const
-{
-    DigitalSet pixelDS(ds.domain());
-    std::set<Point> visited;
-
-    DigitalSet::ConstIterator it = ds.begin();
-    do{
-        visit(pixelDS,visited,it,ds);
-        ++it;
-    }while(pixelDS.size()!=ds.size());
-
-    return pixelDS;
-}
-
 void InterpixelSpaceHandle::solutionSet(DigitalSet& outputDS,
                                         const DigitalSet& initialDS,
                                         const ODRModel& odrModel,
@@ -100,6 +39,6 @@ DIPaCUS::Misc::DigitalBallIntersection InterpixelSpaceHandle::intersectionComput
 
 double InterpixelSpaceHandle::pixelArea() const
 {
-    DIPaCUS::Shapes::ball(1.0,0,0,this->radius).size();
+    return 32;DIPaCUS::Shapes::ball(1.0,0,0,this->radius).size();
 }
 

@@ -15,24 +15,9 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
 
-            typedef ODRModel::CountingMode CountingMode;
-
-            struct StackElement
-            {
-                StackElement(Point interpixel):interpixel(interpixel){}
-                Point interpixel;
-            };
-
         public:
             InterpixelSpaceHandle(double radius,
-                                  double gridStep,
-                                  const CountingMode& cm):SpaceHandleInterface(radius,gridStep),
-                                                      cm(cm){}
-
-            void visit(DigitalSet& pixelDS,
-                       std::set<Point>& visited,
-                       DigitalSet::ConstIterator& it,
-                       const DigitalSet& ds) const;
+                                  double gridStep):SpaceHandleInterface(radius,gridStep){}
 
             void solutionSet(DigitalSet& outputDS,
                              const DigitalSet& initialDS,
@@ -49,17 +34,7 @@ namespace SCaBOliC
             double pixelArea() const;
 
         private:
-            DigitalSet convertToPixelMode(const DigitalSet& ds,
-                                          CountingMode cm) const;
-
-            bool isNotPointel(Point p) const{ return p(0)%2!=0 || p(1)%2!=0; };
-            bool isNotPixel(Point p) const{ return p(0)%2!=1 || p(1)%2!=1; };
-            bool decideSeed(Point p ) const{ return cm==CountingMode::CM_POINTEL?isNotPointel(p):isNotPixel(p); };
-
-        private:
             static Point neighborhoodFilter[5];
-
-            CountingMode cm;
         };
     }
 }

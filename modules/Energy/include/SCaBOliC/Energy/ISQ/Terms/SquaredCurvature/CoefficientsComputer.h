@@ -3,7 +3,6 @@
 
 #include <DGtal/helpers/StdDefs.h>
 #include <DIPaCUS/derivates/Misc.h>
-#include <SCaBOliC/Core/ODRInterface.h>
 
 #include "SCaBOliC/Core/SpaceHandleInterface.h"
 #include "SCaBOliC/Energy/ISQ/InputData.h"

@@ -7,7 +7,7 @@
 
 #include <DGtal/helpers/StdDefs.h>
 
-#include "SCaBOliC/Core/ODRPixels.h"
+#include "SCaBOliC/Core/ODRInterpixels.h"
 #include "SCaBOliC/Core/ODRModel.h"
 #include "SCaBOliC/Energy/ISQ/ISQEnergy.h"
 #include "SCaBOliC/Energy/ISQ/InputData.h"
@@ -25,20 +25,15 @@ struct InputData
 {
     InputData()
     {
-        appCenter = ODRModel::ApplicationCenter::AC_LINEL;
-        cntMode = ODRModel::CountingMode::CM_PIXEL;
         levels =0;
         ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
-        se = DIPaCUS::Morphology::StructuringElement::RECT;
 
         optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
-        appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
 
         radius = 3;
         gridStep=1.0;
 
-        optRegionInApplication = true;
 
         dataTerm = 0;
         sqTerm = 1.0;
@@ -47,20 +42,14 @@ struct InputData
         outputFolder = "";
     }
 
-    ODRModel::ApplicationCenter appCenter;
-    ODRModel::CountingMode cntMode;
     int levels;
     ODRModel::LevelDefinition ld;
     ODRModel::NeighborhoodType nt;
-    DIPaCUS::Morphology::StructuringElement::Type se;
 
     ODRModel::OptimizationMode optMode;
-    ODRModel::ApplicationMode appMode;
 
     double radius;
     double gridStep;
-
-    bool optRegionInApplication;
 
     double dataTerm;
     double sqTerm;
@@ -111,8 +100,8 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
     //ODRPixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
-    ODRInterpixels odrFactory(id.appCenter,id.cntMode,id.radius,id.gridStep,id.levels,id.ld,id.nt,id.se);
-    ODRModel odr = odrFactory.createODR(id.optMode,id.appMode,ds,id.optRegionInApplication);
+    ODRInterpixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt);
+    ODRModel odr = odrFactory.createODR(ds,id.optMode);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 

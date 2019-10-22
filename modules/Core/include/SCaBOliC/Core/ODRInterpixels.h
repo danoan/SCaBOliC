@@ -2,7 +2,6 @@
 #define SCABOLIC_ODRINTERPIXELS_H
 
 #include <DGtal/geometry/volumes/distance/DistanceTransformation.h>
-#include "ODRInterface.h"
 #include "ODRUtils.h"
 #include "InterpixelSpaceHandle.h"
 
@@ -10,7 +9,7 @@ namespace SCaBOliC
 {
     namespace Core
     {
-        class ODRInterpixels:public ODRInterface
+        class ODRInterpixels
         {
         public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
@@ -19,12 +18,8 @@ namespace SCaBOliC
             typedef DGtal::DistanceTransformation<DGtal::Z2i::Space, DigitalSet, DGtal::Z2i::L2Metric> DTL2;
 
             typedef ODRModel::OptimizationMode OptimizationMode;
-            typedef ODRModel::ApplicationMode ApplicationMode;
-            typedef ODRModel::ApplicationCenter ApplicationCenter;
-            typedef ODRModel::CountingMode CountingMode;
             typedef ODRModel::NeighborhoodType NeighborhoodType;
             typedef ODRModel::LevelDefinition LevelDefinition;
-            typedef ODRModel::StructuringElementType StructuringElementType;
 
             typedef DIPaCUS::Neighborhood::FourNeighborhoodPredicate FourNeighborhood;
             typedef DIPaCUS::Neighborhood::EightNeighborhoodPredicate EightNeighborhood;
@@ -32,29 +27,17 @@ namespace SCaBOliC
         private:
             typedef DGtal::Z2i::Curve Curve;
 
-        private:
-            static DigitalSet doubleDS(const DigitalSet& ds);
-
-            static DigitalSet filterPointels(DigitalSet& ds);
-            static DigitalSet filterPixels(DigitalSet& ds);
-            static DigitalSet filterLinels(DigitalSet& ds);
-
         public:
 
-            ODRInterpixels(const ApplicationCenter appCenter,
-                           const CountingMode cntMode,
-                           double radius,
+            ODRInterpixels(double radius,
                            double gridStep,
                            const int levels,
                            LevelDefinition ld,
-                           const NeighborhoodType nt,
-                           StructuringElementType se);
+                           const NeighborhoodType nt);
 
 
-            ODRModel createODR(OptimizationMode optMode,
-                               ApplicationMode appMode,
-                               const DigitalSet& original,
-                               bool optRegionInApplication=false) const;
+            ODRModel createODR(const DigitalSet& original,
+                               OptimizationMode optMode) const;
 
             const SpaceHandleInterface* handle() const;
 
@@ -101,38 +84,17 @@ namespace SCaBOliC
                                          const DigitalSet& optRegion) const
             { return ODRUtils::computeBackground(domain,trustFRG,optRegion); }
 
-
-            DigitalSet computeApplicationRegionForPixel(const Domain& domain,
-                                                        const DigitalSet& optRegion,
-                                                        const DigitalSet& original,
-                                                        unsigned int radius,
-                                                        const LevelDefinition ld,
-                                                        const ApplicationMode appMode) const;
-
-            DigitalSet computeApplicationRegionForLinel(const Domain& domain,
-                                                        const DigitalSet& optRegion,
-                                                        const DigitalSet& original,
-                                                        const DigitalSet& trustFRG,
-                                                        unsigned int radius,
-                                                        const LevelDefinition ld,
-                                                        const ApplicationMode appMode,
-                                                        bool optRegionInApplication) const;
-
             DigitalSet convertToLinels(const DigitalSet& pixelAppRegion) const;
 
 
         private:
             static Point neighborhoodFilter[5];
 
-            ApplicationCenter ac;
-            CountingMode cm;
             NeighborhoodType nt;
             LevelDefinition ld;
             int levels;
 
-            StructuringElementType dilationSE,erosionSE;
-
-            std::vector<InterpixelSpaceHandle> handles;
+            InterpixelSpaceHandle spaceHandle;
         };
     }
 }

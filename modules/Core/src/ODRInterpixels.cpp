@@ -1,28 +1,19 @@
 #include "SCaBOliC/Core/ODRInterpixels.h"
 using namespace SCaBOliC::Core;
 
-ODRInterpixels::ODRInterpixels(const ApplicationCenter appCenter,
-                               const CountingMode cntMode,
-                               double radius,
+ODRInterpixels::ODRInterpixels(double radius,
                                double gridStep,
                                const int levels,
                                LevelDefinition ld,
-                               const NeighborhoodType nt,
-                               StructuringElementType se) :ac(appCenter),
-                                                          cm(cntMode),
-                                                          levels(levels),
+                               const NeighborhoodType nt):levels(levels),
                                                           nt(nt),
                                                           ld(ld),
-                                                          dilationSE(se),
-                                                          erosionSE(se)
-{
-    handles.push_back(InterpixelSpaceHandle(radius,gridStep,CountingMode::CM_PIXEL));
-
-}
+                                                          spaceHandle(radius,gridStep)
+{}
 
 const SpaceHandleInterface* ODRInterpixels::handle() const
 {
-    return &handles.at(0);
+    return &spaceHandle;
 }
 
 
@@ -116,51 +107,13 @@ ODRInterpixels::DigitalSet ODRInterpixels::amLevel(const DTL2& distanceTransform
 }
 
 
-ODRInterpixels::DigitalSet ODRInterpixels::filterPointels(DigitalSet& ds)
-{
-    DigitalSet filtered(ds.domain());
-    for(auto it=ds.begin();it!=ds.end();++it)
-    {
-        Point p=*it;
-        if(p(0)%2==0 && p(1)%2==0) filtered.insert(*it);
-    }
-
-    return filtered;
-}
-
-ODRInterpixels::DigitalSet ODRInterpixels::filterPixels(DigitalSet& ds)
-{
-    DigitalSet filtered(ds.domain());
-    for(auto it=ds.begin();it!=ds.end();++it)
-    {
-        Point p=*it;
-        if(p(0)%2!=0 && p(1)%2!=0) filtered.insert(*it);
-    }
-
-    return filtered;
-}
-
-ODRInterpixels::DigitalSet ODRInterpixels::filterLinels(DigitalSet& ds)
-{
-    DigitalSet filtered(ds.domain());
-    for(auto it=ds.begin();it!=ds.end();++it)
-    {
-        Point p=*it;
-        if( (p(0)%2==0 && p(1)%2!=0) || (p(0)%2!=0 && p(1)%2==0) ) filtered.insert(*it);
-    }
-
-    return filtered;
-}
-
 void ODRInterpixels::convertToInterpixel(DigitalSet& dsInterpixel, const DigitalSet& dsPixel) const
 {
     for(auto p:dsPixel) dsInterpixel.insert( 2*p + Point(1,1) );
 }
 
-ODRModel ODRInterpixels::createODR (OptimizationMode optMode,
-                                    ApplicationMode appMode,
-                                    const DigitalSet& original,
-                                    bool optRegionInApplication) const
+ODRModel ODRInterpixels::createODR (const DigitalSet& original,
+                                    OptimizationMode optMode) const
 {
     if(this->ld==LevelDefinition::LD_FartherFromCenter) throw std::runtime_error("FartherFromCenter not implemented in interpixels models.");
 
