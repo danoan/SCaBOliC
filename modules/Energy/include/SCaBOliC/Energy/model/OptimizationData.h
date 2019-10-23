@@ -39,7 +39,7 @@ namespace SCaBOliC
             typedef std::map< IndexPair, BooleanConfigurations > EnergyTable;
 
         public:
-            IndexPair makePair(Index i1, Index i2)
+            IndexPair makePair(Index i1, Index i2) const
             {
                 Index temp = i1;
                 if (i2 < i1)

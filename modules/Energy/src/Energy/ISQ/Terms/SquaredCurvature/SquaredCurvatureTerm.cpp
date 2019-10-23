@@ -40,7 +40,7 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
               cc,
               vm);
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    this->normalizationFactor = id.normalize?maxCtrb:1.0;
     this->weight = id.sqTermWeight;
 
     this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
@@ -85,12 +85,14 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             UTM(1,xj) += cc.retrieve(*yit).xi;
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
+
             auto ut = xjt;
             ++ut;
             for(;ut!=temp.end();++ut)
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
+
                 od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj;
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
