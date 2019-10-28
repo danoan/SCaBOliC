@@ -167,7 +167,13 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     solution.labelsVector.setZero();
     energy.template solve<QPBOImproveSolver>(solution);
 
-    std::cout << "sqt value: " << energy.sqRealValue(solution.labelsVector) << std::endl;
+
+    double CT = energy.energy.constantTerm;
+    double CF = energy.energy.constantFactor;
+    std::cout << "EV Prior Inversion: " << CF*(solution.energyValuePriorInversion ) + CT << std::endl;
+    std::cout << "EV: " << CF*(solution.energyValue ) + CT << std::endl;
+
+
 
     DigitalSet dsOut(domain);
     DigitalSet dsIn = odr.trustFRG;

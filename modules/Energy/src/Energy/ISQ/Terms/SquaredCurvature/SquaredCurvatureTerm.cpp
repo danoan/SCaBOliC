@@ -21,9 +21,6 @@ void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
                                                      od.numVars);
     od.localUTM.setZero();
 
-    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,od.numVars);
-    od.localUTM.setZero();
-
 }
 
 void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
@@ -46,7 +43,7 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
     this->normalizationFactor = id.normalize?1.0/maxCtrb:1.0;
     this->weight = id.sqTermWeight;
 
-    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
+    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;
     this->constantTerm = cc.constantTerm()*this->normalizationFactor;
 
     od.localUTM*=this->weight*this->normalizationFactor;
@@ -98,15 +95,9 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
 
                 if(xj==xk)
-                {
                     od.localTable[ip].e11 += 1;
-                    addCoeff(od.localPTM,maxCtrb,xj,xk,1);
-                }
                 else
-                {
                     od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj;
-                    addCoeff(od.localPTM,maxCtrb,xj,xk,cc.retrieve(*yit).xi_xj);
-                }
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }

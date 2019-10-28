@@ -23,8 +23,6 @@ void DataTerm::initializeOptimizationData(const InputData& id,
                                                      od.numVars);
     od.localUTM.setZero();
 
-    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,od.numVars);
-    od.localUTM.setZero();
 }
 
 void DataTerm::configureOptimizationData(const InputData& id,

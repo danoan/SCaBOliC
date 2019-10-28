@@ -4,7 +4,7 @@ from cvxopt import matrix, spmatrix, sparse, spdiag, solvers
 import model as M
 
 def f(x,U,P):
-    s= M.constantFactor*(U.trans()*x + x.trans()*P*x + M.constantTerm)
+    s= M.constantFactor*(U.trans()*x + x.trans()*P*x ) + M.constantTerm
     return s
 
 def rebuild_shape(X):

@@ -63,20 +63,6 @@ namespace SCaBOliC
             int numVars() const{return nvars;}
             const VariableMap& vm() const{return dt.vm;}
 
-            double dataRealValue(const LabelsVector& labelsVector) const;
-            double dataEnergy(const LabelsVector& labelsVector) const;
-            double dataEnergyNotNormalized(const LabelsVector& labelsVector) const;
-
-            double sqRealValue(const LabelsVector& labelsVector) const;
-            double sqEnergy(const LabelsVector& labelsVector) const;
-            double sqEnergyNotNormalized(const LabelsVector& labelsVector) const;
-
-        private:
-            double value(const LabelsVector& labelsVector,
-                         const MyEnergyTerm& et,
-                         double sumFactor,
-                         double multiplyFactor ) const;
-
         public:
             int nvars;
 
