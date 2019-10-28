@@ -4,7 +4,7 @@ namespace InputReader
 {
     void usage(char *argv[])
     {
-        std::cerr << "Usage: " << argv[0] << "\n"
+        std::cerr << "Usage: " << argv[0] << "OutputFilePath\n"
                                              "[-r Ball Radius default 3] \n"
                                              "[-i Max Iterations default 10] \n"
                                              "[-n Neighborhood 4 or 8 default: 4] \n"
@@ -89,7 +89,7 @@ namespace InputReader
                     if(strcmp(optarg,"around-contour")==0) id.appMode = Data::ODRModel::ApplicationMode::AM_AroundBoundary;
                     else if(strcmp(optarg,"inner-contour")==0) id.appMode = Data::ODRModel::ApplicationMode::AM_InternRange;
                     else if(strcmp(optarg,"outer-contour")==0) id.appMode = Data::ODRModel::ApplicationMode::AM_ExternRange;
-                    else if(strcmp(optarg,"opt-contour")==0) id.appMode = Data::ODRModel::ApplicationMode::AM_OptimizationBoundary;
+                    else if(strcmp(optarg,"optimization-contour")==0) id.appMode = Data::ODRModel::ApplicationMode::AM_OptimizationBoundary;
                     else throw std::runtime_error("Application mode not recognized!");
                     break;
                 }

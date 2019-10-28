@@ -124,10 +124,9 @@ void writePython(std::ofstream& ofs, const ISQEnergy& energy)
 
         if(i==j)
             P.insert( {i,j}, it->second.e11);
-        else{
-            P.insert( {i,j}, it->second.e11/2.0);
-            P.insert( {j,i}, it->second.e11/2.0);
-        }
+        else
+            P.insert( {i,j}, it->second.e11);
+
     }
 
 
@@ -164,7 +163,7 @@ int main(int argc, char* argv[])
     ISQ::InputData::cvColorImage img(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
 
-    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,id.sqTerm,0);
+    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,id.sqTerm,0,Point(0,0),false);
     ISQEnergy energy(input,odrPixels.handle());
 
     std::ofstream ofs(id.outputFilepath);

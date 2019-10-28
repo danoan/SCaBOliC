@@ -21,6 +21,9 @@ void SquaredCurvatureTerm::initializeOptimizationData(const InputData& id,
                                                      od.numVars);
     od.localUTM.setZero();
 
+    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,od.numVars);
+    od.localUTM.setZero();
+
 }
 
 void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
@@ -40,7 +43,7 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
               cc,
               vm);
 
-    this->normalizationFactor = id.normalize?maxCtrb:1.0;
+    this->normalizationFactor = id.normalize?1.0/maxCtrb:1.0;
     this->weight = id.sqTermWeight;
 
     this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
@@ -86,14 +89,24 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
 
-            auto ut = xjt;
-            ++ut;
-            for(;ut!=temp.end();++ut)
+            auto xkt = xjt;
+            ++xkt;
+            for(;xkt!=temp.end();++xkt)
             {
-                IndexPair ip = od.makePair(xj,iiv.at(*ut));
+                Index xk = iiv.at(*xkt);
+                IndexPair ip = od.makePair(xj,xk);
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
 
-                od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj;
+                if(xj==xk)
+                {
+                    od.localTable[ip].e11 += 1;
+                    addCoeff(od.localPTM,maxCtrb,xj,xk,1);
+                }
+                else
+                {
+                    od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj;
+                    addCoeff(od.localPTM,maxCtrb,xj,xk,cc.retrieve(*yit).xi_xj);
+                }
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }

@@ -21,6 +21,9 @@ void LengthTerm::initializeOptimizationData(const InputData& id,
     od.localUTM = OptimizationData::UnaryTermsMatrix(2,
                                                      od.numVars);
     od.localUTM.setZero();
+
+    od.localPTM = OptimizationData::PairwiseTermsMatrix(od.numVars,od.numVars);
+    od.localUTM.setZero();
 }
 
 void LengthTerm::configureOptimizationData(const InputData& id,

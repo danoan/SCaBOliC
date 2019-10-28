@@ -91,7 +91,7 @@ InputData readInput(int argc, char* argv[])
         exit(1);
     }
 
-    while( (opt=getopt(argc,argv,"i:f:g:q:h:r:"))!=-1 )
+    while( (opt=getopt(argc,argv,"i:f:g:q:h:r:l:"))!=-1 )
     {
         switch(opt)
         {
@@ -103,6 +103,11 @@ InputData readInput(int argc, char* argv[])
             case 'f':
             {
                 id.imageFilepath=optarg;
+                break;
+            }
+            case 'l':
+            {
+                id.levels=std::atoi(optarg);
                 break;
             }
             case 'g':
@@ -152,7 +157,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             id.shrinkingMode,
                             id.dataTerm,
                             id.sqTerm,
-                            id.lengthTerm);
+                            id.lengthTerm,Point(0,0),false);
 
     ISQEnergy energy(isqInput,odrFactory.handle());
 
@@ -161,6 +166,8 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
     solution.init(energy.numVars());
     solution.labelsVector.setZero();
     energy.template solve<QPBOImproveSolver>(solution);
+
+    std::cout << "sqt value: " << energy.sqRealValue(solution.labelsVector) << std::endl;
 
     DigitalSet dsOut(domain);
     DigitalSet dsIn = odr.trustFRG;
@@ -171,9 +178,10 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::triangle(0.5,0,0,20);
+    DigitalSet _square = DIPaCUS::Shapes::square(1.0,0,0,20);
+    DigitalSet square = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(_square,Point(20,20));
 
-    Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
+    Domain domain = square.domain();
     DigitalSet workSet(domain);
     workSet.insert(square.begin(),square.end());
 

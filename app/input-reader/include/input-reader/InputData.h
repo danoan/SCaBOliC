@@ -18,11 +18,11 @@ namespace InputReader
 
         Data()
         {
-            radius = 5;
+            radius = 3;
             iterations = 10;
             nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
-            levels =5;
+            levels =3;
             sqTerm = 1.0;
             lengthTerm = 0.0;
 
@@ -32,7 +32,7 @@ namespace InputReader
 
 
             gridStep=1.0;
-            appMode = ODRModel::ApplicationMode::AM_AroundBoundary;
+            appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
             innerBallCoeff=1.0;
             outerBallCoeff=1.0;
 
