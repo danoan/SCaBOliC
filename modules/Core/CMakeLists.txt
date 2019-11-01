@@ -26,6 +26,7 @@ target_include_directories(scabolic-core PRIVATE
         ${OpenCV_INCLUDE_DIRS})
 
 target_link_libraries(scabolic-core
+        -ldipacus-derivates
         -ldipacus-components
         -ldipacus-base
         ${DGTAL_LIBRARIES})
