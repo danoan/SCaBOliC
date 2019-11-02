@@ -87,7 +87,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
 
 
             auto xkt = xjt;
-            ++xkt;
+            //++xkt;
             for(;xkt!=temp.end();++xkt)
             {
                 Index xk = iiv.at(*xkt);

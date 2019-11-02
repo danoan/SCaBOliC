@@ -123,9 +123,12 @@ void writePython(std::ofstream& ofs, const ISQEnergy& energy)
         OptimizationData::Index j = it->first.second;
 
         if(i==j)
-            P.insert( {i,j}, it->second.e11);
+            P.insert( {i,j}, 2.0*it->second.e11);   //coefficient is because cvxopt solves 1/2xPx
         else
-            P.insert( {i,j}, it->second.e11);
+        {
+            P.insert( {i,j}, it->second.e11);   //coefficient is because cvxopt solves 1/2xPx
+            P.insert( {j,i}, it->second.e11);   //coefficient is because cvxopt solves 1/2xPx
+        }
 
     }
 

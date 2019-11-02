@@ -1,6 +1,7 @@
 #include <boost/filesystem.hpp>
 
 #include <DGtal/helpers/StdDefs.h>
+#include <DGtal/io/writers/GenericWriter.h>
 
 #include <SCaBOliC/Core/ODRPixels/ODRPixels.h>
 #include <SCaBOliC/Energy/ISQ/ISQEnergy.h>
@@ -69,6 +70,16 @@ void writeBounds(std::ofstream &ofs, const ISQEnergy& energy)
     }
 }
 
+void writeBinaries(std::ofstream& ofs,const ISQEnergy& energy)
+{
+    for(int i=0;i<energy.numVars();++i)
+    {
+        ofs << "x" << i << " ";
+    }
+
+    ofs << "\n";
+}
+
 void writeFormulation(const std::string& outputFilePath,const ISQEnergy& energy)
 {
 
@@ -85,10 +96,36 @@ void writeFormulation(const std::string& outputFilePath,const ISQEnergy& energy)
     ofs << "\nBounds\n";
     writeBounds(ofs,energy);
 
+//    ofs << "\nBinaries\n";
+//    writeBinaries(ofs,energy);
+
     ofs << "\nEnd";
 
     ofs.flush();
     ofs.close();
+
+}
+
+void exportPixelMap(std::ofstream& ofs,
+                    const ISQEnergy::VariableMap& vm)
+{
+    auto it=vm.pim.begin();
+    const Point& pixel = it->first;
+    const OptimizationData::Index  index = it->second;
+
+    ofs << vm.numVars << "\n";
+    ofs << index << " " << pixel[1] << " " << pixel[0] << "\n";
+
+    ++it;
+    while(it!=vm.pim.end())
+    {
+        const Point& pixel = it->first;
+        const OptimizationData::Index  index = it->second;
+        ofs << index << " " << pixel[1] << " " << pixel[0] << "\n";
+        ++it;
+    }
+
+    ofs << "\n\n";
 
 }
 
@@ -145,6 +182,14 @@ int main(int argc, char* argv[])
     DigitalSet _shape = InputReader::resolveShape(id.shape,id.gridStep);
     DigitalSet shape = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(_shape,Point(20,20));
 
+    boost::filesystem::path p(id.outputFilepath);
+    boost::filesystem::create_directories(p.remove_filename());
+    {
+        DIPaCUS::Representation::Image2D img(shape.domain());
+        DIPaCUS::Representation::digitalSetToImage(img,shape);
+        DGtal::GenericWriter<DIPaCUS::Representation::Image2D>::exportFile(p.string() + "/shape.pgm",img);
+    }
+
     Point lb = shape.domain().lowerBound();
     Point ub = shape.domain().upperBound();
     Point size = ub-lb+Point(1,1);
@@ -156,7 +201,8 @@ int main(int argc, char* argv[])
     ISQ::InputData::cvColorImage img(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
 
-    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,0,1,0);
+
+    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,1,0,Point(0,0),false);
     ISQEnergy energy(input,odrPixels.handle());
 
     ISQEnergy::Solution solution(shape.domain(),energy.numVars());
@@ -173,6 +219,9 @@ int main(int argc, char* argv[])
     std::cout << ones << std::endl;
 
     writeFormulation(id.outputFilepath,energy);
+
+    std::ofstream ofs(p.string() +"/pixelMap.txt");
+    exportPixelMap(ofs,energy.vm());
 
     return 0;
 }
