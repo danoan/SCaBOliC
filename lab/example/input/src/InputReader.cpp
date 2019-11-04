@@ -18,14 +18,18 @@ namespace SCaBOliC
                 exit(1);
             }
 
-            while ((opt = getopt(argc, argv, "i:f:g:q:h:r:l:a:")) != -1) {
+            while ((opt = getopt(argc, argv, "i:m:M:g:q:h:r:l:f:a:z:")) != -1) {
                 switch (opt) {
                     case 'i': {
                         id.iterations = std::atoi(optarg);
                         break;
                     }
-                    case 'f': {
+                    case 'm': {
                         id.imageFilepath = optarg;
+                        break;
+                    }
+                    case 'M': {
+                        id.maskFilepath= optarg;
                         break;
                     }
                     case 'g': {
@@ -49,13 +53,23 @@ namespace SCaBOliC
                         id.levels = std::atoi(optarg);
                         break;
                     }
-                    case 'a':
+                    case 'f':
                     {
                         if(strcmp(optarg,"around-contour")==0) id.appMode = Core::ODRModel::ApplicationMode::AM_AroundBoundary;
                         else if(strcmp(optarg,"inner-contour")==0) id.appMode = Core::ODRModel::ApplicationMode::AM_InternRange;
                         else if(strcmp(optarg,"outer-contour")==0) id.appMode = Core::ODRModel::ApplicationMode::AM_ExternRange;
                         else if(strcmp(optarg,"opt-contour")==0) id.appMode = Core::ODRModel::ApplicationMode::AM_OptimizationBoundary;
                         else throw std::runtime_error("Application mode not recognized!");
+                        break;
+                    }
+                    case 'a':
+                    {
+                        id.innerBallCoef = std::atof(optarg);
+                        break;
+                    }
+                    case 'z':
+                    {
+                        id.outerBallCoef = std::atof(optarg);
                         break;
                     }
                 }

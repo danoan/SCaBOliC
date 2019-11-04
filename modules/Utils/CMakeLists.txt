@@ -14,7 +14,9 @@ if(${USE_REMOTE_REPOSITORIES})
 endif()
 
 set_target_properties(scabolic-utils PROPERTIES
-        VERSION ${VERSION_SCABOLIC_UTILS})
+        VERSION ${VERSION_SCABOLIC_UTILS}
+        COMPILE_FLAGS -fPIC)
+
 
 target_include_directories(scabolic-utils PRIVATE
         include

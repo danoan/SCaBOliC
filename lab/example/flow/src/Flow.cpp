@@ -18,6 +18,14 @@ namespace SCaBOliC
             cv::Mat colorImage = cv::Mat::zeros(size[1],size[0],CV_8UC3);
             MockDistribution fgDistr,bgDistr;
 
+            cv::Mat* binaryMask = &SCaBOliC::Energy::ISQ::mockBinaryImage;
+            cv::Mat temp;
+            if(id.maskFilepath!="")
+            {
+                temp = cv::imread(id.maskFilepath,CV_8UC1);
+                binaryMask = &temp;
+            }
+
             ISQEnergy::InputData isqInput(odr,
                                           colorImage,
                                           fgDistr,
@@ -25,7 +33,10 @@ namespace SCaBOliC
                                           id.excludeOptPointsFromAreaComputation,
                                           id.dataTerm,
                                           id.sqTerm,
-                                          id.lengthTerm);
+                                          id.lengthTerm,
+                                          id.innerBallCoef,id.outerBallCoef,
+                                          Point(0,0),
+                                          *binaryMask);
 
             ISQEnergy energy(isqInput,odrFactory.handle());
 
@@ -77,10 +88,11 @@ namespace SCaBOliC
         {
 
             cv::Mat img = cv::imread(id.imageFilepath,CV_8UC1);
-            Domain domain( Point(0,0), Point(img.cols,img.rows) );
+            Domain domain( Point(0,0), Point(img.cols-1,img.rows-1) );
             DigitalSet imgDS(domain);
             DIPaCUS::Representation::CVMatToDigitalSet(imgDS,img,1);
             Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
+
 
             boost::filesystem::create_directories(id.outputFolder);
             int it=0;

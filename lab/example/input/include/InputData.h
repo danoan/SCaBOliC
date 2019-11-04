@@ -34,6 +34,9 @@ namespace SCaBOliC
 
                 outputFolder = "";
                 iterations = 10;
+
+                innerBallCoef=1.0;
+                outerBallCoef=1.0;
             }
 
             double levels;
@@ -52,8 +55,12 @@ namespace SCaBOliC
             double sqTerm;
             double lengthTerm;
 
+            double innerBallCoef;
+            double outerBallCoef;
+
             std::string outputFolder;
             std::string imageFilepath;
+            std::string maskFilepath;
             int iterations;
         };
     }

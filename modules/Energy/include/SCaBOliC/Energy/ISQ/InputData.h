@@ -13,6 +13,7 @@ namespace SCaBOliC
     {
         namespace ISQ
         {
+            extern cv::Mat mockBinaryImage;
             class InputData
             {
             public:
@@ -26,7 +27,9 @@ namespace SCaBOliC
                 typedef DGtal::Z2i::Point Point;
 
                 typedef cv::Mat cvColorImage;
+                typedef cv::Mat cvBinaryImage;
                 typedef cv::Vec3b cvColorType;
+                typedef unsigned char cvBinaryType;
 
                 enum PenalizationMode{No_Penalization,Penalize_Ones,Penalize_Zeros};
 
@@ -41,7 +44,8 @@ namespace SCaBOliC
                           double lengthTermWeight=1.0,
                           double innerBallCoef=1.0,
                           double outerBallCoef=1.0,
-                          Point translation=Point(0,0)):optimizationRegions(ODR),
+                          Point translation=Point(0,0),
+                          const cvBinaryImage& binaryMask=mockBinaryImage):optimizationRegions(ODR),
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
@@ -51,7 +55,8 @@ namespace SCaBOliC
                                                         innerBallCoef(innerBallCoef),
                                                         outerBallCoef(outerBallCoef),
                                                         excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
-                                                        translation(translation){}
+                                                        translation(translation),
+                                                        binaryMask(binaryMask){}
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
@@ -67,6 +72,7 @@ namespace SCaBOliC
                 const MyProbabilityDistribution& bgDistr;
 
                 const cvColorImage& image;
+                const cvBinaryImage& binaryMask;
                 const Point translation;
 
                 const bool excludeOptPointsFromAreaComputation;

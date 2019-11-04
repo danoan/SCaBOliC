@@ -14,6 +14,7 @@
 #include <SCaBOliC/Optimization/solver/improve/QPBOImproveSolver.h>
 #include <SCaBOliC/Optimization/solver/probe/QPBOProbeSolver.h>
 #include <SCaBOliC/Energy/ISQ/Terms/Length/LengthTerm.h>
+#include <SCaBOliC/Energy/ISQ/Terms/FixedPixels/FixedPixelsTerm.h>
 
 #include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
 
@@ -82,7 +83,7 @@ namespace SCaBOliC
 
             ISQ::DataTerm dt;
             ISQ::LengthTerm lt;
-            //ISQ::JMIVSquaredCurvatureTerm sqt;
+            ISQ::FixedPixelsTerm fpt;
             ISQ::SquaredCurvatureTerm sqt;
 
             MyEnergyTerm energy;
