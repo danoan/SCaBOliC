@@ -51,7 +51,7 @@ void SQIn::setCoeffs(OptimizationData& od,
     this->constantFactor = 1.0;
     this->maxCtrb=0;
 
-    int fgCount;
+    double fgCount;
     for(auto yit=ODR.applicationRegionIn.begin();yit!=ODR.applicationRegionIn.end();++yit)
     {
         temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();

@@ -43,7 +43,7 @@ namespace InputReader
         int iterations;
         ODRModel::NeighborhoodType nt;
 
-        int levels;
+        double levels;
         double sqTerm;
         double lengthTerm;
 
