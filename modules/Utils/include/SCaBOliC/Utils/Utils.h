@@ -14,27 +14,21 @@ namespace SCaBOliC
 {
     namespace Utils
     {
-        class ISQEvaluation
+        namespace ISQEvaluation
         {
-        public:
             typedef DGtal::Z2i::KSpace KSpace;
             typedef DGtal::Z2i::Curve Curve;
             typedef DGtal::Z2i::DigitalSet DigitalSet;
 
             typedef enum{MDCA,II} EstimationAlgorithm;
-
-        private:
             typedef DIPaCUS::Representation::Image2D Image2D;
 
-        private:
-            static void prepare(Curve& boundary, KSpace& KImage, double& h, const DigitalSet& originalDS);
+            typedef GEOC::Estimator::Standard::IICurvatureExtraData IICurvatureExtraData;
 
-            static double mdca(const Curve& boundary, const KSpace& KImage, const double h);
-            static double ii(const Curve& boundary, const KSpace& KImage, const double h);
+            void prepare(Curve& boundary, KSpace& KImage, const DigitalSet& originalDS);
+            double mdca(const DigitalSet& originalDS, const double h);
+            double ii(const DigitalSet& originalDS, const double h, void* extraData);
 
-
-        public:
-            ISQEvaluation(double& value,const DigitalSet& originalDS, const EstimationAlgorithm ea);
         };
     }
 }

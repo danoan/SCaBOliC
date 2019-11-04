@@ -2,9 +2,8 @@
 
 using namespace SCaBOliC::Utils;
 
-void ISQEvaluation::prepare(Curve& boundary, KSpace& KImage, double& h, const DigitalSet& originalDS)
+void ISQEvaluation::prepare(Curve& boundary, KSpace& KImage, const DigitalSet& originalDS)
 {
-    h = 1.0; ///Warning: originalDS must be scaled appropriately as well!
     DigitalSet ds = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(originalDS);
 
     KImage.init(ds.domain().lowerBound(),
@@ -18,9 +17,13 @@ void ISQEvaluation::prepare(Curve& boundary, KSpace& KImage, double& h, const Di
     DIPaCUS::Misc::computeBoundaryCurve(boundary,img,100);
 }
 
-double ISQEvaluation::mdca(const Curve& boundary, const KSpace& KImage, const double h)
+double ISQEvaluation::mdca(const DigitalSet& originalDS, const double h)
 {
     using namespace GEOC::API::GridCurve;
+
+    KSpace KImage;
+    Curve boundary;
+    prepare(boundary,KImage,originalDS);
 
     Curvature::EstimationsVector curvatureEstimations;
     Length::EstimationsVector lengthEstimations;
@@ -29,14 +32,16 @@ double ISQEvaluation::mdca(const Curve& boundary, const KSpace& KImage, const do
                                                                           boundary.begin(),
                                                                           boundary.end(),
                                                                           curvatureEstimations,
-                                                                          h);
+                                                                          h,
+                                                                          NULL);
 
 
     Length::mdssOpen<Length::EstimationAlgorithms::ALG_PROJECTED>(KImage,
                                                                   boundary.begin(),
                                                                   boundary.end(),
                                                                   lengthEstimations,
-                                                                  h);
+                                                                  h,
+                                                                  NULL);
 
     double value=0;
     for(int i=0;i<lengthEstimations.size();++i)
@@ -47,9 +52,13 @@ double ISQEvaluation::mdca(const Curve& boundary, const KSpace& KImage, const do
     return value;
 }
 
-double ISQEvaluation::ii(const Curve& boundary, const KSpace& KImage, const double h)
+double ISQEvaluation::ii(const DigitalSet& originalDS, const double h, void* extraData)
 {
     using namespace GEOC::API::GridCurve;
+
+    KSpace KImage;
+    Curve boundary;
+    prepare(boundary,KImage,originalDS);
 
     Curvature::EstimationsVector curvatureEstimations;
     Length::EstimationsVector lengthEstimations;
@@ -58,14 +67,16 @@ double ISQEvaluation::ii(const Curve& boundary, const KSpace& KImage, const doub
                                                                      boundary.begin(),
                                                                      boundary.end(),
                                                                      curvatureEstimations,
-                                                                     h);
+                                                                     h,
+                                                                     extraData);
 
 
     Length::mdssOpen<Length::EstimationAlgorithms::ALG_PROJECTED>(KImage,
                                                                   boundary.begin(),
                                                                   boundary.end(),
                                                                   lengthEstimations,
-                                                                  h);
+                                                                  h,
+                                                                  NULL);
 
     double value=0;
     for(int i=0;i<lengthEstimations.size();++i)
@@ -74,32 +85,4 @@ double ISQEvaluation::ii(const Curve& boundary, const KSpace& KImage, const doub
     }
 
     return value;
-}
-
-ISQEvaluation::ISQEvaluation(double &value,
-                             const DigitalSet &originalDS,
-                             const EstimationAlgorithm ea)
-{
-    KSpace KImage;
-    Curve boundary;
-    double h;
-
-    prepare(boundary,KImage,h,originalDS);
-
-    switch(ea)
-    {
-        case EstimationAlgorithm::MDCA:
-        {
-            value = mdca(boundary,KImage,h);
-            break;
-        }
-        case EstimationAlgorithm::II:
-        {
-            value = ii(boundary,KImage,h);
-            break;
-        }
-
-    }
-
-
 }
