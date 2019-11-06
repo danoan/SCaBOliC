@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
     ISQ::InputData::cvColorImage img(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
 
-    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,id.sqTerm,0,Point(0,0),false);
+    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,id.sqTerm,id.lengthTerm,Point(0,0),false);
     ISQEnergy energy(input,odrPixels.handle());
 
     std::ofstream ofs(id.outputFilepath);
