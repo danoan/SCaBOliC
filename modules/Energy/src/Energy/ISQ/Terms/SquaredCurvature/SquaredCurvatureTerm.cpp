@@ -43,11 +43,11 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
               cc,
               vm);
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    this->normalizationFactor = id.normalize?1.0/maxCtrb:1.0;
     this->weight = id.sqTermWeight;
 
-    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
-    this->constantTerm = cc.constantTerm()*this->normalizationFactor;
+    this->constantFactor *=this->normalizationFactor;
+    this->constantTerm *=this->normalizationFactor;
 
     od.localUTM*=this->weight*this->normalizationFactor;
     od.localPTM*=this->weight*this->normalizationFactor;

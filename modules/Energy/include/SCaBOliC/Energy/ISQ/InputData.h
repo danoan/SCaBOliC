@@ -38,14 +38,16 @@ namespace SCaBOliC
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
-                          Point translation=Point(0,0)):optimizationRegions(ODR),
+                          Point translation=Point(0,0),
+                          bool normalize=true):optimizationRegions(ODR),
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
                                                         dataTermWeight(dataTermWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
-                                                        translation(translation){}
+                                                        translation(translation),
+                                                        normalize(true){}
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
@@ -59,6 +61,8 @@ namespace SCaBOliC
 
                 const cvColorImage& image;
                 const Point translation;
+
+                bool normalize=true;
 
             };
         }

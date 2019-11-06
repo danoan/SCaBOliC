@@ -40,7 +40,7 @@ void LengthTerm::configureOptimizationData(const InputData& id,
               id,
               vm);
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    this->normalizationFactor = id.normalize?1.0/maxCtrb:1.0;
     this->weight = id.lengthTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;
