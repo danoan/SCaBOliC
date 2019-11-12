@@ -41,6 +41,7 @@ link_directories(${CMAKE_BINARY_DIR}/modules/Optimization
         ${CMAKE_BINARY_DIR}/modules/Core
         ${CMAKE_BINARY_DIR}/modules/Energy
         ${CMAKE_BINARY_DIR}/modules/Utils
+        ${CMAKE_BINARY_DIR}/app/input-reader
         ${DIPACUS_LIBS_DIR}
         ${BOOST_LIBS_DIR})
 
@@ -51,4 +52,8 @@ add_subdirectory(modules/Utils)
 
 if(${BUILD_TESTS})
     add_subdirectory(lab/example/flow)
+endif()
+
+if(${BUILD_APPLICATIONS})
+    add_subdirectory(app)
 endif()
