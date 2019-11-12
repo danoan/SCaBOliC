@@ -38,7 +38,9 @@ void DataTerm::configureOptimizationData(const InputData& id,
               id,
               vm);
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    if(maxCtrb==0) maxCtrb=1;
+
+    this->normalizationFactor = id.normalize?1.0/maxCtrb:1.0;
     this->weight = id.dataTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;
