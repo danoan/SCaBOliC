@@ -37,6 +37,9 @@ namespace InputReader
             outerBallCoeff=1.0;
 
             outputFilepath = "";
+
+            normalize=false;
+            quadratic=false;
         }
 
         double radius;
@@ -54,6 +57,9 @@ namespace InputReader
         double gridStep;
         ODRModel::ApplicationMode appMode;
         double innerBallCoeff,outerBallCoeff;
+
+        bool normalize;
+        bool quadratic;
 
         std::string outputFilepath;
     };

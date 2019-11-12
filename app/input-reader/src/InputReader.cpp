@@ -19,6 +19,8 @@ namespace InputReader
                                              "[-x Exclude opt points from computation area default: false] \n"
                                              "[-a Inner ball coefficient default: 1.0] \n"
                                              "[-z Outer ball coefficient default: 1.0] \n"
+                                             "[-N normalize terms: false] \n"
+                                             "[-d Use quadratic coefficients: false] \n"
                   <<  std::endl;
     }
 
@@ -31,7 +33,7 @@ namespace InputReader
             exit(1);
         }
 
-        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:m:S:h:f:a:z:")) != -1) {
+        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:m:S:h:f:a:z:Nd")) != -1) {
             switch (opt) {
                 case 'r': {
                     id.radius = std::atof(optarg);
@@ -101,6 +103,16 @@ namespace InputReader
                 case 'z':
                 {
                     id.outerBallCoeff = std::atof(optarg);
+                    break;
+                }
+                case 'N':
+                {
+                    id.normalize = true;
+                    break;
+                }
+                case 'd':
+                {
+                    id.quadratic = true;
                     break;
                 }
 
