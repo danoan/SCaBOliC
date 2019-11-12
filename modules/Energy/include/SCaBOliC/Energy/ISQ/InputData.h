@@ -41,7 +41,8 @@ namespace SCaBOliC
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
                           Point translation=Point(0,0),
-                          bool normalize=true):optimizationRegions(ODR),
+                          bool normalize=true,
+                          bool quadratic=false):optimizationRegions(ODR),
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
@@ -51,7 +52,8 @@ namespace SCaBOliC
                                                         lengthTermWeight(lengthTermWeight),
                                                         excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
                                                         translation(translation),
-                                                        normalize(normalize){}
+                                                        normalize(normalize),
+                                                        quadratic(quadratic){}
 
             public:
                 const OptimizationDigitalRegions optimizationRegions;
@@ -70,6 +72,7 @@ namespace SCaBOliC
                 const bool excludeOptPointsFromAreaComputation;
                 const bool shrinkingMode;
                 const bool normalize;
+                const bool quadratic;
 
             };
         }
