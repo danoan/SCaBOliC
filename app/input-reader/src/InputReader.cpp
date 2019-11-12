@@ -20,6 +20,7 @@ namespace InputReader
                                              "[-x Exclude opt points from computation area default: false] \n"
                                              "[-N normalize terms: false] \n"
                                              "[-d Use quadratic coefficients: false] \n"
+                                             "[-O Opt mode (convex, concave, alternate) default: alternate] \n"
                   <<  std::endl;
     }
 
@@ -32,7 +33,7 @@ namespace InputReader
             exit(1);
         }
 
-        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:t:m:oS:h:f:xNd")) != -1) {
+        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:t:m:oS:h:f:xNdO:")) != -1) {
             switch (opt) {
                 case 'r': {
                     id.radius = std::atof(optarg);
@@ -51,6 +52,9 @@ namespace InputReader
                 case 'l':
                 {
                     id.levels = std::atoi(optarg);
+                    if(id.levels<0) id.ld = Data::LevelDefinition::LD_FartherFromCenter;
+                    else id.levels = Data::LevelDefinition::LD_CloserFromCenter;
+                    id.levels = abs( id.levels );
                     break;
                 }
                 case 'q': {
@@ -117,6 +121,14 @@ namespace InputReader
                 case 'd':
                 {
                     id.quadratic = true;
+                    break;
+                }
+                case 'O':
+                {
+                    if(strcmp(optarg,"convex")==0) id.optMode = Data::ODRModel::OptimizationMode::OM_CorrectConvexities;
+                    else if(strcmp(optarg,"concave")==0) id.optMode = Data::ODRModel::OptimizationMode::OM_CorrectConcavities;
+                    else if(strcmp(optarg,"alternate")==0) id.optMode = Data::ODRModel::OptimizationMode::OM_Alternate;
+                    else throw std::runtime_error("Optimization mode not recognized!");
                     break;
                 }
 

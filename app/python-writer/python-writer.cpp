@@ -158,14 +158,14 @@ int main(int argc, char* argv[])
 
 
     ODRPixels odrPixels(id.radius,id.gridStep,id.levels,id.ld,id.nt);
-    ODRModel odr = odrPixels.createODR(ODRModel::OM_CorrectConvexities,id.appMode,shape);
+    ODRModel odr = odrPixels.createODR(id.optMode,id.appMode,shape);
 
     SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
     ISQ::InputData::cvColorImage img(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
 
-    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,id.sqTerm,id.lengthTerm,Point(0,0),false);
+    ISQ::InputData input(odr,img,fgDistr,bgDistr,false,false,0,id.sqTerm,id.lengthTerm,Point(0,0),id.normalize,id.quadratic);
     ISQEnergy energy(input,odrPixels.handle());
 
     std::ofstream ofs(id.outputFilepath);

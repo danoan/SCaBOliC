@@ -1,17 +1,23 @@
+import sys
+import importlib.util
 import numpy as np
-import scipy
 import matplotlib.pyplot as plt
 from cvxopt import matrix, spmatrix, sparse, spdiag, solvers
-import model as M
 
-import wrapper_mosek as WM
+M=None
+
+def load_model(modelFilepath):
+    global M
+    spec = importlib.util.spec_from_file_location("", modelFilepath)
+    M = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(M)
 
 def f(x,U,P):
     s= M.constantFactor*(U.trans()*x + 0.5*x.trans()*P*x ) + M.constantTerm
     return s[0]
 
 
-def roundDown(X,U,P):
+def round_down(X,U,P):
     Nx=matrix(X)
     for i in range(M.numVars):
         X0 = matrix(Nx)
@@ -24,8 +30,6 @@ def roundDown(X,U,P):
         dx1 = f(X1,U,P)
         dx=(dx1-dx0)
 
-        # print(f(Nx,U,P),dx1,dx0,dx)
-
         if dx < 0:
             Nx[i]=1
         else:
@@ -33,22 +37,23 @@ def roundDown(X,U,P):
 
     return Nx
 
-def rebuild_shape(X):
+def rebuild_shape(X,outputFilepath,invert):
     digShape = M.digitalModel
+    rows=len(digShape)-1
+
     for i,x in enumerate(M.pixelMap.keys()):
         row,col = M.pixelMap[x]['row'],M.pixelMap[x]['col']
 
-        if X[x]>=0.5:
-            digShape[row][col] = 255
+        if X[x]==1.0:
+            digShape[rows-row][col] = 0 if invert else 255
         else:
-            digShape[row][col] = 0
+            digShape[rows-row][col] = 255 if invert else 0
 
     aaa = np.array( digShape, dtype=np.uint8 )
-    plt.imsave("out.png",aaa,cmap='gray')
+    plt.imsave(outputFilepath,aaa,cmap='gray')
 
 
-
-def normally():
+def solve(outputFilepath,invert):
     U = matrix( M._U, (M.numVars,1),'d' )
     P = spmatrix( M._P_values, M._P_dim0,M._P_dim1, (M.numVars,M.numVars),'d' )
 
@@ -59,13 +64,23 @@ def normally():
 
 
     X=solvers.qp(P,U,G,h)['x']
-    NX=roundDown(X,U,P)
-    rebuild_shape(NX)
+    NX=round_down(X,U,P)
+    rebuild_shape(NX,outputFilepath,invert)
 
     print(f(X,U,P))
     print(f(NX,U,P))
-    # print(M.constantTerm,M.constantFactor)
+
+def main():
+    if len(sys.argv) < 4:
+        print("Usage: modelFilepath outputFilepath invert")
+        exit(1)
+
+    modelFilepath=sys.argv[1]
+    outputFilepath=sys.argv[2]
+    invert= True if sys.argv[3]=="yes" else False
+
+    load_model((modelFilepath))
+    solve(outputFilepath,invert)
 
 
-
-normally()
+main()

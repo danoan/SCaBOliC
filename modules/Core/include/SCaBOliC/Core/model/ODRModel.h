@@ -27,7 +27,8 @@ namespace SCaBOliC
 
             enum OptimizationMode{
                 OM_CorrectConvexities,
-                OM_CorrectConcavities
+                OM_CorrectConcavities,
+                OM_Alternate
             };
 
             enum ApplicationMode{

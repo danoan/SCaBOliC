@@ -15,6 +15,7 @@ namespace InputReader
         typedef SCaBOliC::Core::ODRModel ODRModel;
         typedef SCaBOliC::Energy::ISQEnergy ISQEnergy;
         typedef SCaBOliC::Optimization::QPBOSolverType  QPBOSolverType;
+        typedef ODRModel::LevelDefinition  LevelDefinition;
 
         Data()
         {

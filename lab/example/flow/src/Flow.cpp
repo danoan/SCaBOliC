@@ -69,6 +69,8 @@ namespace SCaBOliC
                 Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
                 boost::filesystem::create_directories(id.outputFilepath);
+
+                ODRModel::OptimizationMode optMode = id.optMode;
                 int it=0;
                 while(it<id.iterations)
                 {
@@ -77,8 +79,12 @@ namespace SCaBOliC
                     cv::imwrite(id.outputFilepath + "/" + std::to_string(it) +  ".png",imgOut);
 
 
-                    if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-                    else id.optMode = ODRModel::OM_CorrectConvexities;
+                    if(optMode==ODRModel::OM_Alternate)
+                    {
+                        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
+                        else id.optMode = ODRModel::OM_CorrectConvexities;
+                    }
+
 
                     workSet = flow(workSet,id,domain);
 
@@ -101,6 +107,8 @@ namespace SCaBOliC
                 Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
                 boost::filesystem::create_directories(id.outputFilepath);
+
+                ODRModel::OptimizationMode optMode = id.optMode;
                 int it=0;
                 while(it<id.iterations)
                 {
@@ -109,8 +117,11 @@ namespace SCaBOliC
                     DIPaCUS::Representation::digitalSetToCVMat(imgOut,imgDS);
                     cv::imwrite(id.outputFilepath + "/" + std::to_string(it) +  ".png",imgOut);
 
-                    if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-                    else id.optMode = ODRModel::OM_CorrectConvexities;
+                    if(optMode==ODRModel::OM_Alternate)
+                    {
+                        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
+                        else id.optMode = ODRModel::OM_CorrectConvexities;
+                    }
 
                     imgDS = flow(imgDS,id,domain);
                     ++it;
