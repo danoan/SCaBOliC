@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
     ISQ::InputData::cvColorImage img(size[1],size[0],CV_8UC3);
     MockDistribution fgDistr,bgDistr;
 
-    ISQ::InputData input(odr,img,fgDistr,bgDistr,0,1,0);
+    ISQ::InputData input(odr,img,fgDistr,bgDistr,0,1,0,Point(0,0),false,true);
     ISQEnergy energy(input,odrInterpixels.handle());
 
     ISQEnergy::Solution solution(shape.domain(),energy.numVars());

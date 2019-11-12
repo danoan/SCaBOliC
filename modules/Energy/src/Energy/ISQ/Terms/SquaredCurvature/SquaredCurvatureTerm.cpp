@@ -80,13 +80,23 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             Index xj = iiv.at(*xjt);
 
             UTM(1,xj) += cc.retrieve(*yit).xi;
+            if(!id.quadratic) UTM(1,xj) +=-1;
+
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
-            auto ut = xjt;
-            ++ut;
-            for(;ut!=temp.end();++ut)
+            for(auto xkt = xjt;xkt!=temp.end();++xkt)
             {
-                addCoeff(PTM,maxCtrb,xj,iiv.at(*ut),cc.retrieve(*yit).xi_xj);
+                Index xk = iiv.at(*xkt);
+                if(id.quadratic)
+                {
+                    if(xk==xj) addCoeff(PTM,maxCtrb,xj,xk,1);
+                    else addCoeff(PTM,maxCtrb,xj,xk,cc.retrieve(*yit).xi_xj);
+                }else
+                {
+                    if(xk!=xj) addCoeff(PTM,maxCtrb,xj,xk,cc.retrieve(*yit).xi_xj);
+                }
+
+
             }
         }
     }

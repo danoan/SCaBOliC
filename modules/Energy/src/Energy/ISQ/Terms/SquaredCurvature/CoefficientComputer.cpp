@@ -42,7 +42,7 @@ void CoefficientsComputer::insertConstant(const Point &p,
     c2 += pow(Ij, 2);
     c2 += -2 * halfBallArea * Ij;
 
-    ch.xi = (1 - 2 * halfBallArea + 2 * Ij);
+    ch.xi = (- 2 * halfBallArea + 2 * Ij);
     ch.xi_xj = 2;
 
 
