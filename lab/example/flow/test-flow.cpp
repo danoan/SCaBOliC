@@ -114,7 +114,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
                             bgDistr,
                             id.dataTerm,
                             id.sqTerm,
-                            id.lengthTerm);
+                            id.lengthTerm,Point(0,0),true,false);
 
     ISQEnergy energy(isqInput,odrFactory.handle());
 
