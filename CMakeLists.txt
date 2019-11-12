@@ -57,3 +57,7 @@ if(${BUILD_TESTS})
     add_subdirectory(lab/example)
     add_subdirectory(app)
 endif()
+
+if(${BUILD_APPLICATIONS} AND NOT ${BUILD_TESTS})
+    add_subdirectory(app)
+endif()
