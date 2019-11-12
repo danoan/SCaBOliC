@@ -10,15 +10,14 @@ namespace InputReader
                                              "[-n Neighborhood 4 or 8 default: 4] \n"
                                              "[-l Computation levels. If negative, select LD_FartherFromCenter. Default: Ball radius] \n"
                                              "[-q Squared Curvature Term weight default: 1.0] \n"
-                                             "[-g Length Term weight default: 1.0] \n"
+                                             "[-g Length Term weight default: 0.0] \n"
+                                             "[-t Data Term weight default: 0.0] \n"
                                              "[-m Opt method 'probe' 'improve' default: improve] \n"
                                              "[-o Include optimization region in the application region default: false \n"
                                              "[-S Shape (triangle square pentagon heptagon ball ellipse ball wave). Default: square\n"
                                              "[-h Grid step (default:1.0)]\n"
                                              "[-f Application mode (optimization-contour around-contour inner-contour outer-contour) (default:optimization-contour)]\n"
                                              "[-x Exclude opt points from computation area default: false] \n"
-                                             "[-a Inner ball coefficient default: 1.0] \n"
-                                             "[-z Outer ball coefficient default: 1.0] \n"
                                              "[-N normalize terms: false] \n"
                                              "[-d Use quadratic coefficients: false] \n"
                   <<  std::endl;
@@ -33,7 +32,7 @@ namespace InputReader
             exit(1);
         }
 
-        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:m:S:h:f:a:z:Nd")) != -1) {
+        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:t:m:oS:h:f:xNd")) != -1) {
             switch (opt) {
                 case 'r': {
                     id.radius = std::atof(optarg);
@@ -62,6 +61,10 @@ namespace InputReader
                     id.lengthTerm = std::atof(optarg);
                     break;
                 }
+                case 't': {
+                    id.dataTerm = std::atof(optarg);
+                    break;
+                }                
                 case 'm': {
                     if(strcmp(optarg,"probe")==0) id.solverType = Data::QPBOSolverType::Probe;
                     else if(strcmp(optarg,"improve")==0) id.solverType = Data::QPBOSolverType::Improve;
@@ -79,7 +82,13 @@ namespace InputReader
                     else if(strcmp(optarg,"ellipse")==0) id.shape = Shape( ShapeType::Ellipse);
                     else if(strcmp(optarg,"flower")==0) id.shape = Shape( ShapeType::Flower);
                     else if(strcmp(optarg,"wave")==0) id.shape = Shape( ShapeType::Wave);
+                    else if(strcmp(optarg,"bean")==0) id.shape = Shape( ShapeType::Bean);
                     else id.shape = Shape(ShapeType::UserDefined,optarg);
+                    break;
+                }
+                case 'o':
+                {
+                    id.optRegionInApplication = true;
                     break;
                 }
                 case 'h': {
@@ -95,14 +104,9 @@ namespace InputReader
                     else throw std::runtime_error("Application mode not recognized!");
                     break;
                 }
-                case 'a':
+                case 'x':
                 {
-                    id.innerBallCoeff = std::atof(optarg);
-                    break;
-                }
-                case 'z':
-                {
-                    id.outerBallCoeff = std::atof(optarg);
+                    id.excludeOptPointsFromAreaComputation = true;
                     break;
                 }
                 case 'N':

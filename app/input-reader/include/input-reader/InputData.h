@@ -25,6 +25,7 @@ namespace InputReader
             levels =3;
             sqTerm = 1.0;
             lengthTerm = 0.0;
+            dataTerm = 0.0;
 
             ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
             solverType = QPBOSolverType::Probe;
@@ -33,13 +34,17 @@ namespace InputReader
 
             gridStep=1.0;
             appMode = ODRModel::ApplicationMode::AM_OptimizationBoundary;
-            innerBallCoeff=1.0;
-            outerBallCoeff=1.0;
+            optMode = ODRModel::OptimizationMode::OM_CorrectConvexities;
 
             outputFilepath = "";
+            
+            optRegionInApplication = false;
 
             normalize=false;
             quadratic=false;
+
+            excludeOptPointsFromAreaComputation = false;
+            shrinkingMode = false;
         }
 
         double radius;
@@ -49,6 +54,7 @@ namespace InputReader
         int levels;
         double sqTerm;
         double lengthTerm;
+        double dataTerm;
 
         ODRModel::LevelDefinition ld;
         QPBOSolverType solverType;
@@ -56,10 +62,15 @@ namespace InputReader
 
         double gridStep;
         ODRModel::ApplicationMode appMode;
-        double innerBallCoeff,outerBallCoeff;
+        ODRModel::OptimizationMode optMode;
+        
+        bool optRegionInApplication;
 
         bool normalize;
         bool quadratic;
+        
+        bool excludeOptPointsFromAreaComputation;
+        bool shrinkingMode;
 
         std::string outputFilepath;
     };
