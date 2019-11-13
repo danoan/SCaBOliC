@@ -127,7 +127,6 @@ void writePython(std::ofstream& ofs, const ISQEnergy& energy)
         else
         {
             P.insert( {i,j}, it->second.e11);   //coefficient is because cvxopt solves 1/2xPx
-            P.insert( {j,i}, it->second.e11);   //coefficient is because cvxopt solves 1/2xPx
         }
 
     }
