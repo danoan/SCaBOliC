@@ -22,7 +22,7 @@ set(DIPACUS_LIBS_DIR ${EXTPROJECTS_BUILD_DIR}/lib CACHE PATH "DIPaCUS libraries 
 set(GEOC_INCLUDE_DIRS ${EXTPROJECTS_BUILD_DIR}/include CACHE PATH "geoc include location path.")
 
 set(BUILD_TESTS OFF CACHE BOOL "Build tests.")
-set(CREATE_SHARED_LIBRARIES OFF CACHE BOOL "Create shared libraries. If off, create static libraries.")
+set(CREATE_SHARED_LIBRARIES ON CACHE BOOL "Create shared libraries. If off, create static libraries.")
 set(USE_REMOTE_REPOSITORIES ON CACHE BOOL "Pull external repositories from GitHub.")
 
 project(SCaBOliC)
