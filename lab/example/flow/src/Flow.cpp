@@ -18,14 +18,6 @@ namespace SCaBOliC
             cv::Mat colorImage = cv::Mat::zeros(size[1],size[0],CV_8UC3);
             MockDistribution fgDistr,bgDistr;
 
-            cv::Mat* binaryMask = &SCaBOliC::Energy::ISQ::mockBinaryImage;
-            cv::Mat temp;
-            if(id.maskFilepath!="")
-            {
-                temp = cv::imread(id.maskFilepath,CV_8UC1);
-                binaryMask = &temp;
-            }
-
             ISQEnergy::InputData isqInput(odr,
                                           colorImage,
                                           fgDistr,
@@ -35,8 +27,7 @@ namespace SCaBOliC
                                           id.sqTerm,
                                           id.lengthTerm,
                                           id.innerBallCoef,id.outerBallCoef,
-                                          Point(0,0),
-                                          *binaryMask);
+                                          Point(0,0));
 
             ISQEnergy energy(isqInput,odrFactory.handle());
 

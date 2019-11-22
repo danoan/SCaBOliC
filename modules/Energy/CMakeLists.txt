@@ -13,7 +13,6 @@ add_library(scabolic-energy ${LIBRARY_ACTION}
         src/Energy/ISQ/Terms/SquaredCurvature/SQIn.cpp
         src/Energy/ISQ/Terms/SquaredCurvature/SQOut.cpp
         src/Energy/ISQ/Terms/Length/LengthTerm.cpp
-        src/Energy/ISQ/Terms/FixedPixels/FixedPixels.cpp
         src/Energy/base/EnergyTerm.cpp
         src/Energy/ISQ/ISQEnergy.cpp)
 
