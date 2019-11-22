@@ -33,7 +33,6 @@ void SQOut::configureOptimizationData(const InputData& id,
 
 }
 
-
 void SQOut::setCoeffs(OptimizationData& od,
                       const InputData& id,
                       const VariableMap& vm)
@@ -79,7 +78,6 @@ void SQOut::setCoeffs(OptimizationData& od,
             }
         }
     }
-
 
 }
 

@@ -2,6 +2,9 @@
 
 using namespace SCaBOliC::Core;
 
+
+ODRPixels::DigitalSet ODRPixels::mockPixelMask( Domain(Point(0,0),Point(1,1)) );
+
 ODRPixels::DTL2 ODRPixels::interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
     return DTL2(domain, original, DGtal::Z2i::l2Metric);
@@ -105,7 +108,8 @@ ODRPixels::ODRPixels(double radius,
 
 ODRModel ODRPixels::createODR (ApplicationMode appMode,
                                const DigitalSet& original,
-                               bool optRegionInApplication) const
+                               bool optRegionInApplication,
+                               const DigitalSet& pixelMask) const
 {
     const double& radius = spaceHandle.radius;
 
@@ -175,6 +179,10 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
         applicationRegionIn.insert(optRegion.begin(),optRegion.end());
     }
 
+    for(auto p:pixelMask)
+    {
+        if( optRegion(p) ) optRegion.erase(p);
+    }
 
 
     return ODRModel(domain,

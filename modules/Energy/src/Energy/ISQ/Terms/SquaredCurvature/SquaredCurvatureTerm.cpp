@@ -21,7 +21,7 @@ SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
 
     double maxCtrb = sqIn.maxCtrb>sqOut.maxCtrb?sqIn.maxCtrb:sqOut.maxCtrb;
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    this->normalizationFactor = maxCtrb==0?1.0:1.0/maxCtrb;
     this->weight = id.sqTermWeight;
 
     this->constantFactor *=this->normalizationFactor;
