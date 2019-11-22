@@ -27,9 +27,12 @@ void SQIn::configureOptimizationData(const InputData& id,
                                      const VariableMap& vm,
                                      OptimizationData& od)
 {
-    setCoeffs(od,
-              id,
-              vm);
+    if(this->weight!=0)
+    {
+        setCoeffs(od,
+                  id,
+                  vm);
+    }
 }
 
 void SQIn::setCoeffs(OptimizationData& od,

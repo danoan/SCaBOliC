@@ -32,12 +32,15 @@ void DataTerm::configureOptimizationData(const InputData& id,
     this->constantTerm = 0;
 
     double maxCtrb;
-    setCoeffs(od,
-              maxCtrb,
-              id,
-              vm);
+    if(this->weight!=0)
+    {
+        setCoeffs(od,
+                  maxCtrb,
+                  id,
+                  vm);
+    }
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    this->normalizationFactor = maxCtrb==0?1.0:1.0/maxCtrb;
     this->weight = id.dataTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;

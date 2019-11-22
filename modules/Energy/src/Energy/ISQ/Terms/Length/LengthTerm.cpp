@@ -31,12 +31,16 @@ void LengthTerm::configureOptimizationData(const InputData& id,
     this->constantTerm = 0;
 
     double maxCtrb;
-    setCoeffs(od,
-              maxCtrb,
-              id,
-              vm);
 
-    this->normalizationFactor = 1.0/maxCtrb;
+    if(this->weight!=0)
+    {
+        setCoeffs(od,
+                  maxCtrb,
+                  id,
+                  vm);
+    }
+
+    this->normalizationFactor = maxCtrb==0?1.0:1.0/maxCtrb;
     this->weight = id.lengthTermWeight;
 
     od.localUTM*=this->weight*this->normalizationFactor;
