@@ -5,6 +5,8 @@
 #include <DGtal/images/ImageContainerBySTLVector.h>
 #include <DGtal/geometry/volumes/distance/DistanceTransformation.h>
 
+#include <geoc/api/gridCurve/Length.hpp>
+
 #include "DIPaCUS/components/SetOperations.h"
 #include "DIPaCUS/components/Morphology.h"
 #include "DIPaCUS/components/Neighborhood.h"
@@ -81,6 +83,8 @@ namespace SCaBOliC
                                const unsigned int radius,
                                const LevelDefinition ld,
                                int length) const;
+
+            double curveLength(const Domain& domain, const Curve& curve) const;
 
 
         private:

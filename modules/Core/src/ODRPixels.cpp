@@ -1,3 +1,4 @@
+#include <DGtal/io/boards/Board2D.h>
 #include "SCaBOliC/Core/ODRPixels/ODRPixels.h"
 
 using namespace SCaBOliC::Core;
@@ -105,6 +106,22 @@ ODRPixels::ODRPixels(double radius,
                                                 spaceHandle(radius,gridStep)
 {}
 
+double ODRPixels::curveLength(const Domain& domain, const Curve& curve) const
+{
+    using namespace GEOC::API::GridCurve::Length;
+    if(curve.size()==0) return 0;
+
+    double L=0;
+
+    KSpace kspace;
+    kspace.init(domain.lowerBound(),domain.upperBound(),true);
+    EstimationsVector ev;
+    mdssClosed<EstimationAlgorithms::ALG_PROJECTED>(kspace,curve.begin(),curve.end(),ev,spaceHandle.gridStep,NULL);
+
+    for(auto v:ev) L+=v;
+    return L;
+}
+
 
 ODRModel ODRPixels::createODR (ApplicationMode appMode,
                                const DigitalSet& original,
@@ -184,6 +201,32 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
         if( optRegion(p) ) optRegion.erase(p);
     }
 
+    DGtal::Z2i::Curve cInn,cOut,cOriginal;
+    {
+        DigitalSet temp = level(exteriorTransform,levels,0);
+        temp += original;
+        if(temp.size()>10)
+            DIPaCUS::Misc::computeBoundaryCurve(cOut,temp);
+    }
+    {
+        DigitalSet temp = level(interiorTransform,std::numeric_limits<int>::max(),levels);
+        if(temp.size()>10)
+            DIPaCUS::Misc::computeBoundaryCurve(cInn,temp);
+    }
+    if(original.size()>10)
+        DIPaCUS::Misc::computeBoundaryCurve(cOriginal,original);
+
+    double lInn=curveLength(domain,cInn);
+    double lOut=curveLength(domain,cOut);
+    double lOriginal=curveLength(domain,cOriginal);
+
+    if(lOriginal==0)
+        lOriginal=1;
+
+    double innerCoeff = lInn==0?1.0:lOriginal/lInn;
+    double outerCoeff = lOut==0?1.0:lOriginal/lOut;
+
+
 
     return ODRModel(domain,
                     original,
@@ -192,6 +235,8 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
                     trustBKG,
                     applicationRegionIn,
                     applicationRegionOut,
+                    innerCoeff,
+                    outerCoeff,
                     [](Point p){ return p; });
 }
 

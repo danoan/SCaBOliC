@@ -18,7 +18,7 @@ namespace SCaBOliC
                 exit(1);
             }
 
-            while ((opt = getopt(argc, argv, "i:m:M:g:q:h:r:l:f:a:z:")) != -1) {
+            while ((opt = getopt(argc, argv, "i:m:M:g:q:h:r:l:f:a:z:u")) != -1) {
                 switch (opt) {
                     case 'i': {
                         id.iterations = std::atoi(optarg);
@@ -70,6 +70,11 @@ namespace SCaBOliC
                     case 'z':
                     {
                         id.outerBallCoef = std::atof(optarg);
+                        break;
+                    }
+                    case 'u':
+                    {
+                        id.uniformPerimeter = true;
                         break;
                     }
                 }

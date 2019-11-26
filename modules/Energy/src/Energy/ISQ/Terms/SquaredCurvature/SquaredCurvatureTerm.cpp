@@ -9,7 +9,7 @@ SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
     od.localUTM = OptimizationData::UnaryTermsMatrix(2,
                                                      od.numVars);
     od.localUTM.setZero();
-
+    
     double maxCtrb=0;
     this->weight = id.sqTermWeight;
     if(this->weight>0)

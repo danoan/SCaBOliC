@@ -38,6 +38,7 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           bool excludeOptPointsFromAreaComputation,
+                          bool uniformPerimeter,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
@@ -47,6 +48,7 @@ namespace SCaBOliC
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
+                                                        uniformPerimeter(uniformPerimeter),
                                                         dataTermWeight(dataTermWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
@@ -72,6 +74,7 @@ namespace SCaBOliC
                 const Point translation;
 
                 const bool excludeOptPointsFromAreaComputation;
+                const bool uniformPerimeter;
 
             };
         }

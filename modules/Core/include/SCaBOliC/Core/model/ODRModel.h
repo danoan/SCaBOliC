@@ -17,6 +17,7 @@ namespace SCaBOliC
         {
         public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
+            typedef DGtal::Z2i::Curve Curve;
             typedef DGtal::Z2i::Domain Domain;
             typedef DGtal::Z2i::Point Point;
 
@@ -45,6 +46,8 @@ namespace SCaBOliC
                      const DigitalSet& trustBKG,
                      const DigitalSet& applicationRegionIn,
                      const DigitalSet& applicationRegionOut,
+                     const double innerCoeff,
+                     const double outerCoeff,
                      const ToImageCoordinates toImageCoordinates):domain(domain),
                                                original(original),
                                                optRegion(optRegion),
@@ -52,6 +55,8 @@ namespace SCaBOliC
                                                trustBKG(trustBKG),
                                                applicationRegionIn(applicationRegionIn),
                                                applicationRegionOut(applicationRegionOut),
+                                               innerCoeff(innerCoeff),
+                                               outerCoeff(outerCoeff),
                                                toImageCoordinates(toImageCoordinates){}
 
 
@@ -68,6 +73,8 @@ namespace SCaBOliC
             //const DigitalSet applicationRegion;
             const DigitalSet applicationRegionIn;
             const DigitalSet applicationRegionOut;
+            const double innerCoeff;
+            const double outerCoeff;
 
             const ToImageCoordinates toImageCoordinates;
         };

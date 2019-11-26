@@ -1,13 +1,14 @@
 #ifndef SCABOLIC_ENERGY_ISQ_TERMS_SQUAREDCURVATURE_MAXSquaredCurvatureTerm_H
 #define SCABOLIC_ENERGY_ISQ_TERMS_SQUAREDCURVATURE_MAXSquaredCurvatureTerm_H
 
+#include <DIPaCUS/derivates/Misc.h>
+
 #include <SCaBOliC/Energy/model/OptimizationData.h>
 #include <SCaBOliC/Energy/ISQ/InputData.h>
 #include <SCaBOliC/Energy/base/EnergyTerm.h>
-#include "DIPaCUS/derivates/Misc.h"
 
-#include "SCaBOliC/Energy/ISQ/VariableMap.h"
-#include "SCaBOliC/Core/interface/SpaceHandleInterface.h"
+#include <SCaBOliC/Energy/ISQ/VariableMap.h>
+#include <SCaBOliC/Core/interface/SpaceHandleInterface.h>
 
 #include "SQIn.h"
 #include "SQOut.h"
@@ -33,6 +34,8 @@ namespace SCaBOliC
             public:
                 SquaredCurvatureTerm(const InputData& id,
                                      const SpaceHandleInterface* spaceHandle);
+
+                void uniformPerimeter(const InputData& id);
 
                 int numVars(){return vm.numVars;}
 

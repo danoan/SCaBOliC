@@ -23,6 +23,7 @@ namespace SCaBOliC
                                           fgDistr,
                                           bgDistr,
                                           id.excludeOptPointsFromAreaComputation,
+                                          id.uniformPerimeter,
                                           id.dataTerm,
                                           id.sqTerm,
                                           id.lengthTerm,

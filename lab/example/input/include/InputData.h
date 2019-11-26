@@ -27,6 +27,7 @@ namespace SCaBOliC
 
                 excludeOptPointsFromAreaComputation = false;
                 optRegionInApplication = false;
+                uniformPerimeter = false;
 
                 dataTerm = 0;
                 sqTerm = 1.0;
@@ -50,6 +51,7 @@ namespace SCaBOliC
 
             bool excludeOptPointsFromAreaComputation;
             bool optRegionInApplication;
+            bool uniformPerimeter;
 
             double dataTerm;
             double sqTerm;
