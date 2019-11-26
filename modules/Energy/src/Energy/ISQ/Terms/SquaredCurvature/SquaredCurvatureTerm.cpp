@@ -10,19 +10,23 @@ SquaredCurvatureTerm::SquaredCurvatureTerm(const InputData &id,
                                                      od.numVars);
     od.localUTM.setZero();
 
-    SQIn sqIn(id,spaceHandle);
-    SQOut sqOut(id,spaceHandle);
+    double maxCtrb=0;
+    this->weight = id.sqTermWeight;
+    if(this->weight>0)
+    {
+        SQIn sqIn(id,spaceHandle);
+        SQOut sqOut(id,spaceHandle);
+
+        (*this) + sqIn;
+        (*this) + sqOut;
+
+        maxCtrb = sqIn.maxCtrb>sqOut.maxCtrb?sqIn.maxCtrb:sqOut.maxCtrb;
+    }
 
     this->constantTerm=0;
     this->constantFactor=1;
 
-    (*this) + sqIn;
-    (*this) + sqOut;
-
-    double maxCtrb = sqIn.maxCtrb>sqOut.maxCtrb?sqIn.maxCtrb:sqOut.maxCtrb;
-
     this->normalizationFactor = maxCtrb==0?1.0:1.0/maxCtrb;
-    this->weight = id.sqTermWeight;
 
     this->constantFactor *=this->normalizationFactor;
     this->constantTerm *=this->normalizationFactor;
