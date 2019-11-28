@@ -10,8 +10,20 @@ namespace SCaBOliC
         {
             Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
+            typedef DIPaCUS::Representation::Image2D Image2D;
+            DigitalSet* pixelMaskDS;
+            if(id.pixelMaskFilepath=="")
+            {
+                pixelMaskDS = new DigitalSet(Domain(Point(0,0),Point(1,1)));
+            }else
+            {
+                Image2D img = DGtal::GenericReader<Image2D>::import(id.pixelMaskFilepath);
+                pixelMaskDS = new DigitalSet(img.domain());
+                DIPaCUS::Representation::imageAsDigitalSet(*pixelMaskDS,img);
+            }
+
             ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt);
-            ODRModel odr = odrFactory.createODR(id.appMode,ds,id.optRegionInApplication);
+            ODRModel odr = odrFactory.createODR(id.appMode,ds,id.optRegionInApplication,*pixelMaskDS);
 
             SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
@@ -43,6 +55,8 @@ namespace SCaBOliC
 
             odrFactory.handle()->solutionSet(dsOut,dsIn,odr,solution.labelsVector.data(),energy.vm().pim);
             cbf( energy, solution, odr);
+
+            delete pixelMaskDS;
 
             return dsOut;
         }
@@ -91,7 +105,7 @@ namespace SCaBOliC
             while(it<id.iterations)
             {
 
-                cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);;
+                cv::Mat imgOut = cv::Mat::zeros(size[1],size[0],CV_8UC1);
                 DIPaCUS::Representation::digitalSetToCVMat(imgOut,imgDS);
                 cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
 
