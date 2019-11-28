@@ -18,18 +18,14 @@ namespace SCaBOliC
                 exit(1);
             }
 
-            while ((opt = getopt(argc, argv, "i:m:M:g:q:h:r:l:f:a:z:u")) != -1) {
+            while ((opt = getopt(argc, argv, "i:S:g:q:h:r:l:f:a:z:uw:")) != -1) {
                 switch (opt) {
                     case 'i': {
                         id.iterations = std::atoi(optarg);
                         break;
                     }
-                    case 'm': {
+                    case 'S': {
                         id.imageFilepath = optarg;
-                        break;
-                    }
-                    case 'M': {
-                        id.maskFilepath= optarg;
                         break;
                     }
                     case 'g': {
@@ -75,6 +71,11 @@ namespace SCaBOliC
                     case 'u':
                     {
                         id.uniformPerimeter = true;
+                        break;
+                    }
+                    case 'w':
+                    {
+                        id.pixelMaskFilepath = optarg;
                         break;
                     }
                 }

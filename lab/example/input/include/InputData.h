@@ -38,6 +38,8 @@ namespace SCaBOliC
 
                 innerBallCoef=1.0;
                 outerBallCoef=1.0;
+
+                pixelMaskFilepath="";
             }
 
             double levels;
@@ -62,7 +64,7 @@ namespace SCaBOliC
 
             std::string outputFolder;
             std::string imageFilepath;
-            std::string maskFilepath;
+            std::string pixelMaskFilepath;
             int iterations;
         };
     }

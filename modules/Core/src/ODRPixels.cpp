@@ -149,6 +149,11 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
     optRegion = level(interiorTransform,1,0);
     optRegion += level(exteriorTransform,1,0);
 
+    for(auto p:pixelMask)
+    {
+        if( optRegion(p) ) optRegion.erase(p);
+    }
+
 
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::setDifference(trustFRG, workingSet, optRegion);
@@ -196,10 +201,6 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
         applicationRegionIn.insert(optRegion.begin(),optRegion.end());
     }
 
-    for(auto p:pixelMask)
-    {
-        if( optRegion(p) ) optRegion.erase(p);
-    }
 
     DGtal::Z2i::Curve cInn,cOut,cOriginal;
     {
