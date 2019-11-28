@@ -18,7 +18,7 @@ namespace SCaBOliC
                 exit(1);
             }
 
-            while ((opt = getopt(argc, argv, "i:S:g:q:h:r:l:f:a:z:uw:")) != -1) {
+            while ((opt = getopt(argc, argv, "i:S:g:q:h:r:l:f:a:z:uw:O:")) != -1) {
                 switch (opt) {
                     case 'i': {
                         id.iterations = std::atoi(optarg);
@@ -76,6 +76,11 @@ namespace SCaBOliC
                     case 'w':
                     {
                         id.pixelMaskFilepath = optarg;
+                        break;
+                    }
+                    case 'O':
+                    {
+                        id.optBand = std::atof(optarg);
                         break;
                     }
                 }

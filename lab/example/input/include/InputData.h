@@ -24,6 +24,7 @@ namespace SCaBOliC
 
                 radius = 5;
                 gridStep=1.0;
+                optBand=3;
 
                 excludeOptPointsFromAreaComputation = false;
                 optRegionInApplication = false;
@@ -50,6 +51,7 @@ namespace SCaBOliC
 
             double radius;
             double gridStep;
+            double optBand;
 
             bool excludeOptPointsFromAreaComputation;
             bool optRegionInApplication;

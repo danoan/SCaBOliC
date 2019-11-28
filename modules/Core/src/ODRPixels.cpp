@@ -100,10 +100,12 @@ ODRPixels::ODRPixels(double radius,
                      double gridStep,
                      const double levels,
                      LevelDefinition ld,
-                     const NeighborhoodType nt):levels(levels),
+                     const NeighborhoodType nt,
+                     const double optBand):levels(levels),
                                                 nt(nt),
                                                 ld(ld),
-                                                spaceHandle(radius,gridStep)
+                                                spaceHandle(radius,gridStep),
+                                                optBand(optBand)
 {}
 
 double ODRPixels::curveLength(const Domain& domain, const Curve& curve) const
@@ -146,8 +148,8 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
     DTL2 exteriorTransform = exteriorDistanceTransform(domain,workingSet);
 
     //optRegion = omOriginalBoundary(domain,workingSet);
-    optRegion = level(interiorTransform,1,0);
-    optRegion += level(exteriorTransform,1,0);
+    optRegion = level(interiorTransform,optBand,0);
+    optRegion += level(exteriorTransform,optBand,0);
 
     for(auto p:pixelMask)
     {

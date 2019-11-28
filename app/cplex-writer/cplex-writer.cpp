@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
     Point size = ub-lb+Point(1,1);
 
 
-    ODRPixels odrPixels(id.radius,id.gridStep,id.levels,id.ld,id.nt);
+    ODRPixels odrPixels(id.radius,id.gridStep,id.levels,id.ld,id.nt,id.optBand);
     ODRModel odr = odrPixels.createODR(id.appMode,shape);
 
     ISQ::InputData::cvColorImage img(size[1],size[0],CV_8UC3);

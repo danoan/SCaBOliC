@@ -22,7 +22,7 @@ namespace SCaBOliC
                 DIPaCUS::Representation::imageAsDigitalSet(*pixelMaskDS,img);
             }
 
-            ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt);
+            ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt,id.optBand);
             ODRModel odr = odrFactory.createODR(id.appMode,ds,id.optRegionInApplication,*pixelMaskDS);
 
             SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");

@@ -25,6 +25,7 @@ namespace InputReader
             levels =5;
             sqTerm = 1.0;
             lengthTerm = 0.0;
+            optBand = 3;
 
             ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
             solverType = QPBOSolverType::Probe;
@@ -46,6 +47,7 @@ namespace InputReader
         double levels;
         double sqTerm;
         double lengthTerm;
+        double optBand;
 
         ODRModel::LevelDefinition ld;
         QPBOSolverType solverType;

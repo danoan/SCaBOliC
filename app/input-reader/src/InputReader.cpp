@@ -13,6 +13,7 @@ namespace InputReader
                                              "[-g Length Term weight default: 1.0] \n"
                                              "[-m Opt method 'probe' 'improve' default: improve] \n"
                                              "[-o Include optimization region in the application region default: false \n"
+                                             "[-O Optimization band size default: 3 \n"
                                              "[-S Shape (triangle square pentagon heptagon ball ellipse ball wave). Default: square\n"
                                              "[-h Grid step (default:1.0)]\n"
                                              "[-f Application mode (optimization-contour around-contour inner-contour outer-contour) (default:optimization-contour)]\n"
@@ -31,7 +32,7 @@ namespace InputReader
             exit(1);
         }
 
-        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:m:S:h:f:a:z:")) != -1) {
+        while ((opt = getopt(argc, argv, "r:i:n:l:q:g:m:S:h:f:a:z:O:")) != -1) {
             switch (opt) {
                 case 'r': {
                     id.radius = std::atof(optarg);
@@ -101,6 +102,11 @@ namespace InputReader
                 case 'z':
                 {
                     id.outerBallCoeff = std::atof(optarg);
+                    break;
+                }
+                case 'O':
+                {
+                    id.optBand = std::atof(optarg);
                     break;
                 }
 
