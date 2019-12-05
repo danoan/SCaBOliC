@@ -19,23 +19,26 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
     DigitalSet temp(domain);
     temp.clear();
 
-    double fgCount,optCount;
+    double fgCount,bgCount,optCount;
     for (auto it = applicationRegion.begin(); it != applicationRegion.end(); ++it)
     {
         DBI(temp, *it);
         fgCount = temp.size();
         temp.clear();
 
+
+        DBIO(temp,*it);
+        optCount = temp.size();
+        temp.clear();
+
+        bgCount = spaceHandle->pixelArea()-(fgCount+optCount);
+
         if(excludeOptPointsFromAreaComputation)
         {
-            DBIO(temp,*it);
-            optCount = temp.size();
-            temp.clear();
-
-            insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount);
+            insertConstant(*it, (spaceHandle->pixelArea()-optCount)/2.0,fgCount,bgCount);
         }else
         {
-            insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount );
+            insertConstant(*it, spaceHandle->pixelArea()/2.0 ,fgCount,bgCount );
         }
     }
 
@@ -43,7 +46,8 @@ CoefficientsComputer::CoefficientsComputer(const DigitalSet &applicationRegion,
 
 void CoefficientsComputer::insertConstant(const Point &p,
                                           double halfBallArea,
-                                          double Ij)
+                                          double Ij,
+                                          double Bj)
 {
     CoefficientData ch;
 
@@ -52,6 +56,7 @@ void CoefficientsComputer::insertConstant(const Point &p,
     c2 += -2 * halfBallArea * Ij;
 
     ch.xi = (1 - 2 * halfBallArea + 2 * Ij);
+    ch.xiB = (1 - 2 * halfBallArea + 2 * Bj);
     ch.xi_xj = 2;
 
 

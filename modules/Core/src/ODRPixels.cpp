@@ -137,6 +137,9 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     DTL2 interiorTransform = interiorDistanceTransform(domain,workingSet);
     DTL2 exteriorTransform = exteriorDistanceTransform(domain,workingSet);
 
+    optRegion = level(interiorTransform,2,0);
+    optRegion += level(exteriorTransform,2,0);
+
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::setDifference(trustFRG, workingSet, optRegion);
 
@@ -182,7 +185,8 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
         applicationRegion.insert(optRegion.begin(),optRegion.end());
     }
 
-
+    DigitalSet applicationRegionInn = level(interiorTransform,this->levels,this->levels-1);
+    DigitalSet applicationRegionOut = level(exteriorTransform,this->levels,this->levels-1);
 
     return ODRModel(domain,
                     original,
@@ -190,6 +194,8 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
                     trustFRG,
                     trustBKG,
                     applicationRegion,
+                    applicationRegionInn,
+                    applicationRegionOut,
                     [](Point p){ return p; });
 }
 

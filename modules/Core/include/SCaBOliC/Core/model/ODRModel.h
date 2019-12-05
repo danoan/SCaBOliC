@@ -12,7 +12,7 @@
 namespace SCaBOliC
 {
     namespace Core
-        {
+    {
         class ODRModel
         {
         public:
@@ -65,13 +65,17 @@ namespace SCaBOliC
                      const DigitalSet& trustFRG,
                      const DigitalSet& trustBKG,
                      const DigitalSet& applicationRegion,
+                     const DigitalSet& applicationRegionInn,
+                     const DigitalSet& applicationRegionOut,
                      const ToImageCoordinates toImageCoordinates):domain(domain),
-                                               original(original),
-                                               optRegion(optRegion),
-                                               trustFRG(trustFRG),
-                                               trustBKG(trustBKG),
-                                               applicationRegion(applicationRegion),
-                                               toImageCoordinates(toImageCoordinates){}
+                                                                  original(original),
+                                                                  optRegion(optRegion),
+                                                                  trustFRG(trustFRG),
+                                                                  trustBKG(trustBKG),
+                                                                  applicationRegion(applicationRegion),
+                                                                  applicationRegionInn(applicationRegionInn),
+                                                                  applicationRegionOut(applicationRegionOut),
+                                                                  toImageCoordinates(toImageCoordinates){}
 
 
 
@@ -85,6 +89,8 @@ namespace SCaBOliC
             const DigitalSet trustFRG;
             const DigitalSet trustBKG;
             const DigitalSet applicationRegion;
+            const DigitalSet applicationRegionInn;
+            const DigitalSet applicationRegionOut;
 
             const ToImageCoordinates toImageCoordinates;
         };

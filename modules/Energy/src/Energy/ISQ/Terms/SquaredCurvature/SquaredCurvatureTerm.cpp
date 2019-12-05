@@ -72,8 +72,9 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
 
+
     maxCtrb=0;
-    for(auto yit=ODR.applicationRegion.begin();yit!=ODR.applicationRegion.end();++yit)
+    for(auto yit=ODR.applicationRegionInn.begin();yit!=ODR.applicationRegionInn.end();++yit)
     {
         temp.clear();
         DBIOptimization(temp, *yit);
@@ -82,7 +83,34 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += cc.retrieve(*yit).xi;
+            UTM(1,xj) -= cc.retrieve(*yit).xi;
+
+            maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
+
+            auto ut = xjt;
+            ++ut;
+            for(;ut!=temp.end();++ut)
+            {
+                IndexPair ip = od.makePair(xj,iiv.at(*ut));
+                if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
+                od.localTable[ip].e11 -= cc.retrieve(*yit).xi_xj;
+
+                maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
+            }
+        }
+    }
+
+    for(auto yit=ODR.applicationRegionOut.begin();yit!=ODR.applicationRegionOut.end();++yit)
+    {
+        temp.clear();
+        DBIOptimization(temp, *yit);
+
+        for (auto xjt = temp.begin(); xjt != temp.end(); ++xjt)
+        {
+            Index xj = iiv.at(*xjt);
+
+            UTM(1,xj) += cc.retrieve(*yit).xiB;
+
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
             auto ut = xjt;
@@ -97,7 +125,6 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             }
         }
     }
-
 
 }
 

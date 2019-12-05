@@ -16,7 +16,6 @@ QPBOImproveSolver<Unary,EnergyTable,Labels>::QPBOImproveSolver(Scalar &energyVal
     this->fillLabels(unlabelled,labels);
     energyValuePriorInversion = this->computeEnergy(U,ET,labels);
 
-    this->invertLabels(labels);
     energyValue = this->computeEnergy(U,ET,labels);
 }
 

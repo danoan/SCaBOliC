@@ -28,7 +28,7 @@ struct InputData
 {
     InputData()
     {
-        levels =5;
+        levels =3;
         ld = ODRModel::LevelDefinition::LD_CloserFromCenter;
         nt = ODRModel::NeighborhoodType::FourNeighborhood;
 
@@ -91,7 +91,7 @@ InputData readInput(int argc, char* argv[])
         exit(1);
     }
 
-    while( (opt=getopt(argc,argv,"i:f:g:q:h:r:"))!=-1 )
+    while( (opt=getopt(argc,argv,"i:f:g:q:h:r:l:"))!=-1 )
     {
         switch(opt)
         {
@@ -123,6 +123,11 @@ InputData readInput(int argc, char* argv[])
             case 'r':
             {
                 id.radius=std::atof(optarg);
+                break;
+            }
+            case 'l':
+            {
+                id.levels=std::atof(optarg);
                 break;
             }
         }
@@ -171,7 +176,7 @@ DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
 
 void shapeTest(InputData& id)
 {
-    DigitalSet square = DIPaCUS::Shapes::triangle(0.5,0,0,20);
+    DigitalSet square = DIPaCUS::Shapes::square(0.5,0,0,20);
 
     Domain domain( square.domain().lowerBound() - Point(20,20), square.domain().upperBound() + Point(20,20) );
     DigitalSet workSet(domain);
@@ -187,15 +192,12 @@ void shapeTest(InputData& id)
         DIPaCUS::Representation::digitalSetToCVMat(imgOut,workSet);
         cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
 
-
-        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-        else id.optMode = ODRModel::OM_CorrectConvexities;
+        id.optMode = ODRModel::OM_CorrectConvexities;
 
         workSet = flow(workSet,id,domain);
 
         ++it;
     }
-
 
 
 
@@ -219,8 +221,7 @@ void imageTest(InputData& id)
         DIPaCUS::Representation::digitalSetToCVMat(imgOut,imgDS);
         cv::imwrite(id.outputFolder + "/" + std::to_string(it) +  ".png",imgOut);
 
-        if(it%2==0) id.optMode = ODRModel::OM_CorrectConcavities;
-        else id.optMode = ODRModel::OM_CorrectConvexities;
+        id.optMode = ODRModel::OM_CorrectConvexities;
 
         imgDS = flow(imgDS,id,domain);
         ++it;

@@ -20,6 +20,8 @@ target_include_directories(scabolic-utils PRIVATE
         ${DGTAL_INCLUDE_DIRS}
         ${OpenCV_INCLUDE_DIRS})
 
+set_target_properties(scabolic-utils PROPERTIES COMPILE_FLAGS "-fPIC")
+
 install(TARGETS scabolic-utils
         DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
         ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

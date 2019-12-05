@@ -28,6 +28,7 @@ namespace SCaBOliC
                 struct CoefficientData
                 {
                     double xi;
+                    double xiB;
                     double xi_xj;
                 };
 
@@ -49,7 +50,8 @@ namespace SCaBOliC
             private:
                 void insertConstant(const Point &p,
                                     double halfBallArea,
-                                    double Ij);
+                                    double Ij,
+                                    double Bj);
 
             private:
                 ConstantsMap _cm;
