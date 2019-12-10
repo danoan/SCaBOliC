@@ -29,14 +29,14 @@ double ISQEvaluation::mdca(const Curve& boundary, const KSpace& KImage, const do
                                                                           boundary.begin(),
                                                                           boundary.end(),
                                                                           curvatureEstimations,
-                                                                          h);
+                                                                          h,NULL);
 
 
     Length::mdssOpen<Length::EstimationAlgorithms::ALG_PROJECTED>(KImage,
                                                                   boundary.begin(),
                                                                   boundary.end(),
                                                                   lengthEstimations,
-                                                                  h);
+                                                                  h,NULL);
 
     double value=0;
     for(int i=0;i<lengthEstimations.size();++i)
@@ -54,18 +54,20 @@ double ISQEvaluation::ii(const Curve& boundary, const KSpace& KImage, const doub
     Curvature::EstimationsVector curvatureEstimations;
     Length::EstimationsVector lengthEstimations;
 
+    GEOC::Estimator::Standard::IICurvatureExtraData params(true,5);
     Curvature::identityOpen<Curvature::EstimationAlgorithms::ALG_II>(KImage,
                                                                      boundary.begin(),
                                                                      boundary.end(),
                                                                      curvatureEstimations,
-                                                                     h);
+                                                                     h,
+                                                                     &params);
 
 
     Length::mdssOpen<Length::EstimationAlgorithms::ALG_PROJECTED>(KImage,
                                                                   boundary.begin(),
                                                                   boundary.end(),
                                                                   lengthEstimations,
-                                                                  h);
+                                                                  h,NULL);
 
     double value=0;
     for(int i=0;i<lengthEstimations.size();++i)
