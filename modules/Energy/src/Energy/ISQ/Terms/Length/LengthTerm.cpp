@@ -79,10 +79,10 @@ void LengthTerm::setCoeffs(OptimizationData& od,
             
             if(ODR.trustFRG(neigh))
             {
-                od.localUTM(1,xi) += 1;
+                od.localUTM(0,xi) += 1;
             }else if(ODR.trustBKG(neigh))
             {
-                od.localUTM(0,xi) += 1;
+                od.localUTM(1,xi) += 1;
             }else
             {
                 yi = vm.pim.at(neigh);
