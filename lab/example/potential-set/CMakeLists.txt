@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.12)
 project(potential-set)
 
 add_executable(potential-set potential-set.cpp)
+
+if(${USE_REMOTE_REPOSITORIES})
+    add_dependencies(potential-set dipacus scabolic-core scabolic-energy)
+else()
+    add_dependencies(potential-set scabolic-core scabolic-energy)
+endif()
+
 target_include_directories(potential-set PRIVATE
         include
         ${CMAKE_SOURCE_DIR}/modules/Core/include
