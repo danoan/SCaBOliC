@@ -77,31 +77,3 @@ double ISQEvaluation::ii(const Curve& boundary, const KSpace& KImage, const doub
 
     return value;
 }
-
-ISQEvaluation::ISQEvaluation(double &value,
-                             const DigitalSet &originalDS,
-                             const EstimationAlgorithm ea)
-{
-    KSpace KImage;
-    Curve boundary;
-    double h;
-
-    prepare(boundary,KImage,h,originalDS);
-
-    switch(ea)
-    {
-        case EstimationAlgorithm::MDCA:
-        {
-            value = mdca(boundary,KImage,h);
-            break;
-        }
-        case EstimationAlgorithm::II:
-        {
-            value = ii(boundary,KImage,h);
-            break;
-        }
-
-    }
-
-
-}

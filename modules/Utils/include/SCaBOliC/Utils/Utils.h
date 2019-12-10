@@ -26,15 +26,12 @@ namespace SCaBOliC
         private:
             typedef DIPaCUS::Representation::Image2D Image2D;
 
-        private:
+        public:
             static void prepare(Curve& boundary, KSpace& KImage, double& h, const DigitalSet& originalDS);
 
             static double mdca(const Curve& boundary, const KSpace& KImage, const double h);
             static double ii(const Curve& boundary, const KSpace& KImage, const double h);
 
-
-        public:
-            ISQEvaluation(double& value,const DigitalSet& originalDS, const EstimationAlgorithm ea);
         };
     }
 }
