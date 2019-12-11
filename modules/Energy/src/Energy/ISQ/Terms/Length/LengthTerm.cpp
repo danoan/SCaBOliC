@@ -30,24 +30,28 @@ void LengthTerm::configureOptimizationData(const InputData& id,
     this->constantFactor = 1;
     this->constantTerm = 0;
 
-    double maxCtrb;
-    setCoeffs(od,
-              maxCtrb,
-              id,
-              vm);
-
-    this->normalizationFactor = 1.0/maxCtrb;
-    this->weight = id.lengthTermWeight;
-
-    od.localUTM*=this->weight*this->normalizationFactor;
-
-    for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+    if(this->weight!=0)
     {
-        OptimizationData::BooleanConfigurations& bc = it->second;
-        bc.e00*=this->weight*this->normalizationFactor;
-        bc.e01*=this->weight*this->normalizationFactor;
-        bc.e10*=this->weight*this->normalizationFactor;
-        bc.e11*=this->weight*this->normalizationFactor;
+        double maxCtrb;
+        setCoeffs(od,
+                  maxCtrb,
+                  id,
+                  vm);
+
+        maxCtrb = maxCtrb==0?1:maxCtrb;
+        this->normalizationFactor = 1.0/maxCtrb;
+        this->weight = id.lengthTermWeight;
+
+        od.localUTM*=this->weight*this->normalizationFactor;
+
+        for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+        {
+            OptimizationData::BooleanConfigurations& bc = it->second;
+            bc.e00*=this->weight*this->normalizationFactor;
+            bc.e01*=this->weight*this->normalizationFactor;
+            bc.e10*=this->weight*this->normalizationFactor;
+            bc.e11*=this->weight*this->normalizationFactor;
+        }
     }
 }
 
@@ -76,7 +80,7 @@ void LengthTerm::setCoeffs(OptimizationData& od,
         {
             neigh = *it + *itp;
             if(!ODR.domain.isInside(neigh)) continue;
-            
+
             if(ODR.trustFRG(neigh))
             {
                 od.localUTM(0,xi) += 1;
