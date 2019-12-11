@@ -185,8 +185,11 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
         applicationRegion.insert(optRegion.begin(),optRegion.end());
     }
 
-    DigitalSet applicationRegionInn = level(interiorTransform,this->levels,this->levels-1);
-    DigitalSet applicationRegionOut = level(exteriorTransform,this->levels,this->levels-1);
+    double adjustedLevel=this->levels;
+    if(this->ld==LevelDefinition::LD_FartherFromCenter) adjustedLevel = radius - this->levels + 1;
+
+    DigitalSet applicationRegionInn = level(interiorTransform,adjustedLevel,adjustedLevel-1);
+    DigitalSet applicationRegionOut = level(exteriorTransform,adjustedLevel,adjustedLevel-1);
 
     return ODRModel(domain,
                     original,
