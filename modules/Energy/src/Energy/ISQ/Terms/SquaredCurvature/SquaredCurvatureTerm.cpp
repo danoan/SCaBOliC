@@ -33,28 +33,33 @@ void SquaredCurvatureTerm::configureOptimizationData(const InputData& id,
                             this->spaceHandle,
                             id.excludeOptPointsFromAreaComputation);
 
-    double maxCtrb;
-    setCoeffs(od,
-              maxCtrb,
-              id,
-              cc,
-              vm);
-
-    this->normalizationFactor = 1.0/maxCtrb;
-    this->weight = id.sqTermWeight;
-
-    this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
-    this->constantTerm = cc.constantTerm()*this->normalizationFactor;
-
-    od.localUTM*=this->weight*this->normalizationFactor;
-
-    for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+    this->weight=id.sqTermWeight;
+    if(this->weight!=0)
     {
-        OptimizationData::BooleanConfigurations& bc = it->second;
-        bc.e00*=this->weight*this->normalizationFactor;
-        bc.e01*=this->weight*this->normalizationFactor;
-        bc.e10*=this->weight*this->normalizationFactor;
-        bc.e11*=this->weight*this->normalizationFactor;
+        double maxCtrb=0;
+        setCoeffs(od,
+                  maxCtrb,
+                  id,
+                  cc,
+                  vm);
+
+        maxCtrb = maxCtrb==0?1:maxCtrb;
+        this->normalizationFactor = 1.0/maxCtrb;
+        this->weight = id.sqTermWeight;
+
+        this->constantFactor = cc.scalingFactor()*this->normalizationFactor;;
+        this->constantTerm = cc.constantTerm()*this->normalizationFactor;
+
+        od.localUTM*=this->weight*this->normalizationFactor;
+
+        for(auto it=od.localTable.begin();it!=od.localTable.end();++it)
+        {
+            OptimizationData::BooleanConfigurations& bc = it->second;
+            bc.e00*=this->weight*this->normalizationFactor;
+            bc.e01*=this->weight*this->normalizationFactor;
+            bc.e10*=this->weight*this->normalizationFactor;
+            bc.e11*=this->weight*this->normalizationFactor;
+        }
     }
 }
 

@@ -30,9 +30,10 @@ void LengthTerm::configureOptimizationData(const InputData& id,
     this->constantFactor = 1;
     this->constantTerm = 0;
 
+    this->weight=id.lengthTermWeight;
     if(this->weight!=0)
     {
-        double maxCtrb;
+        double maxCtrb=0;
         setCoeffs(od,
                   maxCtrb,
                   id,
