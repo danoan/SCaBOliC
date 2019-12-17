@@ -50,7 +50,7 @@ struct InputData
         outputFolder = "";
     }
 
-    int levels;
+    double levels;
     ODRModel::LevelDefinition ld;
     ODRModel::NeighborhoodType nt;
     DIPaCUS::Morphology::StructuringElement::Type se;
