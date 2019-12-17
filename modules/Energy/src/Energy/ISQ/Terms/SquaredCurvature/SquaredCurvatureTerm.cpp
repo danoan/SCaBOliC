@@ -77,6 +77,17 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
 
+    double innerBallCoef,outerBallCoef;
+    if(id.uniformPerimeter)
+    {
+        innerBallCoef = id.optimizationRegions.innerCoef;
+        outerBallCoef = id.optimizationRegions.outerCoef;
+    }
+    else
+    {
+        innerBallCoef = id.innerBallCoef;
+        outerBallCoef = id.outerBallCoef;
+    }
 
     maxCtrb=0;
     for(auto yit=ODR.applicationRegionInn.begin();yit!=ODR.applicationRegionInn.end();++yit)
@@ -88,7 +99,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) -= cc.retrieve(*yit).xi;
+            UTM(1,xj) -= cc.retrieve(*yit).xi*innerBallCoef;
 
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
@@ -98,7 +109,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
-                od.localTable[ip].e11 -= cc.retrieve(*yit).xi_xj;
+                od.localTable[ip].e11 -= cc.retrieve(*yit).xi_xj*innerBallCoef;
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }
@@ -114,7 +125,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += cc.retrieve(*yit).xiB;
+            UTM(1,xj) += cc.retrieve(*yit).xiB*outerBallCoef;
 
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
@@ -124,7 +135,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
-                od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj;
+                od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj*outerBallCoef;
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }

@@ -16,15 +16,11 @@ namespace SCaBOliC
             typedef DGtal::Z2i::DigitalSet DigitalSet;
             typedef DGtal::Z2i::Point Point;
 
-            typedef ODRModel::OptimizationMode OptimizationMode;
             typedef ODRModel::ApplicationMode ApplicationMode;
-            typedef ODRModel::ApplicationCenter ApplicationCenter;
-            typedef ODRModel::CountingMode CountingMode;
             typedef ODRModel::LevelDefinition  LevelDefinition;
 
         public:
-            virtual ODRModel createODR(OptimizationMode optMode,
-                                       ApplicationMode appMode,
+            virtual ODRModel createODR(ApplicationMode appMode,
                                        const DigitalSet& original,
                                        bool optRegionInApplication=false)const =0;
 

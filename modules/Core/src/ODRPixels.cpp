@@ -103,8 +103,7 @@ ODRPixels::ODRPixels(double radius,
 {}
 
 
-ODRModel ODRPixels::createODR (OptimizationMode optMode,
-                               ApplicationMode appMode,
+ODRModel ODRPixels::createODR (ApplicationMode appMode,
                                const DigitalSet& original,
                                bool optRegionInApplication) const
 {
@@ -114,22 +113,9 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
     Domain domain(original.domain().lowerBound() - 2*Point(radius,radius),
                   original.domain().upperBound() + 2*Point(radius,radius));
 
-    DigitalSet workingSet(domain);
+    const DigitalSet& workingSet = original;
     DigitalSet optRegion(domain);
     DigitalSet applicationRegion(domain);
-
-    switch (optMode) {
-        case OptimizationMode::OM_CorrectConvexities:
-        {
-            workingSet = original;
-            break;
-        }
-        case OptimizationMode::OM_CorrectConcavities:
-        {
-            workingSet.assignFromComplement(original);
-            break;
-        }
-    }
 
     optRegion = omOriginalBoundary(domain,workingSet);
 
@@ -185,6 +171,32 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
         applicationRegion.insert(optRegion.begin(),optRegion.end());
     }
 
+
+    DGtal::Z2i::Curve cInn,cOut,cOriginal;
+    {
+        DigitalSet temp = level(exteriorTransform,levels,0);
+        temp += original;
+        if(temp.size()>10)
+            DIPaCUS::Misc::computeBoundaryCurve(cOut,temp);
+    }
+    {
+        DigitalSet temp = level(interiorTransform,std::numeric_limits<int>::max(),levels);
+        if(temp.size()>10)
+            DIPaCUS::Misc::computeBoundaryCurve(cInn,temp);
+    }
+    if(original.size()>10)
+        DIPaCUS::Misc::computeBoundaryCurve(cOriginal,original);
+
+    double lInn=curveLength(domain,cInn);
+    double lOut=curveLength(domain,cOut);
+    double lOriginal=curveLength(domain,cOriginal);
+
+    if(lOriginal==0)
+        lOriginal=1;
+
+    double innerCoef = lInn==0?1.0:lOriginal/lInn;
+    double outerCoef = lOut==0?1.0:lOriginal/lOut;
+
     double adjustedLevel=this->levels;
     if(this->ld==LevelDefinition::LD_FartherFromCenter) adjustedLevel = radius - this->levels + 1;
 
@@ -199,6 +211,24 @@ ODRModel ODRPixels::createODR (OptimizationMode optMode,
                     applicationRegion,
                     applicationRegionInn,
                     applicationRegionOut,
+                    innerCoef,
+                    outerCoef,
                     [](Point p){ return p; });
+}
+
+double ODRPixels::curveLength(const Domain& domain, const Curve& curve) const
+{
+    using namespace GEOC::API::GridCurve::Length;
+    if(curve.size()==0) return 0;
+
+    double L=0;
+
+    KSpace kspace;
+    kspace.init(domain.lowerBound(),domain.upperBound(),true);
+    EstimationsVector ev;
+    mdssClosed<EstimationAlgorithms::ALG_PROJECTED>(kspace,curve.begin(),curve.end(),ev,spaceHandle.gridStep,NULL);
+
+    for(auto v:ev) L+=v;
+    return L;
 }
 

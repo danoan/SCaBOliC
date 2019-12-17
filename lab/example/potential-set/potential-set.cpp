@@ -24,7 +24,6 @@ struct InputData
         ld = ODRPixels::LevelDefinition::LD_CloserFromCenter;
         nt = ODRPixels::NeighborhoodType::FourNeighborhood;
 
-        om = ODRPixels::OptimizationMode::OM_CorrectConvexities;
         am = ODRPixels::ApplicationMode::AM_AroundBoundary;
 
         outputFolder="";
@@ -37,7 +36,6 @@ struct InputData
     ODRPixels::LevelDefinition ld;
     ODRPixels::NeighborhoodType nt;
 
-    ODRPixels::OptimizationMode om;
     ODRPixels::ApplicationMode am;
 
     std::string outputFolder;
@@ -157,7 +155,7 @@ void generatePlotData(std::vector<PlotData>& plotData, double level, const Poten
 void setOptPointMap(OptPointMap& optPointMap,const InputData& id,const DigitalSet& shape)
 {
     ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt);
-    ODRModel ODR = odrFactory.createODR(id.om,id.am,shape,false);
+    ODRModel ODR = odrFactory.createODR(id.am,shape,false);
 
     int i=0;
     for(auto p:ODR.optRegion)
@@ -233,7 +231,7 @@ int main(int argc, char* argv[])
     for(int level=1;level<=id.radius;++level)
     {
         ODRPixels odrFactory(id.radius,id.gridStep,level,id.ld,id.nt);
-        ODRModel ODR = odrFactory.createODR(id.om,id.am,shape,false);
+        ODRModel ODR = odrFactory.createODR(id.am,shape,false);
 
         PotentialMap pmInn,pmOut;
 

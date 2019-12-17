@@ -16,8 +16,6 @@ namespace SCaBOliC
             typedef DGtal::Z2i::Point Point;
             typedef DIPaCUS::Misc::DigitalBallIntersection DigitalBallIntersection;
             typedef std::vector<IntersectionAttributes> Intersections;
-            
-            typedef ODRModel::SpaceMode SpaceMode;
 
         public:
             SpaceHandleInterface(double radius,double gridStep):radius(radius),gridStep(gridStep){}
@@ -25,7 +23,6 @@ namespace SCaBOliC
             virtual void solutionSet(DigitalSet& outputDS,
                                      const DigitalSet& initialDS,
                                      const ODRModel& odrModel,
-                                     const ODRModel::OptimizationMode& optMode,
                                      const int* varValue,
                                      const std::unordered_map<Point, unsigned int>& pointToVar) const = 0;
 
@@ -36,7 +33,6 @@ namespace SCaBOliC
             virtual Point* neighBegin() const=0;
             virtual Point* neighEnd() const=0;
             virtual double pixelArea() const=0;
-            virtual SpaceMode spaceMode() const=0;
 
             inline double scaledRadius() const {return radius*1.0/gridStep;}
 

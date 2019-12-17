@@ -23,13 +23,11 @@ namespace SCaBOliC
             void solutionSet(DigitalSet& outputDS,
                              const DigitalSet& initialDS,
                              const ODRModel& odrModel,
-                             const ODRModel::OptimizationMode& optMode,
                              const int* varValue,
                              const std::unordered_map<Point, unsigned int>& pointToVar) const;
 
             Point* neighBegin() const{ return neighborhoodFilter; }
             Point* neighEnd() const{ return neighborhoodFilter+4; }
-            SpaceMode spaceMode() const{ return SpaceMode::Pixel; }
 
             Intersections intersectCoefficient(DigitalBallIntersection& DBI, const Point& pt) const;
             DigitalBallIntersection intersectionComputer(const DigitalSet &toIntersect) const;

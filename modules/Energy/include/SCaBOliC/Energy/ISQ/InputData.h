@@ -36,19 +36,23 @@ namespace SCaBOliC
                           const MyProbabilityDistribution& fgDistr,
                           const MyProbabilityDistribution& bgDistr,
                           bool excludeOptPointsFromAreaComputation,
-                          bool shrinkingMode,
+                          bool uniformPerimeter,
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
+                          double innerBallCoef=1.0,
+                          double outerBallCoef=1.0,
                           Point translation=Point(0,0)):optimizationRegions(ODR),
                                                         image(image),
                                                         fgDistr(fgDistr),
                                                         bgDistr(bgDistr),
-                                                        shrinkingMode(shrinkingMode),
+                                                        excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
+                                                        uniformPerimeter(uniformPerimeter),
                                                         dataTermWeight(dataTermWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
-                                                        excludeOptPointsFromAreaComputation(excludeOptPointsFromAreaComputation),
+                                                        innerBallCoef(innerBallCoef),
+                                                        outerBallCoef(outerBallCoef),
                                                         translation(translation){}
 
             public:
@@ -58,6 +62,7 @@ namespace SCaBOliC
                 const double sqTermWeight;
                 const double lengthTermWeight;
 
+                const double innerBallCoef,outerBallCoef;
 
                 const MyProbabilityDistribution& fgDistr;
                 const MyProbabilityDistribution& bgDistr;
@@ -66,7 +71,7 @@ namespace SCaBOliC
                 const Point translation;
 
                 const bool excludeOptPointsFromAreaComputation;
-                const bool shrinkingMode;
+                const bool uniformPerimeter;
 
             };
         }

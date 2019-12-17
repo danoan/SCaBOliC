@@ -25,7 +25,6 @@ DIPaCUS::Misc::DigitalBallIntersection PixelSpaceHandle::intersectionComputer(co
 void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
                                    const DigitalSet &initialDS,
                                    const ODRModel &odrModel,
-                                   const ODRModel::OptimizationMode& optMode,
                                    const int *varValue,
                                    const std::unordered_map<Point, unsigned int> &pointToVar) const
 {
@@ -41,10 +40,7 @@ void PixelSpaceHandle::solutionSet(DigitalSet &outputDS,
         }
     }
 
-    if(optMode==ODRModel::OptimizationMode::OM_CorrectConcavities) outputDS.assignFromComplement(temp);
-    else outputDS = temp;
-
-
+    outputDS = temp;
 }
 
 double PixelSpaceHandle::pixelArea() const
