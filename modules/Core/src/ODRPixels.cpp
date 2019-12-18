@@ -96,10 +96,12 @@ ODRPixels::ODRPixels(double radius,
                      double gridStep,
                      const double levels,
                      LevelDefinition ld,
-                     const NeighborhoodType nt):levels(levels),
+                     const NeighborhoodType nt,
+                     const double optBand):levels(levels),
                                                 nt(nt),
                                                 ld(ld),
-                                                spaceHandle(radius,gridStep)
+                                                spaceHandle(radius,gridStep),
+                                                optBand(optBand)
 {}
 
 
@@ -123,8 +125,8 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
     DTL2 interiorTransform = interiorDistanceTransform(domain,workingSet);
     DTL2 exteriorTransform = exteriorDistanceTransform(domain,workingSet);
 
-    optRegion = level(interiorTransform,2,0);
-    optRegion += level(exteriorTransform,2,0);
+    optRegion = level(interiorTransform,optBand,0);
+    optRegion += level(exteriorTransform,optBand,0);
 
     DigitalSet trustFRG(domain);
     DIPaCUS::SetOperations::setDifference(trustFRG, workingSet, optRegion);

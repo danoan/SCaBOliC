@@ -45,7 +45,8 @@ namespace SCaBOliC
                       double gridStep,
                       const double levels,
                       LevelDefinition ld,
-                      const NeighborhoodType nt);
+                      const NeighborhoodType nt,
+                      const double optBand);
 
 
             ODRModel createODR(ApplicationMode appMode,
@@ -88,6 +89,7 @@ namespace SCaBOliC
 
         private:
             double levels;
+            double optBand;
             LevelDefinition ld;
             NeighborhoodType nt;
 

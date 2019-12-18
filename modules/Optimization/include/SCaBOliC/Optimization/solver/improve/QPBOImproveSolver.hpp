@@ -7,7 +7,6 @@ QPBOImproveSolver<Unary,EnergyTable,Labels>::QPBOImproveSolver(Scalar &energyVal
                                                          Scalar &energyValuePriorInversion,
                                                          int &unlabelled,
                                                          const Unary &U,
-
                                                          const EnergyTable& ET,
                                                          Labels &labels,
                                                          int max_num_iterations):IQPBOSolver<Unary,EnergyTable,Labels>(U,ET)
@@ -23,7 +22,6 @@ template<typename Unary,  typename EnergyTable, typename Labels>
 void QPBOImproveSolver<Unary,EnergyTable,Labels>::solve(Scalar & energyValue,
                                                   int & unlabelled,
                                                   const Unary &U,
-
                                                   Labels & labels,
                                                   int max_num_iterations)
 {

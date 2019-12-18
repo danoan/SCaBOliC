@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.2)
 project(example-flow)
 
-add_executable(example-flow example-flow.cpp)
+add_executable(example-flow
+        example-flow.cpp
+        src/utils.cpp
+        src/Flow.cpp
+        src/InputReader.cpp)
 
 if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(example-flow dipacus scabolic-optimization scabolic-core scabolic-energy)
