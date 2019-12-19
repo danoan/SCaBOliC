@@ -12,17 +12,22 @@ namespace SCaBOliC
     {
         class ODRInterface
         {
-        private:
+        public:
             typedef DGtal::Z2i::DigitalSet DigitalSet;
+            typedef DGtal::Z2i::Domain Domain;
             typedef DGtal::Z2i::Point Point;
 
             typedef ODRModel::ApplicationMode ApplicationMode;
             typedef ODRModel::LevelDefinition  LevelDefinition;
 
         public:
+            static DigitalSet mockPixelMask;
+
+        public:
             virtual ODRModel createODR(ApplicationMode appMode,
                                        const DigitalSet& original,
-                                       bool optRegionInApplication=false)const =0;
+                                       bool optRegionInApplication=false,
+                                       const DigitalSet& pixelMask=mockPixelMask)const =0;
 
             virtual const SpaceHandleInterface* handle() const=0;
 

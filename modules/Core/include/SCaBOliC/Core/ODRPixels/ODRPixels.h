@@ -38,7 +38,7 @@ namespace SCaBOliC
 
         private:
 
-
+            static DigitalSet mockPixelMask;
 
         public:
             ODRPixels(double radius,
@@ -51,7 +51,8 @@ namespace SCaBOliC
 
             ODRModel createODR(ApplicationMode appMode,
                                const DigitalSet& original,
-                               bool optRegionInApplication=false) const;
+                               bool optRegionInApplication=false,
+                               const DigitalSet& pixelMask=mockPixelMask) const;
 
             const SpaceHandleInterface* handle() const{return &spaceHandle;};
 

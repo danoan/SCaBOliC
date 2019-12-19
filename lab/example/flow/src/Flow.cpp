@@ -4,12 +4,30 @@ namespace SCaBOliC
 {
     namespace Flow
     {
+        DigitalSet readPixelMask(const std::string& pixelMaskFilepath)
+        {
+            if(pixelMaskFilepath!="")
+            {
+                typedef DIPaCUS::Representation::Image2D Image2D;
+                Image2D pixelMaskImg = DGtal::GenericReader<Image2D>::import(pixelMaskFilepath);
+                DigitalSet pixelMask(pixelMaskImg.domain());
+                DIPaCUS::Representation::imageAsDigitalSet(pixelMask,pixelMaskImg);
+
+                return pixelMask;
+            }else
+            {
+                return DigitalSet(Domain( Point(0,0),Point(1,1) ));
+            }
+        }
+
         DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain)
         {
             Point size = domain.upperBound() - domain.lowerBound() + Point(1,1);
 
+            DigitalSet pixelMask = readPixelMask(id.pixelMaskFilepath);
+
             ODRPixels odrFactory(id.radius,id.gridStep,id.levels,id.ld,id.nt,id.optBand);
-            ODRModel odr = odrFactory.createODR(id.appMode,ds,id.optRegionInApplication);
+            ODRModel odr = odrFactory.createODR(id.appMode,ds,id.optRegionInApplication,pixelMask);
 
             SCaBOliC::Core::Display::DisplayODR(odr,"odr.eps");
 
@@ -45,9 +63,10 @@ namespace SCaBOliC
 
         void shapeFlow(InputData& id)
         {
-            DigitalSet shape = Utils::resolveShape(id.shape,id.gridStep);
+            DigitalSet _shape = Utils::resolveShape(id.shape,id.gridStep);
+            DigitalSet shape = DIPaCUS::Transform::bottomLeftBoundingBoxAtOrigin(_shape,Point(40,40));
 
-            Domain domain( shape.domain().lowerBound() - Point(20,20), shape.domain().upperBound() + Point(20,20) );
+            const Domain& domain = shape.domain();
             DigitalSet workSet(domain);
             workSet.insert(shape.begin(),shape.end());
 

@@ -19,6 +19,7 @@ namespace SCaBOliC
                                                  "[-a Inner ball coefficient default: 1.0] \n"
                                                  "[-z Outer ball coefficient default: 1.0] \n"
                                                  "[-u Uniform perimeter] \n"
+                                                 "[-w Pixel mask filepath] \n"
                       <<  std::endl;
         }
 
@@ -32,18 +33,13 @@ namespace SCaBOliC
                 exit(1);
             }
 
-            while( (opt=getopt(argc,argv,"r:i:l:q:g:O:S:h:f:a:z:u"))!=-1 )
+            while( (opt=getopt(argc,argv,"r:i:l:q:g:O:S:h:f:a:z:uw:"))!=-1 )
             {
                 switch(opt)
                 {
                     case 'i':
                     {
                         id.iterations=std::atoi(optarg);
-                        break;
-                    }
-                    case 'f':
-                    {
-                        id.imageFilepath=optarg;
                         break;
                     }
                     case 'g':
@@ -103,6 +99,11 @@ namespace SCaBOliC
                         else if(strcmp(optarg,"wave")==0) id.shape = Shape( ShapeType::Wave);
                         else if(strcmp(optarg,"bean")==0) id.shape = Shape( ShapeType::Bean);
                         else id.shape = Shape(ShapeType::UserDefined,optarg);
+                        break;
+                    }
+                    case 'w':
+                    {
+                        id.pixelMaskFilepath=optarg;
                         break;
                     }
                 }

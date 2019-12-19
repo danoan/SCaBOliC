@@ -41,6 +41,7 @@ namespace SCaBOliC
                 lengthTerm = 0.0;
 
                 outputFolder = "";
+                pixelMaskFilepath;
             }
 
             double levels;
@@ -68,7 +69,7 @@ namespace SCaBOliC
             double optBand;
 
             std::string outputFolder;
-            std::string imageFilepath;
+            std::string pixelMaskFilepath;
             int iterations;
         };
     }

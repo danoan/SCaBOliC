@@ -22,6 +22,7 @@ namespace SCaBOliC
         using namespace SCaBOliC::Core;
         using namespace SCaBOliC::Energy;
 
+        DigitalSet readPixelMask(const std::string& pixelMaskFilepath);
         DigitalSet flow(const DigitalSet& ds, const InputData& id,const Domain& domain);
         void shapeFlow(InputData& id);
     }
