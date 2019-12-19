@@ -32,8 +32,8 @@ namespace SCaBOliC
                 optRegionInApplication = false;
                 uniformPerimeter = false;
 
-                innerBallCoef=1.0;
-                outerBallCoef=1.0;
+                innerBallCoeff=1.0;
+                outerBallCoeff=1.0;
 
 
                 dataTerm = 0;
@@ -63,8 +63,8 @@ namespace SCaBOliC
             double sqTerm;
             double lengthTerm;
 
-            double innerBallCoef;
-            double outerBallCoef;
+            double innerBallCoeff;
+            double outerBallCoeff;
 
             double optBand;
 

@@ -43,8 +43,8 @@ namespace SCaBOliC
                                     id.dataTerm,
                                     id.sqTerm,
                                     id.lengthTerm,
-                                    id.innerBallCoef,
-                                    id.outerBallCoef);
+                                    id.innerBallCoeff,
+                                    id.outerBallCoeff);
 
             ISQEnergy energy(isqInput,odrFactory.handle());
 

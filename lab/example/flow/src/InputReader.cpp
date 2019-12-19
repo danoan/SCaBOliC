@@ -69,12 +69,12 @@ namespace SCaBOliC
                     }
                     case 'a':
                     {
-                        id.innerBallCoef=std::atof(optarg);
+                        id.innerBallCoeff=std::atof(optarg);
                         break;
                     }
                     case 'z':
                     {
-                        id.outerBallCoef=std::atof(optarg);
+                        id.outerBallCoeff=std::atof(optarg);
                         break;
                     }
                     case 'u':

@@ -77,16 +77,16 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     const VariableMap::PixelIndexMap &iiv = vm.pim;
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
 
-    double innerBallCoef,outerBallCoef;
+    double innerBallCoeff,outerBallCoeff;
     if(id.uniformPerimeter)
     {
-        innerBallCoef = id.optimizationRegions.innerCoef;
-        outerBallCoef = id.optimizationRegions.outerCoef;
+        innerBallCoeff = id.optimizationRegions.innerCoef;
+        outerBallCoeff = id.optimizationRegions.outerCoef;
     }
     else
     {
-        innerBallCoef = id.innerBallCoef;
-        outerBallCoef = id.outerBallCoef;
+        innerBallCoeff = id.innerBallCoeff;
+        outerBallCoeff = id.outerBallCoeff;
     }
 
     maxCtrb=0;
@@ -99,7 +99,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) -= cc.retrieve(*yit).xi*innerBallCoef;
+            UTM(1,xj) -= cc.retrieve(*yit).xi*innerBallCoeff;
 
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
@@ -109,7 +109,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
-                od.localTable[ip].e11 -= cc.retrieve(*yit).xi_xj*innerBallCoef;
+                od.localTable[ip].e11 -= cc.retrieve(*yit).xi_xj*innerBallCoeff;
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }
@@ -125,7 +125,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         {
             Index xj = iiv.at(*xjt);
 
-            UTM(1,xj) += cc.retrieve(*yit).xiB*outerBallCoef;
+            UTM(1,xj) += cc.retrieve(*yit).xiB*outerBallCoeff;
 
             maxCtrb = fabs(UTM(1,xj))>maxCtrb?fabs(UTM(1,xj)):maxCtrb;
 
@@ -135,7 +135,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             {
                 IndexPair ip = od.makePair(xj,iiv.at(*ut));
                 if(od.localTable.find(ip)==od.localTable.end()) od.localTable[ip] = BooleanConfigurations(0,0,0,0);
-                od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj*outerBallCoef;
+                od.localTable[ip].e11 += cc.retrieve(*yit).xi_xj*outerBallCoeff;
 
                 maxCtrb = fabs(od.localTable[ip].e11)>maxCtrb?fabs(od.localTable[ip].e11):maxCtrb;
             }

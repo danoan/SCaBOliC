@@ -40,8 +40,8 @@ namespace SCaBOliC
                           double dataTermWeight=1.0,
                           double sqTermWeight=1.0,
                           double lengthTermWeight=1.0,
-                          double innerBallCoef=1.0,
-                          double outerBallCoef=1.0,
+                          double innerBallCoeff=1.0,
+                          double outerBallCoeff=1.0,
                           Point translation=Point(0,0)):optimizationRegions(ODR),
                                                         image(image),
                                                         fgDistr(fgDistr),
@@ -51,8 +51,8 @@ namespace SCaBOliC
                                                         dataTermWeight(dataTermWeight),
                                                         sqTermWeight(sqTermWeight),
                                                         lengthTermWeight(lengthTermWeight),
-                                                        innerBallCoef(innerBallCoef),
-                                                        outerBallCoef(outerBallCoef),
+                                                        innerBallCoeff(innerBallCoeff),
+                                                        outerBallCoeff(outerBallCoeff),
                                                         translation(translation){}
 
             public:
@@ -62,7 +62,7 @@ namespace SCaBOliC
                 const double sqTermWeight;
                 const double lengthTermWeight;
 
-                const double innerBallCoef,outerBallCoef;
+                const double innerBallCoeff,outerBallCoeff;
 
                 const MyProbabilityDistribution& fgDistr;
                 const MyProbabilityDistribution& bgDistr;
