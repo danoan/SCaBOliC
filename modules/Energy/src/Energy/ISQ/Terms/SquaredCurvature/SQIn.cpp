@@ -57,7 +57,7 @@ void SQIn::setCoeffs(OptimizationData& od,
         innerBallCoef = id.innerBallCoef;
 
     double fgCount;
-    for(auto yit=ODR.applicationRegionIn.begin();yit!=ODR.applicationRegionIn.end();++yit)
+    for(auto yit=ODR.applicationRegionInn.begin();yit!=ODR.applicationRegionInn.end();++yit)
     {
         temp.clear(); DBITrust(temp, *yit); fgCount = temp.size();
         temp.clear(); DBIOptimization(temp, *yit);

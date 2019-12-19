@@ -137,7 +137,7 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
 
     DigitalSet workingSet(domain);
     DigitalSet optRegion(domain);
-    DigitalSet applicationRegionIn(domain);
+    DigitalSet applicationRegionInn(domain);
     DigitalSet applicationRegionOut(domain);
 
 
@@ -172,24 +172,24 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
 
     switch (appMode) {
         case ApplicationMode::AM_OptimizationBoundary: {
-            applicationRegionIn.insert(optRegion.begin(),optRegion.end());
+            applicationRegionInn.insert(optRegion.begin(),optRegion.end());
             break;
         }
         case ApplicationMode::AM_AroundBoundary: {
             DigitalSet temp = amAroundBoundary(interiorTransform,exteriorTransform,radius,this->ld,this->levels);
-            applicationRegionIn = amLevel(interiorTransform,radius,this->ld,this->levels);
+            applicationRegionInn = amLevel(interiorTransform,radius,this->ld,this->levels);
             applicationRegionOut = amLevel(exteriorTransform,radius,this->ld,this->levels);
             break;
         }
         case ApplicationMode::AM_InternRange:{
             DigitalSet temp = amLevel(interiorTransform,radius,this->ld,this->levels);
-            applicationRegionIn.insert(temp.begin(),temp.end());
+            applicationRegionInn.insert(temp.begin(),temp.end());
             break;
         }
         case ApplicationMode::AM_ExternRange:
         {
             DigitalSet temp = amLevel(exteriorTransform,radius,this->ld,this->levels);
-            applicationRegionIn.insert(temp.begin(),temp.end());
+            applicationRegionInn.insert(temp.begin(),temp.end());
             break;
         }
         default:
@@ -200,7 +200,7 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
 
     if(optRegionInApplication)
     {
-        applicationRegionIn.insert(optRegion.begin(),optRegion.end());
+        applicationRegionInn.insert(optRegion.begin(),optRegion.end());
     }
 
 
@@ -236,7 +236,7 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
                     optRegion,
                     trustFRG,
                     trustBKG,
-                    applicationRegionIn,
+                    applicationRegionInn,
                     applicationRegionOut,
                     innerCoeff,
                     outerCoeff,

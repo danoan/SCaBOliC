@@ -44,7 +44,7 @@ namespace SCaBOliC
                      const DigitalSet& optRegion,
                      const DigitalSet& trustFRG,
                      const DigitalSet& trustBKG,
-                     const DigitalSet& applicationRegionIn,
+                     const DigitalSet& applicationRegionInn,
                      const DigitalSet& applicationRegionOut,
                      const double innerCoeff,
                      const double outerCoeff,
@@ -53,7 +53,7 @@ namespace SCaBOliC
                                                optRegion(optRegion),
                                                trustFRG(trustFRG),
                                                trustBKG(trustBKG),
-                                               applicationRegionIn(applicationRegionIn),
+                                               applicationRegionInn(applicationRegionInn),
                                                applicationRegionOut(applicationRegionOut),
                                                innerCoeff(innerCoeff),
                                                outerCoeff(outerCoeff),
@@ -71,7 +71,7 @@ namespace SCaBOliC
             const DigitalSet trustFRG;
             const DigitalSet trustBKG;
             //const DigitalSet applicationRegion;
-            const DigitalSet applicationRegionIn;
+            const DigitalSet applicationRegionInn;
             const DigitalSet applicationRegionOut;
             const double innerCoeff;
             const double outerCoeff;
