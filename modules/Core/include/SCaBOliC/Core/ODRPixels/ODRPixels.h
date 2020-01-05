@@ -11,6 +11,7 @@
 #include "DIPaCUS/derivates/Misc.h"
 
 #include <geoc/api/gridCurve/Length.hpp>
+#include <geoc/api/gridCurve/Curvature.hpp>
 
 #include "SCaBOliC/Core/model/ODRModel.h"
 #include "SCaBOliC/Core/interface/ODRInterface.h"
@@ -86,6 +87,7 @@ namespace SCaBOliC
                                double levelNum) const;
 
             double curveLength(const Domain& domain, const Curve& curve) const;
+            std::unordered_map<Point,double> curvatureMap(const Domain& domain, const Curve& curve, const DigitalSet& interior) const;
 
 
         private:

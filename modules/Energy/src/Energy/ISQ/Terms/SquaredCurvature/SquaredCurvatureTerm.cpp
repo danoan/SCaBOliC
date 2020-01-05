@@ -78,15 +78,16 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
     OptimizationData::UnaryTermsMatrix &UTM = od.localUTM;
 
     double innerBallCoeff,outerBallCoeff;
-    if(id.uniformPerimeter)
-    {
-        innerBallCoeff = id.optimizationRegions.innerCoef;
-        outerBallCoeff = id.optimizationRegions.outerCoef;
-    }
-    else
+    if(!id.uniformPerimeter)
     {
         innerBallCoeff = id.innerBallCoeff;
         outerBallCoeff = id.outerBallCoeff;
+    }else
+    {
+//        innerBallCoeff=1;
+//        outerBallCoeff=1;
+        innerBallCoeff=ODR.innerCoef;
+        outerBallCoeff=ODR.outerCoef;
     }
 
     maxCtrb=0;
@@ -116,8 +117,19 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
         }
     }
 
+    double maxKOut=0;
     for(auto yit=ODR.applicationRegionOut.begin();yit!=ODR.applicationRegionOut.end();++yit)
     {
+        if(id.uniformPerimeter && ODR.kMap.find(*yit)!=ODR.kMap.end())
+        {
+//            if(ODR.kMap.at(*yit)>0)
+//                outerBallCoeff = 1.0- ODR.level*spaceHandle->gridStep*ODR.kMap.at(*yit);
+//            else
+//                outerBallCoeff = 1.0/(1.0- ODR.level*spaceHandle->gridStep*ODR.kMap.at(*yit));
+//
+            maxKOut=ODR.kMap.at(*yit)>maxKOut?ODR.kMap.at(*yit):maxKOut;
+        }
+        
         temp.clear();
         DBIOptimization(temp, *yit);
 
@@ -141,7 +153,7 @@ void SquaredCurvatureTerm::setCoeffs(OptimizationData& od,
             }
         }
     }
-
+    std::cout << "Max kOut:" << maxKOut << std::endl;
 }
 
 void SquaredCurvatureTerm::addCoeff(OptimizationData::PairwiseTermsMatrix& PTM,

@@ -207,6 +207,8 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
     double innerCoef = lInn==0?1.0:lOriginal/lInn;
     double outerCoef = lOut==0?1.0:lOriginal/lOut;
 
+    auto kMap = curvatureMap(domain,cOut,level(exteriorTransform,levels,0));
+
     double adjustedLevel=this->levels;
     if(this->ld==LevelDefinition::LD_FartherFromCenter) adjustedLevel = radius - this->levels + 1;
 
@@ -223,7 +225,40 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
                     applicationRegionOut,
                     innerCoef,
                     outerCoef,
+                    kMap,
+                    adjustedLevel,
                     [](Point p){ return p; });
+}
+
+std::unordered_map<Point,double> ODRPixels::curvatureMap(const Domain& domain, const Curve& curve, const DigitalSet& interior) const
+{
+    using namespace GEOC::API::GridCurve::Curvature;
+    std::unordered_map<Point,double> kMap;
+
+    if(curve.size()==0) return kMap;
+
+    KSpace kspace;
+    kspace.init(domain.lowerBound(),domain.upperBound(),true);
+    EstimationsVector ev;
+    GEOC::Estimator::Standard::IICurvatureExtraData iiData(true,spaceHandle.radius);
+    identityOpen<EstimationAlgorithms::ALG_II>(kspace,curve.begin(),curve.end(),ev,spaceHandle.gridStep,&iiData);
+
+    int i=0;
+    for(auto l:curve)
+    {
+        for(auto kp:kspace.sUpperIncident(l))
+        {
+            auto p = kspace.sCoords(kp);
+            if(interior(p))
+            {
+                kMap[p] = ev[i];
+                break;
+            }
+        }
+        ++i;
+    }
+
+    return kMap;
 }
 
 double ODRPixels::curveLength(const Domain& domain, const Curve& curve) const
