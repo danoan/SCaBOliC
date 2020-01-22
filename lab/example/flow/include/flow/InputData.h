@@ -25,7 +25,7 @@ namespace SCaBOliC
                 shape = Shape(ShapeType::Square);
                 radius = 5;
                 gridStep=1.0;
-                optBand=3.0;
+                optBand=1.0;
 
                 excludeOptPointsFromAreaComputation = false;
 

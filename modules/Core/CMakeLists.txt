@@ -14,7 +14,7 @@ add_library(scabolic-core ${LIBRARY_ACTION}
         src/ODRInterface.cpp)
 
 if(${USE_REMOTE_REPOSITORIES})
-    add_dependencies(scabolic-core dipacus)
+    add_dependencies(scabolic-core dipacus geoc)
 endif()
 
 target_include_directories(scabolic-core PRIVATE
