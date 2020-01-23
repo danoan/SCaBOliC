@@ -12,6 +12,11 @@ add_library(scabolic-optimization ${LIBRARY_ACTION}
         src/qpbo/QPBO_maxflow.cpp
         src/qpbo/QPBO_postprocessing.cpp)
 
+set_target_properties(scabolic-optimization
+        PROPERTIES
+        VERSION ${VERSION_SCABOLIC_OPTIMIZATION}
+        )
+
 target_include_directories(scabolic-optimization PRIVATE
         include)
 
