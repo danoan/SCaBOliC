@@ -28,6 +28,10 @@ set(CREATE_SHARED_LIBRARIES OFF CACHE BOOL "Create shared libraries. If off, cre
 set(USE_REMOTE_REPOSITORIES ON CACHE BOOL "Pull external repositories from GitHub.")
 
 project(SCaBOliC)
+set(VERSION_SCABOLIC_CORE v0.2)
+set(VERSION_SCABOLIC_ENERGY v0.2)
+set(VERSION_SCABOLIC_OPTIMIZATION v0.2)
+set(VERSION_SCABOLIC_UTILS v0.2)
 
 find_package(DGtal REQUIRED)
 find_package(OpenCV REQUIRED)

@@ -16,6 +16,11 @@ if(${USE_REMOTE_REPOSITORIES})
     add_dependencies(scabolic-core dipacus)
 endif()
 
+set_target_properties(scabolic-core
+        PROPERTIES
+        VERSION ${VERSION_SCABOLIC_CORE}
+        )
+
 target_include_directories(scabolic-core PRIVATE
         include
         ${DIPACUS_INCLUDE_DIRS}
