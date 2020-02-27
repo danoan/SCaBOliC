@@ -51,7 +51,6 @@ namespace SCaBOliC
                      const DigitalSet& applicationRegionOut,
                      const double innerCoef,
                      const double outerCoef,
-                     const std::unordered_map<Point,double>& kMap,
                      const double level,
                      const ToImageCoordinates toImageCoordinates):domain(domain),
                                                                   original(original),
@@ -63,7 +62,6 @@ namespace SCaBOliC
                                                                   applicationRegionOut(applicationRegionOut),
                                                                   innerCoef(innerCoef),
                                                                   outerCoef(outerCoef),
-                                                                  kMap(kMap),
                                                                   level(level),
                                                                   toImageCoordinates(toImageCoordinates){}
 
@@ -84,8 +82,7 @@ namespace SCaBOliC
 
             const double innerCoef;
             const double outerCoef;
-
-            const std::unordered_map<Point,double> kMap;
+            
             double level;
 
             const ToImageCoordinates toImageCoordinates;
