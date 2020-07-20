@@ -29,4 +29,5 @@ target_link_libraries(input-reader
         -lscabolic-optimization
         -lscabolic-energy
         -lscabolic-core
-        ${DGTAL_LIBRARIES})
+        ${DGTAL_LIBRARIES}
+        ${OpenCV_LIBS})
