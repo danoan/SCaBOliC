@@ -2,8 +2,6 @@
 
 using namespace SCaBOliC::Core;
 
-ODRPixels::DigitalSet ODRPixels::mockPixelMask(ODRPixels::Domain(ODRPixels::Point(0,0),ODRPixels::Point(1,1)));
-
 ODRPixels::DTL2 ODRPixels::interiorDistanceTransform(const Domain& domain, const DigitalSet& original) const
 {
     return DTL2(domain, original, DGtal::Z2i::l2Metric);

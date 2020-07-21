@@ -37,10 +37,6 @@ namespace SCaBOliC
             typedef DIPaCUS::Neighborhood::FourNeighborhoodPredicate FourNeighborhood;
             typedef DIPaCUS::Neighborhood::EightNeighborhoodPredicate EightNeighborhood;
 
-        private:
-
-            static DigitalSet mockPixelMask;
-
         public:
             ODRPixels(double radius,
                       double gridStep,
@@ -53,7 +49,7 @@ namespace SCaBOliC
             ODRModel createODR(ApplicationMode appMode,
                                const DigitalSet& original,
                                bool optRegionInApplication=false,
-                               const DigitalSet& pixelMask=mockPixelMask) const;
+                               const DigitalSet& pixelMask=ODRInterface::mockPixelMask) const;
 
             const SpaceHandleInterface* handle() const{return &spaceHandle;};
 
