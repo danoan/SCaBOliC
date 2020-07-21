@@ -180,30 +180,34 @@ ODRModel ODRPixels::createODR (ApplicationMode appMode,
     }
 
 
-    DGtal::Z2i::Curve cInn,cOut,cOriginal;
-    {
-        DigitalSet temp = level(exteriorTransform,levels,0);
-        temp += original;
-        if(temp.size()>10)
-            DIPaCUS::Misc::computeBoundaryCurve(cOut,temp);
-    }
-    {
-        DigitalSet temp = level(interiorTransform,std::numeric_limits<int>::max(),levels);
-        if(temp.size()>10)
-            DIPaCUS::Misc::computeBoundaryCurve(cInn,temp);
-    }
-    if(original.size()>10)
-        DIPaCUS::Misc::computeBoundaryCurve(cOriginal,original);
+//    DGtal::Z2i::Curve cInn,cOut,cOriginal;
+//    {
+//        DigitalSet temp = level(exteriorTransform,levels,0);
+//        temp += original;
+//        if(temp.size()>10)
+//            DIPaCUS::Misc::computeBoundaryCurve(cOut,temp);
+//    }
+//    {
+//        DigitalSet temp = level(interiorTransform,std::numeric_limits<int>::max(),levels);
+//        if(temp.size()>10)
+//            DIPaCUS::Misc::computeBoundaryCurve(cInn,temp);
+//    }
+//    if(original.size()>10)
+//        DIPaCUS::Misc::computeBoundaryCurve(cOriginal,original);
+//
+//    double lInn=curveLength(domain,cInn);
+//    double lOut=curveLength(domain,cOut);
+//    double lOriginal=curveLength(domain,cOriginal);
+//
+//    if(lOriginal==0)
+//        lOriginal=1;
+//
+//    double innerCoef = lInn==0?1.0:lOriginal/lInn;
+//    double outerCoef = lOut==0?1.0:lOriginal/lOut;
 
-    double lInn=curveLength(domain,cInn);
-    double lOut=curveLength(domain,cOut);
-    double lOriginal=curveLength(domain,cOriginal);
 
-    if(lOriginal==0)
-        lOriginal=1;
-
-    double innerCoef = lInn==0?1.0:lOriginal/lInn;
-    double outerCoef = lOut==0?1.0:lOriginal/lOut;
+    double innerCoef = 1;
+    double outerCoef = 1;
 
     double adjustedLevel=this->levels;
     if(this->ld==LevelDefinition::LD_FartherFromCenter) adjustedLevel = radius - this->levels + 1;
