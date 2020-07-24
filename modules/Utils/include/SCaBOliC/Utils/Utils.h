@@ -26,8 +26,8 @@ namespace SCaBOliC
             typedef GEOC::Estimator::Standard::IICurvatureExtraData IICurvatureExtraData;
 
             void prepare(Curve& boundary, KSpace& KImage, const DigitalSet& originalDS);
-            double mdca(const DigitalSet& originalDS, const double h);
-            double ii(const DigitalSet& originalDS, const double h, void* extraData);
+        double mdca(const DigitalSet& originalDS, const double h, const double alpha, const double beta);
+        double ii(const DigitalSet& originalDS, const double h, const double alpha, const double beta, void* extraData);
         };
     }
 }

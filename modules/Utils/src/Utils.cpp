@@ -17,7 +17,7 @@ void ISQEvaluation::prepare(Curve& boundary, KSpace& KImage, const DigitalSet& o
     DIPaCUS::Misc::computeBoundaryCurve(boundary,img,100);
 }
 
-double ISQEvaluation::mdca(const DigitalSet& originalDS, const double h)
+double ISQEvaluation::mdca(const DigitalSet& originalDS, const double h, const double alpha, const double beta)
 {
     using namespace GEOC::API::GridCurve;
 
@@ -45,13 +45,13 @@ double ISQEvaluation::mdca(const DigitalSet& originalDS, const double h)
     double value=0;
     for(int i=0;i<lengthEstimations.size();++i)
     {
-        value += pow(curvatureEstimations[i],2)*lengthEstimations[i];
+        value += alpha*lengthEstimations[i] + beta*pow(curvatureEstimations[i],2)*lengthEstimations[i];
     }
 
     return value;
 }
 
-double ISQEvaluation::ii(const DigitalSet& originalDS, const double h, void* extraData)
+double ISQEvaluation::ii(const DigitalSet& originalDS, const double h, const double alpha, const double beta, void* extraData)
 {
     using namespace GEOC::API::GridCurve;
 
@@ -80,7 +80,7 @@ double ISQEvaluation::ii(const DigitalSet& originalDS, const double h, void* ext
     double value=0;
     for(int i=0;i<lengthEstimations.size();++i)
     {
-        value += pow(curvatureEstimations[i],2)*lengthEstimations[i];
+        value += alpha*lengthEstimations[i] + beta*pow(curvatureEstimations[i],2)*lengthEstimations[i];
     }
 
     return value;
