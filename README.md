@@ -14,7 +14,7 @@ in [1]. This library is part of the
  
  [libboost1.66.0-dev](https://www.boost.org/users/history/version_1_66_0.html)
  
- [DGtal0.9](https://dgtal.org/download/)
+ [DGtal1.1](https://dgtal.org/download/)
  
  [opencv-3.3.0](https://opencv.org/releases.html)
  
